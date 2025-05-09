@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\GeolokasiController;
+use App\Http\Controllers\JarakController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +18,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Route::get('/jarak', [JarakController::class, 'hitungJarak']);
+Route::get('/koordinat', [GeolokasiController::class, 'getKoordinat']);
