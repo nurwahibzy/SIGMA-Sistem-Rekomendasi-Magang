@@ -14,13 +14,14 @@ return new class extends Migration
         Schema::create('aktivitas_magang', function (Blueprint $table) {
             $table->id('id_aktivitas');
             $table->unsignedBigInteger('id_magang')->index();
-            $table->dateTime('tanggal');
+            $table->date('tanggal');
             $table->text('keterangan');
             $table->text('foto_path');
             $table->timestamps();
 
             $table->foreign('id_magang')->references('id_magang')->on('magang')->onDelete('cascade');
 
+            $table->unique(['id_magang', 'tanggal']);
         });
     }
 

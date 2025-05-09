@@ -21,6 +21,7 @@ return new class extends Migration
 
             $table->foreign('id_lowongan')->references('id_lowongan')->on('lowongan_magang')->onDelete('cascade');
 
+            $table->unique(['id_lowongan', 'nama']);
         });
     }
 

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('perusahaan', function (Blueprint $table) {
             $table->id('id_perusahaan');
             $table->unsignedBigInteger('id_jenis')->index();
-            $table->string('nama', 100);
+            $table->string('nama', 100)->unique();
             $table->string('telepon', 30)->unique();
             $table->text('deskripsi');
             $table->text('foto_path');

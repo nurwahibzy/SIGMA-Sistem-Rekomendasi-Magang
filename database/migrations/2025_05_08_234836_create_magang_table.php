@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('magang', function (Blueprint $table) {
             $table->id('id_magang');
             $table->unsignedBigInteger('id_mahasiswa')->index();
-            $table->unsignedBigInteger('id_dosen')->index();
+            $table->unsignedBigInteger('id_dosen')->nullable()->index();
             $table->unsignedBigInteger('id_periode')->index();
             $table->enum('status', ['proses', 'diterima', 'ditolak', 'lulus'])->default('proses');
             $table->dateTime('tanggal_pengajuan');
