@@ -19,6 +19,8 @@ return new class extends Migration
 
             $table->foreign('id_mahasiswa')->references('id_mahasiswa')->on('mahasiswa')->onDelete('cascade');
             $table->foreign('id_jenis')->references('id_jenis')->on('jenis_perusahaan')->onDelete('cascade');
+
+            $table->unique(['id_mahasiswa', 'id_jenis']);
         });
     }
 

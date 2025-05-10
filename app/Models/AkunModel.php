@@ -30,4 +30,19 @@ class AkunModel extends Authenticatable
     {
         return $this->level->kode;
     }
+
+    public function admin(): BelongsTo
+    {
+        return $this->belongsTo(AdminModel::class, 'id_akun', 'id_akun');
+    }
+
+    public function mahasiswa(): BelongsTo
+    {
+        return $this->belongsTo(MahasiswaModel::class, 'id_akun', 'id_akun');
+    }
+
+    public function dosen(): BelongsTo
+    {
+        return $this->belongsTo(DosenModel::class, 'id_akun', 'id_akun');
+    }
 }

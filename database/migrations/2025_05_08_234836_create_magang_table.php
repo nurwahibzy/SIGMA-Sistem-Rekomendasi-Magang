@@ -25,6 +25,7 @@ return new class extends Migration
             $table->foreign('id_dosen')->references('id_dosen')->on('dosen')->onDelete('cascade');
             $table->foreign('id_periode')->references('id_periode')->on('periode_magang')->onDelete('cascade');
 
+            $table->unique(['id_mahasiswa', 'id_periode']);
         });
     }
 

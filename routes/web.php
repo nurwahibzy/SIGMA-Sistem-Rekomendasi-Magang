@@ -15,7 +15,9 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 
 // Route::get('/jarak', [JarakController::class, 'hitungJarak']);
@@ -28,8 +30,9 @@ Route::get('/logout', [AuthController::class, 'logout'])->middleware('auth');
 
 Route::middleware(['auth'])->group(function () {
     Route::middleware(['authorize:ADM'])->group(function () {
-        Route::get('/', function () {
-            return view('welcome');
-        });
+    });
+    Route::middleware(['authorize:MHS'])->group(function () {
+    });
+    Route::middleware(['authorize:DSN'])->group(function () {
     });
 });
