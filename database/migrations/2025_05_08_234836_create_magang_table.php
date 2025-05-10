@@ -17,7 +17,6 @@ return new class extends Migration
             $table->unsignedBigInteger('id_dosen')->nullable()->index();
             $table->unsignedBigInteger('id_periode')->index();
             $table->enum('status', ['proses', 'diterima', 'ditolak', 'lulus'])->default('proses');
-            $table->enum('status_penilaian', ['aktif', 'nonaktif'])->default('nonaktif');
             $table->dateTime('tanggal_pengajuan');
             $table->timestamps();
 
