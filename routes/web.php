@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GeolokasiController;
 use App\Http\Controllers\JarakController;
 use Illuminate\Support\Facades\Route;
@@ -15,9 +16,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
 
 // Route::get('/jarak', [JarakController::class, 'hitungJarak']);
-Route::get('/koordinat', [GeolokasiController::class, 'getKoordinat']);
+// Route::get('/koordinat', [GeolokasiController::class, 'getKoordinat']);
+
+Route::pattern('id', '[0-9]+');
+Route::get('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/login', [AuthController::class, 'postlogin']);
+Route::get('/logout', [AuthController::class, 'logout'])->middleware('auth');
+
+Route::middleware(['auth'])->group(function () {
+    Route::middleware(['authorize:ADM'])->group(function () {
+        Route::get('/', function () {
+            return view('welcome');
+        });
+    });
+});
