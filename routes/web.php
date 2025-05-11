@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\AkunController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Mahasiswa\DashboardController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GeolokasiController;
 use App\Http\Controllers\JarakController;
@@ -16,25 +19,36 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-Route::get('/akun', [AkunController::class, 'tes']);
+// Route::get('/akun', [AkunController::class, 'tes']);
 
 // Route::get('/jarak', [JarakController::class, 'hitungJarak']);
 // Route::get('/koordinat', [GeolokasiController::class, 'getKoordinat']);
 
-// Route::pattern('id', '[0-9]+');
-// Route::get('/login', [AuthController::class, 'login'])->name('login');
-// Route::post('/login', [AuthController::class, 'postlogin']);
-// Route::get('/logout', [AuthController::class, 'logout'])->middleware('auth');
+Route::pattern('id', '[0-9]+');
+Route::get('/login', [LoginController::class, 'login'])->name('login');
+Route::post('/login', [LoginController::class, 'postLogin']);
+Route::get('/logout', [LogoutController::class, 'logout'])->middleware('auth');
 
-// Route::middleware(['auth'])->group(function () {
-//     Route::middleware(['authorize:ADM'])->group(function () {
-//     });
-//     Route::middleware(['authorize:MHS'])->group(function () {
-//     });
-//     Route::middleware(['authorize:DSN'])->group(function () {
-//     });
-// });
+Route::middleware(['auth'])->group(function () {
+    Route::middleware(['authorize:ADM'])->prefix('admin')->group(function () {
+        Route::prefix('dashboard')->group(function (){
+
+        });
+    });
+
+    Route::middleware(['authorize:MHS'])->prefix('mahasiswa')->group(function () {
+        Route::prefix('dashboard')->group(function (){
+            Route::get('/', [DashboardController::class, 'dashboard']);
+        });
+    });
+
+    Route::middleware(['authorize:DSN'])->prefix('dosen')->group(function () {
+        Route::prefix('dashboard')->group(function (){
+
+        });
+    });
+});
