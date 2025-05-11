@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 
 class MagangController extends Controller
 {
-    public function dashboard(){
+    public function getDashboard(){
         return view('welcome');
     }
+
+
 }

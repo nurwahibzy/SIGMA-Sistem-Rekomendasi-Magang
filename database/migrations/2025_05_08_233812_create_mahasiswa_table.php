@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('nama', 100);
             $table->text('alamat');
             $table->string('telepon', 30)->unique();
-            $table->dateTime('tanggal_lahir');
+            $table->date('tanggal_lahir');
             $table->string('email', 100);
             $table->timestamps();
 

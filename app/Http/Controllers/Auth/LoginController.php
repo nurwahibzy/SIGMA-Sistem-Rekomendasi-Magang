@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    public function login()
+    public function getLogin()
     {
         if (Auth::check()) {
             return redirect('/');

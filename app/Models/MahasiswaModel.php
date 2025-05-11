@@ -20,7 +20,15 @@ class MahasiswaModel extends Model
 
     public function prodi(): BelongsTo
     {
-        return $this->belongsTo(AkunModel::class, 'id_prodi', 'id_prodi');
+        return $this->belongsTo(ProdiModel::class, 'id_prodi', 'id_prodi');
+    }
+    public function preferensi_lokasi_mahasiswa(): BelongsTo
+    {
+        return $this->belongsTo(PreferensiLokasiMahasiswaModel::class, 'id_mahasiswa', 'id_mahasiswa');
+    }
+    public function preferensi_perusahaan_mahasiswa(): BelongsTo
+    {
+        return $this->belongsTo(PreferensiPerusahaanMahasiswaModel::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 
     public function pengalaman(): HasMany

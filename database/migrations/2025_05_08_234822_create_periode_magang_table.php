@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id('id_periode');
             $table->unsignedBigInteger('id_lowongan')->index();
             $table->string('nama', 100);
-            $table->dateTime('tanggal_mulai');
-            $table->dateTime('tanggal_selesai');
+            $table->date('tanggal_mulai');
+            $table->date('tanggal_selesai');
             $table->timestamps();
 
             $table->foreign('id_lowongan')->references('id_lowongan')->on('lowongan_magang')->onDelete('cascade');
