@@ -7,6 +7,7 @@ use App\Models\AkunModel;
 use App\Models\BidangModel;
 use App\Models\KeahlianDosenModel;
 use App\Models\KeahlianMahasiswaModel;
+use App\Models\PengalamanModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -93,8 +94,59 @@ class AkunController extends Controller
         }
     }
 
-    public function postPengalaman(){
+    public function postPengalaman(Request $request){
+        $panjang = count($request->id_pengalaman);
+
+        [$removed_id, $lates_id] = $this->deletePengalaman($request);
+        $updated_id = $this->updatePengalaman($request, $removed_id, $lates_id, $panjang);
+        $this->insertPengalaman($request, $panjang);
+
+        dd($request->all());
+        // return response()->json($removed_id);
+    }
+
+    private function deletePengalaman($request){
+        $current_id = array_map('intval', $request->id_pengalaman);;
+
+        $lates_id = $akun = AkunModel::with(
+            'mahasiswa:id_mahasiswa,id_akun',
+            'mahasiswa.pengalaman:id_pengalaman,id_mahasiswa'
+            )
+            ->where('id_akun', Auth::user()->id_akun)
+            ->first(['id_akun', 'id_level']);
+        $lates_id = $lates_id->mahasiswa->pengalaman->pluck('id_pengalaman')->toArray();
+
+        $removed_id = array_values(array_diff($lates_id, $current_id));
         
+        $keahlian = PengalamanModel::destroy($removed_id);
+
+
+        return [$removed_id, $lates_id];
+    }
+
+    private function updatePengalaman($request, $removed_id, $lates_id, $panjang){
+        $updated_id = array_values(array_diff( $lates_id, $removed_id));
+
+        for ($i = 0; $i < $panjang; $i++) {
+            PengalamanModel::where('id_pengalaman', $request->id_pengalaman[$i])
+            ->update(['deskripsi' => $request->deskripsi[$i]]);
+        }
+
+        return $updated_id;
+    }
+
+    private function insertPengalaman($request, $panjang){
+        $id_mahasiswa = AkunModel::with('mahasiswa:id_mahasiswa,id_akun')
+            ->where('id_akun', Auth::user()->id_akun)
+            ->first(['id_akun', 'id_level'])
+            ->mahasiswa
+            ->id_mahasiswa;
+        for ($i = $panjang; $i < count($request->deskripsi); $i++) {
+            PengalamanModel::insert([
+                'id_mahasiswa' => $id_mahasiswa,
+                'deskripsi' => $request->deskripsi[$i]
+            ]);
+        }
     }
 
     public function getAkun(){
