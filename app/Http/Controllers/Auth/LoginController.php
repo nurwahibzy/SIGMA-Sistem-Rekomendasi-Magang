@@ -24,11 +24,12 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $role = AkunModel::with('level:id_level,kode,role')->where('id_level', Auth::user()->id_level)->first();
             $kode = $role->level->kode;
-            if ($kode == 'ADM') {
+            $status = $role->status;
+            if ($kode == 'ADM' && $status == 'aktif') {
                 return redirect('/admin/dashboard');
-            } else if ($kode == 'MHS') {
+            } else if ($kode == 'MHS' && $status == 'aktif') {
                 return redirect('/mahasiswa/dashboard');
-            } else if ($kode == 'DSN'){
+            } else if ($kode == 'DSN' && $status == 'aktif'){
                 return redirect('/dosen/dashboard'); 
             }
         }

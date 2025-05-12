@@ -26,9 +26,9 @@ class MahasiswaModel extends Model
     {
         return $this->belongsTo(PreferensiLokasiMahasiswaModel::class, 'id_mahasiswa', 'id_mahasiswa');
     }
-    public function preferensi_perusahaan_mahasiswa(): BelongsTo
+    public function preferensi_perusahaan_mahasiswa(): HasMany
     {
-        return $this->belongsTo(PreferensiPerusahaanMahasiswaModel::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->hasMany(PreferensiPerusahaanMahasiswaModel::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 
     public function pengalaman(): HasMany

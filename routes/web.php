@@ -55,8 +55,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/magang/{id_magang}', [MagangControllerMahasiswa::class, 'getMagang']);
         Route::get('/perusahaan/{id_perusahaan}', [MagangControllerMahasiswa::class, 'getPerusahaan']);
         Route::get('/profil', [AkunControllerMahasiswa::class, 'getProfil']);
+        Route::get('/akun', [AkunControllerMahasiswa::class, 'getAkun']);
         Route::post('/keahlian', [AkunControllerMahasiswa::class, 'postKeahlian']);
         Route::post('/pengalaman', [AkunControllerMahasiswa::class, 'postPengalaman']);
+        Route::post('/kompetensi', [AkunControllerMahasiswa::class, 'postKompetensi']);
+        Route::post('/preferensi/perusahaan', [AkunControllerMahasiswa::class, 'postPreferensiPerusahaan']);
     });
 
     Route::middleware(['authorize:DSN'])->prefix('dosen')->group(function () {
