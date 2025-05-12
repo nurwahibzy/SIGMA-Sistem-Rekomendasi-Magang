@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
 use App\Models\AkunModel;
+use App\Models\BidangModel;
+use App\Models\KeahlianDosenModel;
+use App\Models\KeahlianMahasiswaModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,7 +28,73 @@ class AkunController extends Controller
             )
             ->where('id_akun', Auth::user()->id_akun)
             ->first();
-        return response()->json($akun);
+        $bidang = BidangModel::get();
+        return view('tes.keahlian', ['pengalaman' => $akun->mahasiswa->pengalaman, 'bidang' => $bidang, 'keahlian' => $akun->mahasiswa->keahlian_mahasiswa]);
+        // return response()->json($akun);
+    }
+
+    public function postKeahlian(Request $request){
+
+        $panjang = count($request->id_keahlian);
+
+        [$removed_id, $lates_id] = $this->deleteKeahlian($request);
+        $updated_id = $this->updateKeahlian($request, $removed_id, $lates_id, $panjang);
+        $this->insertKeahlian($request, $panjang);
+
+        // dd($request->all());
+        return response()->json($request);
+    }
+
+    private function deleteKeahlian($request){
+        $current_id = array_map('intval', $request->id_keahlian);;
+
+        $lates_id = $akun = AkunModel::with(
+            'mahasiswa:id_mahasiswa,id_akun',
+            'mahasiswa.keahlian_mahasiswa:id_keahlian_mahasiswa,id_mahasiswa'
+            )
+            ->where('id_akun', Auth::user()->id_akun)
+            ->first(['id_akun', 'id_level']);
+        $lates_id = $lates_id->mahasiswa->keahlian_mahasiswa->pluck('id_keahlian_mahasiswa')->toArray();
+
+        $removed_id = array_values(array_diff($lates_id, $current_id));
+        
+        $keahlian = KeahlianMahasiswaModel::destroy($removed_id);
+
+
+        return [$removed_id, $lates_id];
+    }
+
+    private function updateKeahlian($request, $removed_id, $lates_id, $panjang){
+        $updated_id = array_values(array_diff( $lates_id, $removed_id));
+
+        for ($i = 0; $i < $panjang; $i++) {
+            KeahlianMahasiswaModel::where('id_keahlian_mahasiswa', $request->id_keahlian[$i])
+            ->update([
+                'id_bidang' => $request->id_bidang[$i],
+                'keahlian' => $request->keahlian[$i]
+            ]);
+        }
+
+        return $updated_id;
+    }
+
+    private function insertKeahlian($request, $panjang){
+        $id_mahasiswa = AkunModel::with('mahasiswa:id_mahasiswa,id_akun')
+            ->where('id_akun', Auth::user()->id_akun)
+            ->first(['id_akun', 'id_level'])
+            ->mahasiswa
+            ->id_mahasiswa;
+        for ($i = $panjang; $i < count($request->id_bidang); $i++) {
+            KeahlianMahasiswaModel::insert([
+                'id_mahasiswa' => $id_mahasiswa,
+                'id_bidang' => $request->id_bidang[$i],
+                'keahlian' => $request->keahlian[$i]
+            ]);
+        }
+    }
+
+    public function postPengalaman(){
+        
     }
 
     public function getAkun(){

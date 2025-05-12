@@ -25,7 +25,6 @@ class MagangController extends Controller
             )
             ->get(['id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
         return response()->json($magang);
-        // return view('welcome');
     }
 
     public function getMagang($id_periode){
@@ -51,4 +50,17 @@ class MagangController extends Controller
             ->get();
             return response()->json($magang);
     }
+
+    public function getRiwayat(){
+
+    }
+
+    public function getAktivitas(){
+
+    }
+
+    public function getDaftarAktifitas(){
+        
+    }
+
 }
