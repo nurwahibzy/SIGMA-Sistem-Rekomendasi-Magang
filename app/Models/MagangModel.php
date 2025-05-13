@@ -34,8 +34,8 @@ class MagangModel extends Model
     {
         return $this->hasMany(EvaluasiMagangModel::class, 'id_magang', 'id_magang');
     }
-    public function penilaian(): HasMany
+    public function penilaian(): BelongsTo
     {
-        return $this->hasMany(PenilaianModel::class, 'id_magang', 'id_magang');
+        return $this->belongsTo(PenilaianModel::class, 'id_magang', 'id_magang');
     }
 }
