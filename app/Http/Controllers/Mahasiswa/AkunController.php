@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Mahasiswa;
 
+use DB;
 use App\Http\Controllers\Controller;
 use App\Models\AkunModel;
 use App\Models\BidangModel;
@@ -19,20 +20,20 @@ class AkunController extends Controller
     public function getProfil()
     {
         $akun = $this->allDataProfil();
-        // $bidang = BidangModel::get();
-        // $jenis = JenisPerusahaanModel::get();
-        // return view(
-        //     'tes.keahlian',
-        //     [
-        //         'pengalaman' => $akun->mahasiswa->pengalaman,
-        //         'bidang' => $bidang,
-        //         'keahlian' => $akun->mahasiswa->keahlian_mahasiswa,
-        //         'kompetensi' => $akun->mahasiswa->kompetensi,
-        //         'jenis' => $jenis,
-        //         'preferensi_perusahaan' => $akun->mahasiswa->preferensi_perusahaan_mahasiswa,
-        //     ]
-        // );
-        return response()->json($akun);
+        $bidang = BidangModel::get();
+        $jenis = JenisPerusahaanModel::get();
+        return view(
+            'tes.keahlian',
+            [
+                'pengalaman' => $akun->mahasiswa->pengalaman,
+                'bidang' => $bidang,
+                'keahlian' => $akun->mahasiswa->keahlian_mahasiswa,
+                'kompetensi' => $akun->mahasiswa->kompetensi,
+                'jenis' => $jenis,
+                'preferensi_perusahaan' => $akun->mahasiswa->preferensi_perusahaan_mahasiswa,
+            ]
+        );
+        // return response()->json($akun);
     }
 
     public function getEditProfil()
@@ -71,63 +72,199 @@ class AkunController extends Controller
     }
 
     // crud keahlian
+    public function getAddKeahlian()
+    {
+        $bidang = BidangModel::whereNotIn('id_bidang', $this->bidangDipilih())->get(['id_bidang', 'nama']);
+        $jumlahBidangDipilih = count($this->bidangDipilih());
+        $data = [
+            'bidang' => $bidang,
+            'prioritas' => $jumlahBidangDipilih + 1
+        ];
+        return view('tes.addKeahlian', ['data' => $data]);
+        // return response()->json($data);
+    }
     public function getKeahlian($id_keahlian)
     {
-        $keahlian = KeahlianMahasiswaModel::with('bidang:id_bidang,nama')
-            ->where('id_keahlian_mahasiswa', $id_keahlian)
-            ->get(['id_keahlian_mahasiswa', 'id_bidang', 'prioritas', 'keahlian']);
-        return response()->json($keahlian);
+        $pilihanTerakhir = KeahlianMahasiswaModel::where('id_keahlian_mahasiswa', $id_keahlian)->first(['id_keahlian_mahasiswa', 'id_bidang', 'prioritas', 'keahlian']);
+        $bidang = BidangModel::whereNotIn('id_bidang', array_diff($this->bidangDipilih(), [$pilihanTerakhir->id_bidang]))->get(['id_bidang', 'nama']);
+        $jumlahBidangDipilih = count($this->bidangDipilih());
+        $data = [
+            'bidang' => $bidang,
+            'prioritas' => $jumlahBidangDipilih,
+            'pilihan_terakhir' => $pilihanTerakhir
+        ];
+        return view('tes.editKeahlian', ['data' => $data]);
+        // return response()->json($data);
     }
 
-    public function postKeahlian()
+    public function postKeahlian(Request $request)
     {
+        if ($request->ajax() || $request->wantsJson()) {
+            DB::transaction(function () use ($request) {
+                $id_mahasiswa = $this->idMahasiswa();
+                $id_bidang = $request->input('id_bidang');
+                $prioritas = $request->input('prioritas');
+                $keahlian = $request->input('keahlian');
+                $jumlahBidangDipilih = count($this->bidangDipilih());
 
+                if ($prioritas == $jumlahBidangDipilih + 1) {
+                    $this->insertKeahlian($id_mahasiswa, $id_bidang, $prioritas, $keahlian);
+                } else {
+                    $this->updatePrioritas($id_mahasiswa, $prioritas);
+                    $this->insertKeahlian($id_mahasiswa, $id_bidang, $prioritas, $keahlian);
+                }
+            });
+        }
     }
 
-    public function putKeahlian()
-    {
 
+    private function insertKeahlian($id_mahasiswa, $id_bidang, $prioritas, $keahlian)
+    {
+        KeahlianMahasiswaModel::insert([
+            'id_mahasiswa' => $id_mahasiswa,
+            'id_bidang' => $id_bidang,
+            'prioritas' => $prioritas,
+            'keahlian' => $keahlian
+        ]);
     }
 
-    public function deleteKeahlian()
+    private function updatePrioritas($id_mahasiswa, $prioritas)
     {
-
+        KeahlianMahasiswaModel::where('id_mahasiswa', $id_mahasiswa)
+            ->where('prioritas', '>=', $prioritas)
+            ->orderBy('prioritas', 'desc')
+            ->get()
+            ->each(function ($keahlianMahasiswa) {
+                $keahlianMahasiswa->prioritas += 1;
+                $keahlianMahasiswa->save();
+            });
     }
 
-    private function checkLastPrioritas()
+    public function putKeahlian(Request $request, $id_keahlian)
     {
+        if ($request->ajax() || $request->wantsJson()) {
+            DB::transaction(function () use ($request, $id_keahlian) {
+                $pilihanTerakhir = KeahlianMahasiswaModel::where('id_keahlian_mahasiswa', $id_keahlian)
+                    ->first(['id_keahlian_mahasiswa', 'id_mahasiswa', 'id_bidang', 'prioritas', 'keahlian']);
 
+                $id_bidang = $request->input('id_bidang');
+                $prioritasBaru = $request->input('prioritas');
+                $keahlian = $request->input('keahlian');
+                $prioritasLama = $pilihanTerakhir->prioritas;
+                $id_mahasiswa = $pilihanTerakhir->id_mahasiswa;
+
+                KeahlianMahasiswaModel::where('id_keahlian_mahasiswa', $id_keahlian)
+                    ->update([
+                        'prioritas' => null
+                    ]);
+
+                if ($prioritasBaru < $prioritasLama) {
+                    $this->updateTurunPrioritas($id_mahasiswa, $prioritasBaru, $prioritasLama);
+                } elseif ($prioritasBaru > $prioritasLama) {
+                    $this->updateNaikPrioritas($id_mahasiswa, $prioritasLama + 1, $prioritasBaru + 1);
+                }
+
+                $this->updateKeahlian($id_keahlian, $id_bidang, $prioritasBaru, $keahlian);
+            });
+        }
+    }
+
+    private function updateTurunPrioritas($id_mahasiswa, $prioritasAwal, $prioritasAkhir)
+    {
+        KeahlianMahasiswaModel::where('id_mahasiswa', $id_mahasiswa)
+            ->where('prioritas', '>=', $prioritasAwal)
+            ->where('prioritas', '<', $prioritasAkhir)
+            ->orderBy('prioritas', 'desc')
+            ->get()
+            ->each(function ($keahlian) {
+                $keahlian->prioritas += 1;
+                $keahlian->save();
+            });
+    }
+
+    private function updateNaikPrioritas($id_mahasiswa, $prioritasAwal, $prioritasAkhir)
+    {
+        KeahlianMahasiswaModel::where('id_mahasiswa', $id_mahasiswa)
+            ->where('prioritas', '>=', $prioritasAwal)
+            ->where('prioritas', '<', $prioritasAkhir)
+            ->orderBy('prioritas', 'asc')
+            ->get()
+            ->each(function ($keahlian) {
+                $keahlian->prioritas -= 1;
+                $keahlian->save();
+            });
+    }
+
+    public function updateKeahlian($id_keahlian, $id_bidang, $prioritas, $keahlian)
+    {
+        KeahlianMahasiswaModel::where('id_keahlian_mahasiswa', $id_keahlian)
+            ->update([
+                'id_bidang' => $id_bidang,
+                'prioritas' => $prioritas,
+                'keahlian' => $keahlian
+            ]);
+    }
+
+    public function deleteKeahlian(Request $request, $id_keahlian, $prioritas)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            DB::transaction(function () use ($request, $id_keahlian, $prioritas) {
+                $id_mahasiswa = $this->idMahasiswa();
+                KeahlianMahasiswaModel::where('id_keahlian_mahasiswa', $id_keahlian)->delete();
+                KeahlianMahasiswaModel::where('id_mahasiswa', $id_mahasiswa)
+                    ->where('prioritas', '>', $prioritas)
+                    ->orderBy('prioritas', 'asc')
+                    ->get()
+                    ->each(function ($keahlianMahasiswa) {
+                        $keahlianMahasiswa->prioritas -= 1;
+                        $keahlianMahasiswa->save();
+                    });
+            });
+        }
+    }
+
+    private function bidangDipilih()
+    {
+        $bidangTerakhir = KeahlianMahasiswaModel::where('id_mahasiswa', $this->idMahasiswa())->get();
+        $bidangDipilih = $bidangTerakhir->pluck('id_bidang')->toArray();
+        return $bidangDipilih;
     }
 
     // crud pengelaman
+    public function getAddPengalaman()
+    {
+        return view('tes.pengalaman');
+    }
     public function getPengalaman($id_pengalaman)
     {
         $pengalaman = PengalamanModel::where('id_pengalaman', $id_pengalaman)->first(['id_pengalaman', 'deskripsi']);
-        // return response()->json($pengalaman);
-        return view('tes.pengalaman', ['pengalaman' => $pengalaman]);
+        return view('tes.editPengalaman', ['pengalaman' => $pengalaman]);
     }
 
     public function postpengalaman(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
-            $id_mahasiswa = $this->idMahasiswa();
-            PengalamanModel::insert([
-                'id_mahasiswa' => $id_mahasiswa,
-                'deskripsi' => $request->input('deskripsi')
-            ]);
-            return response()->json([
-                'status' => 'success'
-            ]);
+            DB::transaction(function () use ($request, ) {
+                $id_mahasiswa = $this->idMahasiswa();
+                PengalamanModel::insert([
+                    'id_mahasiswa' => $id_mahasiswa,
+                    'deskripsi' => $request->input('deskripsi')
+                ]);
+                return response()->json([
+                    'status' => 'success'
+                ]);
+            });
         }
     }
 
     public function putpengalaman(Request $request, $id_pengalaman)
     {
         if ($request->ajax() || $request->wantsJson()) {
+            $deskripsi = $request->input('deskripsi');
             PengalamanModel::where('id_pengalaman', $id_pengalaman)
-            ->update([
-                'deskripsi' => $request->input('deskripsi')
-            ]);
+                ->update([
+                    'deskripsi' => $deskripsi
+                ]);
             return response()->json([
                 'status' => 'success'
             ]);
@@ -155,205 +292,17 @@ class AkunController extends Controller
     }
 
 
-    // public function postKeahlian(Request $request)
-    // {
-
-    //     $panjang = count($request->id_keahlian);
-
-    //     [$removed_id, $lates_id] = $this->deleteKeahlian($request);
-    //     $updated_id = $this->updateKeahlian($request, $removed_id, $lates_id, $panjang);
-    //     $this->insertKeahlian($request, $panjang);
-
-    //     // dd($request->all());
-    //     return response()->json($request);
-    // }
-
-    // private function deleteKeahlian($request)
-    // {
-    //     $current_id = array_map('intval', $request->id_keahlian);
-    //     ;
-
-    //     $lates_id = $akun = AkunModel::with(
-    //         'mahasiswa:id_mahasiswa,id_akun',
-    //         'mahasiswa.keahlian_mahasiswa:id_keahlian_mahasiswa,id_mahasiswa'
-    //     )
-    //         ->where('id_akun', Auth::user()->id_akun)
-    //         ->first(['id_akun', 'id_level']);
-    //     $lates_id = $lates_id->mahasiswa->keahlian_mahasiswa->pluck('id_keahlian_mahasiswa')->toArray();
-
-    //     $removed_id = array_values(array_diff($lates_id, $current_id));
-
-    //     $keahlian = KeahlianMahasiswaModel::destroy($removed_id);
-
-
-    //     return [$removed_id, $lates_id];
-    // }
-
-    // private function updateKeahlian($request, $removed_id, $lates_id, $panjang)
-    // {
-    //     $updated_id = array_values(array_diff($lates_id, $removed_id));
-
-    //     for ($i = 0; $i < $panjang; $i++) {
-    //         KeahlianMahasiswaModel::where('id_keahlian_mahasiswa', $request->id_keahlian[$i])
-    //             ->update([
-    //                 'id_bidang' => $request->id_bidang[$i],
-    //                 'keahlian' => $request->keahlian[$i]
-    //             ]);
-    //     }
-
-    //     return $updated_id;
-    // }
-
-    // private function insertKeahlian($request, $panjang)
-    // {
-    //     $id_mahasiswa = AkunModel::with(relations: 'mahasiswa:id_mahasiswa,id_akun')
-    //         ->where('id_akun', Auth::user()->id_akun)
-    //         ->first(['id_akun', 'id_level'])
-    //         ->mahasiswa
-    //         ->id_mahasiswa;
-    //     for ($i = $panjang; $i < count($request->id_bidang); $i++) {
-    //         KeahlianMahasiswaModel::insert([
-    //             'id_mahasiswa' => $id_mahasiswa,
-    //             'id_bidang' => $request->id_bidang[$i],
-    //             'keahlian' => $request->keahlian[$i]
-    //         ]);
-    //     }
-    // }
-
-    // crud pengalaman
-    // public function postPengalaman(Request $request)
-    // {
-    //     $panjang = count($request->id_pengalaman);
-
-    //     [$removed_id, $lates_id] = $this->deletePengalaman($request);
-    //     $updated_id = $this->updatePengalaman($request, $removed_id, $lates_id, $panjang);
-    //     $this->insertPengalaman($request, $panjang);
-
-    //     // dd($request->all());
-    //     return response()->json($removed_id);
-    // }
-
-    // private function deletePengalaman($request)
-    // {
-    //     $current_id = array_map('intval', $request->id_pengalaman);
-
-    //     $lates_id = $akun = AkunModel::with(
-    //         'mahasiswa:id_mahasiswa,id_akun',
-    //         'mahasiswa.pengalaman:id_pengalaman,id_mahasiswa'
-    //     )
-    //         ->where('id_akun', Auth::user()->id_akun)
-    //         ->first(['id_akun', 'id_level']);
-    //     $lates_id = $lates_id->mahasiswa->pengalaman->pluck('id_pengalaman')->toArray();
-
-    //     $removed_id = array_values(array_diff($lates_id, $current_id));
-
-    //     $keahlian = PengalamanModel::destroy($removed_id);
-
-
-    //     return [$removed_id, $lates_id];
-    // }
-
-    // private function updatePengalaman($request, $removed_id, $lates_id, $panjang)
-    // {
-    //     $updated_id = array_values(array_diff($lates_id, $removed_id));
-
-    //     for ($i = 0; $i < $panjang; $i++) {
-    //         PengalamanModel::where('id_pengalaman', $request->id_pengalaman[$i])
-    //             ->update(['deskripsi' => $request->deskripsi[$i]]);
-    //     }
-
-    //     return $updated_id;
-    // }
-
-    // private function insertPengalaman($request, $panjang)
-    // {
-    //     $id_mahasiswa = AkunModel::with('mahasiswa:id_mahasiswa,id_akun')
-    //         ->where('id_akun', Auth::user()->id_akun)
-    //         ->first(['id_akun', 'id_level'])
-    //         ->mahasiswa
-    //         ->id_mahasiswa;
-    //     for ($i = $panjang; $i < count($request->deskripsi); $i++) {
-    //         PengalamanModel::insert([
-    //             'id_mahasiswa' => $id_mahasiswa,
-    //             'deskripsi' => $request->deskripsi[$i]
-    //         ]);
-    //     }
-    // }
-
-    // crud kompetensi
-    // public function postKompetensi(Request $request)
-    // {
-    //     $panjang = count($request->id_bidang ?? []);
-
-    //     [$removed_id, $lates_id] = $this->deleteKompetensi($request, $panjang);
-    //     $this->insertKompetensi($request, $panjang, $lates_id);
-
-    //     // dd(vars: $request->all());
-    //     return response()->json($removed_id);
-    // }
-
-    // private function deleteKompetensi($request, $panjang)
-    // {
-    //     if ($panjang == 0) {
-    //         $current_id = [];
-    //     } else {
-    //         $current_id = array_map('intval', $request->id_bidang);
-    //     }
-
-    //     $lates_id = $akun = AkunModel::with(
-    //         'mahasiswa:id_mahasiswa,id_akun',
-    //         'mahasiswa.kompetensi:id_kompetensi,id_mahasiswa,id_bidang'
-    //     )
-    //         ->where('id_akun', Auth::user()->id_akun)
-    //         ->first(['id_akun', 'id_level']);
-    //     $lates_id = $lates_id->mahasiswa->kompetensi->pluck('id_bidang')->toArray();
-
-    //     $removed_id = array_values(array_diff($lates_id, $current_id));
-
-    //     KompetensiModel::whereIn('id_bidang', $removed_id)->delete();
-
-    //     return [$removed_id, $lates_id];
-    // }
-
-
-    // private function insertKompetensi($request, $panjang, $lates_id)
-    // {
-    //     if ($panjang == 0) {
-    //         $id_bidang = [];
-    //     } else {
-    //         $id_bidang = array_map('intval', $request->id_bidang);
-    //     }
-
-    //     $id_bidang = array_values(array_diff($id_bidang, $lates_id));
-
-    //     $id_mahasiswa = AkunModel::with('mahasiswa:id_mahasiswa,id_akun')
-    //         ->where('id_akun', Auth::user()->id_akun)
-    //         ->first(['id_akun', 'id_level'])
-    //         ->mahasiswa
-    //         ->id_mahasiswa;
-    //     for ($i = 0; $i < count($id_bidang); $i++) {
-    //         KompetensiModel::insert([
-    //             'id_mahasiswa' => $id_mahasiswa,
-    //             'id_bidang' => $id_bidang[$i]
-    //         ]);
-    //     }
-    // }
-
     // crud preferensi perusahaan
     public function postPreferensiPerusahaan(Request $request)
     {
-        // try {
-        $panjang = count($request->id_jenis ?? []);
+        if ($request->ajax() || $request->wantsJson()) {
+            DB::transaction(function () use ($request, ) {
+                $panjang = count($request->input('id_jenis') ?? []);
 
-        [$removed_id, $lates_id] = $this->deletePreferensiPerusahaan($request, $panjang);
-        $this->insertPreferensiPerusahaan($request, $panjang, $lates_id);
-
-        dd(vars: $request->all());
-        // return response()->json($id_jenis);
-        // return response()->json($lates_id);
-        // } catch (\Throwable $th) {
-        //     return response()->json($request);
-        // }
+                [$removed_id, $lates_id] = $this->deletePreferensiPerusahaan($request, $panjang);
+                $this->insertPreferensiPerusahaan($request, $panjang, $lates_id);
+            });
+        }
     }
 
     private function deletePreferensiPerusahaan($request, $panjang)
@@ -388,7 +337,6 @@ class AkunController extends Controller
         }
 
         $id_jenis = array_values(array_diff($id_jenis, $lates_id));
-        // return $id_jenis;
 
         $id_mahasiswa = AkunModel::with('mahasiswa:id_mahasiswa,id_akun')
             ->where('id_akun', Auth::user()->id_akun)

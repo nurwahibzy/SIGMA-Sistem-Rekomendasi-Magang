@@ -59,18 +59,22 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/', [AkunControllerMahasiswa::class, 'getEditProfil']);
 
                 Route::prefix('keahlian')->group(function () {
+                    Route::get('/', [AkunControllerMahasiswa::class, 'getAddKeahlian']);
                     Route::get('{id_keahlian}', [AkunControllerMahasiswa::class, 'getKeahlian']);
                     Route::post('/', [AkunControllerMahasiswa::class, 'postKeahlian']);
                     Route::put('{id_keahlian}', [AkunControllerMahasiswa::class, 'putKeahlian']);
-                    Route::delete('{id_keahlian}', [AkunControllerMahasiswa::class, 'deleteKeahlian']);
+                    Route::delete('{id_keahlian}/{prioritas}', [AkunControllerMahasiswa::class, 'deleteKeahlian']);
                 });
 
                 Route::prefix('pengalaman')->group(function () {
+                    Route::get('/', [AkunControllerMahasiswa::class, 'getAddPengalaman']);
                     Route::get('{id_pengalaman}', [AkunControllerMahasiswa::class, 'getpengalaman']);
                     Route::post('/', [AkunControllerMahasiswa::class, 'postpengalaman']);
                     Route::put('{id_pengalaman}', [AkunControllerMahasiswa::class, 'putpengalaman']);
                     Route::delete('{id_pengalaman}', [AkunControllerMahasiswa::class, 'deletepengalaman']);
                 });
+
+                Route::post('/preferensi/perusahaan', [AkunControllerMahasiswa::class, 'postPreferensiPerusahaan']);
                 
             });
         });

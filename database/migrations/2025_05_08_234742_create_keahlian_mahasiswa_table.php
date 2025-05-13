@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id_keahlian_mahasiswa');
             $table->unsignedBigInteger('id_mahasiswa')->index();
             $table->unsignedBigInteger('id_bidang')->index();
-            $table->integer('prioritas');
+            $table->integer('prioritas')->nullable();
             $table->text('keahlian');
             $table->timestamps();
 
@@ -23,6 +23,7 @@ return new class extends Migration
             $table->foreign('id_bidang')->references('id_bidang')->on('bidang')->onDelete('cascade');
 
             $table->unique(['id_mahasiswa', 'id_bidang']);
+            $table->unique(['id_mahasiswa', 'prioritas']);
         });
     }
 
