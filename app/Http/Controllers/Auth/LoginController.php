@@ -20,7 +20,7 @@ class LoginController extends Controller
     public function postLogin(Request $request)
     {
         // if ($request->ajax() || $request->wantsJson()) {
-        $credentials = $request->only('username', 'password');
+        $credentials = $request->only('id_user', 'password');
         if (Auth::attempt($credentials)) {
             $role = AkunModel::with('level:id_level,kode,role')->where('id_level', Auth::user()->id_level)->first();
             $kode = $role->level->kode;

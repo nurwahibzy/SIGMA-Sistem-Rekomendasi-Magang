@@ -15,9 +15,9 @@ class PenilaianSeeder extends Seeder
     {
         $data = [
             [
-                'id_magang' => 2,
-                'fasilitas' => 4,  
-                'tugas' => 5,      
+                'id_magang' => '2',
+                'fasilitas' => '4',  
+                'tugas' => '5',      
                 'kedisiplinan' => 4,
                 'created_at' => now(),
                 'updated_at' => now(),

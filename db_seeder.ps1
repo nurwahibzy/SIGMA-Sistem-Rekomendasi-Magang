@@ -12,7 +12,6 @@ php artisan db:seed --class=DokumenSeeder
 php artisan db:seed --class=PreferensiLokasiMahasiswaSeeder
 php artisan db:seed --class=PreferensiPerusahaanMahasiswaSeeder
 php artisan db:seed --class=LowonganMagangSeeder
-php artisan db:seed --class=KompetensiSeeder
 php artisan db:seed --class=KeahlianMahasiswaSeeder
 php artisan db:seed --class=KeahlianDosenSeeder
 php artisan db:seed --class=PeriodeMagangSeeder

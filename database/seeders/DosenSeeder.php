@@ -17,7 +17,6 @@ class DosenSeeder extends Seeder
         $data = [
             [
                 'id_akun' => 3,
-                'nip' => '1987654321000002',
                 'nama' => 'Dr. Budi Santosa',
                 'alamat' => 'Jl. Cendana No. 12, Yogyakarta',
                 'telepon' => '081234567801',
@@ -28,7 +27,6 @@ class DosenSeeder extends Seeder
             ],
             [
                 'id_akun' => 4,
-                'nip' => '1987654321000003',
                 'nama' => 'Dr. Siti Aminah',
                 'alamat' => 'Jl. Melati No. 45, Surabaya',
                 'telepon' => '081234567802',
@@ -39,7 +37,6 @@ class DosenSeeder extends Seeder
             ],
             [
                 'id_akun' => 5,
-                'nip' => '1987654321000004',
                 'nama' => 'Dr. Andi Wijaya',
                 'alamat' => 'Jl. Mawar No. 8, Semarang',
                 'telepon' => '081234567803',

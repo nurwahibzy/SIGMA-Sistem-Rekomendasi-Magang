@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('admin', function (Blueprint $table) {
             $table->id('id_admin');
             $table->unsignedBigInteger('id_akun')->unique()->index();
-            $table->string('nip', 20)->unique();
             $table->string('nama', 100);
             $table->text('alamat');
             $table->string('telepon', 30)->unique();

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('akun', function (Blueprint $table) {
             $table->id('id_akun');
             $table->unsignedBigInteger('id_level')->index();
-            $table->string('username', 20)->unique();
+            $table->string('id_user', 20)->unique();
             $table->string('password');
             $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
             $table->text('foto_path')->nullable();

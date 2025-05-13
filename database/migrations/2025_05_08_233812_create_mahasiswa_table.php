@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id('id_mahasiswa');
             $table->unsignedBigInteger('id_akun')->unique()->index();
             $table->unsignedBigInteger('id_prodi')->index();
-            $table->string('nim', 20)->unique();
             $table->string('nama', 100);
             $table->text('alamat');
             $table->string('telepon', 30)->unique();

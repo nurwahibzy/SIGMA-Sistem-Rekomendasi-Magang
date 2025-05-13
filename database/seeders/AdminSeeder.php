@@ -16,7 +16,6 @@ class AdminSeeder extends Seeder
     {
         $data = [
             'id_akun' => 1,
-            'nip' => '1987123456780001',
             'nama' => 'Administrator Utama',
             'alamat' => 'Jl. Merdeka No. 1, Jakarta',
             'telepon' => '081234567890',

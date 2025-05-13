@@ -44,7 +44,7 @@ Route::middleware(['auth'])->group(function () {
     });
     Route::middleware(['authorize:ADM'])->prefix('admin')->group(function () {
         Route::get('/dashboard', [MagangControllerAdmin::class, 'getDashboard']);
-        
+
         // Route::prefix('dashboard')->group(function (){
 
         // });
@@ -52,14 +52,18 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['authorize:MHS'])->prefix('mahasiswa')->group(function () {
         Route::get('/dashboard', [MagangControllerMahasiswa::class, 'getDashboard']);
-        Route::get('/magang/{id_magang}', [MagangControllerMahasiswa::class, 'getMagang']);
-        Route::get('/perusahaan/{id_perusahaan}', [MagangControllerMahasiswa::class, 'getPerusahaan']);
-        Route::get('/profil', [AkunControllerMahasiswa::class, 'getProfil']);
-        Route::get('/akun', [AkunControllerMahasiswa::class, 'getAkun']);
-        Route::post('/keahlian', [AkunControllerMahasiswa::class, 'postKeahlian']);
-        Route::post('/pengalaman', [AkunControllerMahasiswa::class, 'postPengalaman']);
-        Route::post('/kompetensi', [AkunControllerMahasiswa::class, 'postKompetensi']);
-        Route::post('/preferensi/perusahaan', [AkunControllerMahasiswa::class, 'postPreferensiPerusahaan']);
+        Route::prefix('profil')->group(function () {
+            Route::get('/', [AkunControllerMahasiswa::class, 'getProfil']);
+            Route::get('/edit', [AkunControllerMahasiswa::class, 'getEditProfil']);
+        });
+        // Route::get('/magang/{id_magang}', [MagangControllerMahasiswa::class, 'getMagang']);
+        // Route::get('/perusahaan/{id_perusahaan}', [MagangControllerMahasiswa::class, 'getPerusahaan']);
+        // Route::get('/profil', [AkunControllerMahasiswa::class, 'getProfil']);
+        // Route::get('/akun', [AkunControllerMahasiswa::class, 'getAkun']);
+        // Route::post('/keahlian', [AkunControllerMahasiswa::class, 'postKeahlian']);
+        // Route::post('/pengalaman', [AkunControllerMahasiswa::class, 'postPengalaman']);
+        // Route::post('/kompetensi', [AkunControllerMahasiswa::class, 'postKompetensi']);
+        // Route::post('/preferensi/perusahaan', [AkunControllerMahasiswa::class, 'postPreferensiPerusahaan']);
     });
 
     Route::middleware(['authorize:DSN'])->prefix('dosen')->group(function () {

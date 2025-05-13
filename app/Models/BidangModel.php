@@ -17,10 +17,6 @@ class BidangModel extends Model
     {
         return $this->hasMany(LowonganMagangModel::class, 'id_bidang', 'id_bidang');
     }
-    public function kompetensi(): HasMany
-    {
-        return $this->hasMany(KompetensiModel::class, 'id_bidang', 'id_bidang');
-    }
     public function keahlian_mahasiswa(): HasMany
     {
         return $this->hasMany(KeahlianMahasiswaModel::class, 'id_bidang', 'id_bidang');

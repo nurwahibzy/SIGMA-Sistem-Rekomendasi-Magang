@@ -41,11 +41,6 @@ class MahasiswaModel extends Model
         return $this->hasMany(DokumenModel::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 
-    public function kompetensi(): HasMany
-    {
-        return $this->hasMany(KompetensiModel::class, 'id_mahasiswa', 'id_mahasiswa');
-    }
-
     public function keahlian_mahasiswa(): HasMany
     {
         return $this->hasMany(KeahlianMahasiswaModel::class, 'id_mahasiswa', 'id_mahasiswa');

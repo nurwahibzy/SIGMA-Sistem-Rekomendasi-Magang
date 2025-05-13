@@ -18,7 +18,6 @@ class MahasiswaSeeder extends Seeder
             [
                 'id_akun' => 2,
                 'id_prodi' => 1, 
-                'nim' => '123456789012',
                 'nama' => 'Fajar Pratama',
                 'alamat' => 'Jl. Kenanga No. 3, Surakarta',
                 'telepon' => '081234567804',

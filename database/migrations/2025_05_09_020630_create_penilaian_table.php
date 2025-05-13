@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('penilaian', function (Blueprint $table) {
             $table->id('id_penilaian');
             $table->unsignedBigInteger('id_magang')->unique()->index();
-            $table->integer('fasilitas');
-            $table->integer('tugas');
-            $table->integer('kedisiplinan');
+            $table->enum('fasilitas', ['1', '2', '3', '4', '5']);
+            $table->enum('tugas', ['1', '2', '3', '4', '5']);
+            $table->enum('kedisiplinan', ['1', '2', '3', '4', '5']);
             $table->timestamps();
 
             $table->foreign('id_magang')->references('id_magang')->on('magang')->onDelete('cascade');

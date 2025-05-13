@@ -15,16 +15,16 @@ class AkunSeeder extends Seeder
     public function run(): void
     {
         $akun = [
-            ['admin', 1],
-            ['mahasiswa1', 2],
-            ['dosen1', 3],
-            ['dosen2', 3],
-            ['dosen3', 3],
+            ['1987123456780001', 1],
+            ['123456789012', 2],
+            ['1987654321000002', 3],
+            ['1987654321000003', 3],
+            ['1987654321000004', 3],
         ];
 
         foreach ($akun as $a) {
             DB::table('akun')->insert([
-                'username' => $a[0],
+                'id_user' => $a[0],
                 'id_level' => $a[1],
                 'password' => Hash::make('password'), // default password
                 'status' => 'aktif',
