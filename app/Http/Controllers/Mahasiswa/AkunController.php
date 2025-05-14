@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Mahasiswa;
 
+use App\Models\DokumenModel;
+use App\Models\PreferensiLokasiMahasiswaModel;
 use DB;
 use App\Http\Controllers\Controller;
 use App\Models\AkunModel;
@@ -14,6 +16,12 @@ use App\Models\PengalamanModel;
 use App\Models\PreferensiPerusahaanMahasiswaModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Geocoder\Query\GeocodeQuery;
+use Geocoder\Provider\Nominatim\Nominatim;
+use Geocoder\StatefulGeocoder;
+use Http\Adapter\Guzzle7\Client as GuzzleAdapter; // gunakan Guzzle7 adapter
+use Illuminate\Support\Facades\Storage;
+
 
 class AkunController extends Controller
 {
@@ -39,7 +47,8 @@ class AkunController extends Controller
     public function getEditProfil()
     {
         $akun = $this->allDataProfil();
-        return response()->json($akun);
+        return view('tes.dashboard', ['akun' => $akun]);
+        // return response()->json($akun);
     }
 
     private function allDataProfil()
@@ -305,6 +314,42 @@ class AkunController extends Controller
         }
     }
 
+    //     public function postPreferensiPerusahaan(Request $request)
+// {
+//     if ($request->ajax() || $request->wantsJson()) {
+//         try {
+//             $result = DB::transaction(function () use ($request) {
+//                 $panjang = count($request->input('id_jenis') ?? []);
+
+    //                 [$removed_id, $lates_id] = $this->deletePreferensiPerusahaan($request, $panjang);
+//                 $this->insertPreferensiPerusahaan($request, $panjang, $lates_id);
+
+    //                 return response()->json([
+//                     'success' => true,
+//                     'message' => 'Preferensi perusahaan berhasil diperbarui.',
+//                     'deleted_ids' => $removed_id,
+//                     'latest_id' => $lates_id
+//                 ]);
+//             });
+
+    //             return $result;
+
+    //         } catch (\Exception $e) {
+//             return response()->json([
+//                 'success' => false,
+//                 'message' => 'Terjadi kesalahan saat menyimpan preferensi.',
+//                 'error' => $e->getMessage()
+//             ], 500);
+//         }
+//     }
+
+    //     return response()->json([
+//         'success' => false,
+//         'message' => 'Request tidak valid.'
+//     ], 400);
+// }
+
+
     private function deletePreferensiPerusahaan($request, $panjang)
     {
         if ($panjang == 0) {
@@ -352,15 +397,201 @@ class AkunController extends Controller
     }
 
     // crud preferensi lokasi
-
-    // crud dokumen
-    public function getDokumen()
+    public function putPreferensiLokasi(Request $request, $id_preferensi)
     {
+        $provinsi = $request->input('provinsi');
+        $daerah = $request->input('daerah');
+        $alamat = "$daerah, $provinsi, Indonesia";
 
+        $httpClient = new GuzzleAdapter();
+        $provider = Nominatim::withOpenStreetMapServer($httpClient, 'my-laravel-app');
+        $geocoder = new StatefulGeocoder($provider, 'en');
+
+        $result = $geocoder->geocodeQuery(GeocodeQuery::create($alamat))->first();
+
+        if (!$result) {
+            return response()->json(['error' => 'Lokasi tidak ditemukan.'], 404);
+        }
+
+        PreferensiLokasiMahasiswaModel::where('id_preferensi_lokasi', $id_preferensi)
+            ->update([
+                'provinsi' => $provinsi,
+                'daerah' => $daerah,
+                'latitude' => $result->getCoordinates()->getLatitude(),
+                'longitude' => $result->getCoordinates()->getLongitude(),
+            ]);
+
+        return response()->json([
+            'alamat' => $alamat,
+            'latitude' => $result->getCoordinates()->getLatitude(),
+            'longitude' => $result->getCoordinates()->getLongitude(),
+        ]);
     }
 
-    public function getDetailDokumen()
+    // crud dokumen
+    public function getAddDokumen()
     {
+        return view('tes.dokumen');
+    }
+    public function getDokumen($id_dokumen)
+    {
+        $dokumen = DokumenModel::where('id_dokumen', $id_dokumen)->first(['id_dokumen', 'nama', 'file_path']);
+        return view('tes.editDokumen', ['dokumen' => $dokumen]);
+        // return view('tes.editPengalaman', ['dokumen' => $dokumen]);
+        // return response()->json($dokumen);
+    }
 
+    public function postDokumen(Request $request)
+    {
+        try {
+            if ($request->ajax() || $request->wantsJson()) {
+                if ($request->hasFile('file')) {
+                    $id_mahasiswa = $this->idMahasiswa();
+                    $file = $request->file('file');
+                    $nama = $request->input('nama');
+
+                    $filename = $id_mahasiswa . '_' . $nama . '.' . $file->getClientOriginalExtension();
+                    DokumenModel::where('id_mahasiswa', $id_mahasiswa)
+                        ->insert([
+                            'id_mahasiswa' => $id_mahasiswa,
+                            'nama' => $nama,
+                            'file_path' => $filename
+                        ]);
+
+                    $path = $file->storeAs('public/dokumen', $filename);
+
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'Dokumen berhasil diunggah.',
+                        'redirect' => url('/'),
+                        'path' => $path
+                    ]);
+                }
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Dokumen tidak berhasil diunggah.',
+                'redirect' => url('/')
+            ]);
+        }
+    }
+
+    public function putDokumen(Request $request, $id_dokumen)
+    {
+        try {
+            if ($request->ajax() || $request->wantsJson()) {
+                $id_mahasiswa = $this->idMahasiswa();
+                $data = DokumenModel::where('id_dokumen', $id_dokumen)
+                    ->firstOrFail(['file_path', 'nama']);
+
+                $nama = $request->input('nama');
+
+                if ($request->hasFile('file')) {
+                    return $this->handleFileUpload($request, $data, $id_mahasiswa, $id_dokumen, $nama);
+                }
+
+                if ($data->nama !== $nama) {
+                    return $this->renameFileOnly($data, $id_mahasiswa, $id_dokumen, $nama);
+                }
+
+                return response()->json(['status' => true, 'message' => 'Tidak ada perubahan.']);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Dokumen tidak berhasil diubah.',
+                'error' => $th->getMessage(),
+                'redirect' => url('/')
+            ]);
+        }
+    }
+    private function handleFileUpload(Request $request, $data, $id_mahasiswa, $id_dokumen, $nama)
+    {
+        $file = $request->file('file');
+        $filename = $id_mahasiswa . '_' . $nama . '.' . $file->getClientOriginalExtension();
+        Storage::disk('public')->delete("dokumen/{$data->file_path}");
+        $path = $file->storeAs('public/dokumen', $filename);
+        DokumenModel::where('id_dokumen', $id_dokumen)
+            ->update([
+                'nama' => $nama,
+                'file_path' => $filename
+            ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Dokumen berhasil diunggah.',
+            'redirect' => url('/'),
+            'path' => $path
+        ]);
+    }
+
+    private function renameFileOnly($data, $id_mahasiswa, $id_dokumen, $nama)
+    {
+        $lama = $data->file_path;
+        $extension = pathinfo($lama, PATHINFO_EXTENSION);
+        $file_path_baru = $id_mahasiswa . '_' . $nama . '.' . $extension;
+
+        if (Storage::disk('public')->exists("dokumen/$lama")) {
+            Storage::disk('public')->move("dokumen/$lama", "dokumen/$file_path_baru");
+
+            DokumenModel::where('id_dokumen', $id_dokumen)
+                ->update([
+                    'nama' => $nama,
+                    'file_path' => $file_path_baru
+                ]);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Nama dokumen berhasil diperbarui.',
+                'file_path_lama' => $lama,
+                'file_path_baru' => $file_path_baru
+            ]);
+        }
+
+        return response()->json([
+            'status' => false,
+            'message' => "File lama tidak ditemukan: dokumen/$lama"
+        ]);
+    }
+
+    public function deleteDokumen(Request $request, $id_dokumen)
+    {
+        try {
+            if ($request->ajax() || $request->wantsJson()) {
+                $id_mahasiswa = $this->idMahasiswa();
+
+                $dokumen = DokumenModel::where('id_dokumen', $id_dokumen)
+                    ->where('id_mahasiswa', $id_mahasiswa)
+                    ->firstOrFail(['file_path']);
+
+                $file_path = $dokumen->file_path;
+
+                if (Storage::disk('public')->exists("dokumen/$file_path")) {
+                    Storage::disk('public')->delete("dokumen/$file_path");
+                }
+
+                DokumenModel::where('id_dokumen', $id_dokumen)
+                    ->where('id_mahasiswa', $id_mahasiswa)
+                    ->delete();
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Dokumen berhasil dihapus.',
+                    'file_path' => $file_path
+                ]);
+            }
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Permintaan tidak valid.',
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal menghapus dokumen.',
+                'error' => $th->getMessage()
+            ]);
+        }
     }
 }

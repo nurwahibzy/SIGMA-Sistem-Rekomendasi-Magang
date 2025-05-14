@@ -8,7 +8,7 @@
 
     <h2>Form Tambah Keahlian</h2>
 
-    <form id="formKeahlian">
+    <form id="formKeahlian" method="POST">
         <!-- Dropdown Bidang -->
         <div>
             <label for="bidang">Pilih Bidang:</label>

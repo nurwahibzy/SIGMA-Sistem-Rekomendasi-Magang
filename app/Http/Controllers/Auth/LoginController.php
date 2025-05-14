@@ -39,6 +39,19 @@ class LoginController extends Controller
         ]);
     }
 
+    public function getDashoboard(){
+        $role = AkunModel::with('level:id_level,kode,role')->where('id_level', Auth::user()->id_level)->first();
+        $kode = $role->level->kode;
+        $status = $role->status;
+        if ($kode == 'ADM' && $status == 'aktif') {
+            return redirect('/admin/dashboard');
+        } else if ($kode == 'MHS' && $status == 'aktif') {
+            return redirect('/mahasiswa/dashboard');
+        } else if ($kode == 'DSN' && $status == 'aktif'){
+            return redirect('/dosen/dashboard'); 
+        }
+    }
+
     // public function postLogin(Request $request)
     // {
     //     // if ($request->ajax() || $request->wantsJson()) {

@@ -37,12 +37,14 @@ Route::pattern('id', '[0-9]+');
 Route::get('/login', [LoginController::class, 'getLogin'])->name('login');
 Route::post('/login', [LoginController::class, 'postLogin']);
 Route::get('/logout', [LogoutController::class, 'getLogout'])->middleware('auth');
+// Route::put('/preferensi/lokasi/', [AkunControllerMahasiswa::class, 'putPreferensiLokasi']);
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/', function () {
-        return view('welcome');
-    });
-    Route::middleware(['authorize:ADM'])->prefix('admin')->group(function () {
+    // Route::get('/', function () {
+    //     return view('welcome');
+    // });
+    Route::get('/', [LoginController::class, 'getDashoboard']);
+    Route::middleware(['authorize:ADM'])->prefix(prefix: 'admin')->group(function () {
         Route::get('/dashboard', [MagangControllerAdmin::class, 'getDashboard']);
 
         // Route::prefix('dashboard')->group(function (){
@@ -58,7 +60,7 @@ Route::middleware(['auth'])->group(function () {
             Route::prefix('edit')->group(function () {
                 Route::get('/', [AkunControllerMahasiswa::class, 'getEditProfil']);
 
-                Route::prefix('keahlian')->group(function () {
+                Route::prefix('keahlian')->group(callback: function () {
                     Route::get('/', [AkunControllerMahasiswa::class, 'getAddKeahlian']);
                     Route::get('{id_keahlian}', [AkunControllerMahasiswa::class, 'getKeahlian']);
                     Route::post('/', [AkunControllerMahasiswa::class, 'postKeahlian']);
@@ -74,7 +76,16 @@ Route::middleware(['auth'])->group(function () {
                     Route::delete('{id_pengalaman}', [AkunControllerMahasiswa::class, 'deletepengalaman']);
                 });
 
-                Route::post('/preferensi/perusahaan', [AkunControllerMahasiswa::class, 'postPreferensiPerusahaan']);
+                Route::prefix('dokumen')->group(function () {
+                    Route::get('/', [AkunControllerMahasiswa::class, 'getAddDokumen']);
+                    Route::get('{id_dokumen}', [AkunControllerMahasiswa::class, 'getDokumen']);
+                    Route::post('/', [AkunControllerMahasiswa::class, 'postDokumen']);
+                    Route::post('{id_dokumen}', [AkunControllerMahasiswa::class, 'putDokumen']);
+                    Route::delete('{id_dokumen}', [AkunControllerMahasiswa::class, 'deleteDokumen']);
+                });
+ 
+                Route::post('/preferensi/perusahaan', [AkunControllerMahasiswa::class, 'postPreferensiPerusahaan']); //put
+                Route::put('/preferensi/lokasi/{id_preferensi}', [AkunControllerMahasiswa::class, 'putPreferensiLokasi']);
                 
             });
         });
