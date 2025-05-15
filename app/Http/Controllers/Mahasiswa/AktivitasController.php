@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use Log;
+use Storage;
 
 class AktivitasController extends Controller
 {
@@ -51,8 +52,16 @@ class AktivitasController extends Controller
     public function getAktivitas($id_magang)
     {
         $id_mahasiswa = $this->idMahasiswa();
-        $aktvitas = AktivitasMagangModel::where('id_magang', $id_magang)->get();
-        return response()->json($aktvitas);
+
+        $aktivitas = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
+            ->where('id_magang', $id_magang)
+            ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+                $query->where('id_mahasiswa', $id_mahasiswa);
+            })
+            ->get();
+        
+        return response()->json($aktivitas);
+        
     }
 
 
@@ -62,10 +71,14 @@ class AktivitasController extends Controller
         return view();
     }
 
-    public function getEditAktivitas($id_aktivitas)
+    public function getEditAktivitas($id_magang, $id_aktivitas)
     {
         $aktivitas = AktivitasMagangModel::where('id_aktivitas', $id_aktivitas)->first();
-        return response()->json($aktivitas);
+        $date = Carbon::parse(now())->toDateString();
+        return response()->json([
+            'aktivitas' => $aktivitas,
+            'date' => $date
+        ]);
         // return response()->json(Carbon::parse(now())->toDateString());
     }
 
@@ -97,37 +110,73 @@ class AktivitasController extends Controller
             }
         }
     }
-    // public function putAktivitas(Request $request, $id_aktivitas)
-    // {
-    //     if ($request->ajax() || $request->wantsJson()) {
-    //         try {
-    //             DB::transaction(
-    //                 function () use ($request, $id_magang) {
-    //                     $id_mahasiswa = $this->idMahasiswa();
-    //                     $data = AktivitasMagangModel::where('id_dokumen', $id_dokumen)
-    //                         ->firstOrFail(['file_path', 'nama']);
+    public function putAktivitas(Request $request, $id_aktivitas, $id_magang)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            try {
+                DB::transaction(
+                    function () use ($request, $id_aktivitas, $id_magang) {
+                        $data = AktivitasMagangModel::where('id_aktivitas', $id_aktivitas)
+                            ->firstOrFail(['foto_path', 'nama']);
 
-    //                     $nama = $request->input('nama');
+                        $keterangan = $request->input('keterangan');
 
-    //                     if ($request->hasFile('file')) {
-    //                         $this->handleFileUpload($request, $data, $id_mahasiswa, $id_dokumen, $nama);
-    //                     }
+                        if ($request->hasFile('file')) {
+                            $this->handleFileUpload($request, $data, $id_aktivitas, $id_magang, $keterangan);
+                        } else {
+                            AktivitasMagangModel::where('id_aktivitas', $id_aktivitas)
+                                ->update(attributes: [
+                                    'keterangan' => $keterangan
+                                ]);
+                        }
+                    }
+                );
+                return response()->json(['success' => true]);
+            } catch (\Throwable $e) {
+                Log::error("Gagal update Dokumen: " . $e->getMessage());
+                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
+            }
+        }
+    }
 
-    //                     if ($data->nama !== $nama) {
-    //                         $this->renameFileOnly($data, $id_mahasiswa, $id_dokumen, $nama);
-    //                     }
-    //                 }
-    //             );
-    //             return response()->json(['success' => true]);
-    //         } catch (\Throwable $e) {
-    //             Log::error("Gagal update Dokumen: " . $e->getMessage());
-    //             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
-    //         }
-    //     }
-    // }
-
-    public function deleteAktivitas()
+    private function handleFileUpload(Request $request, $data, $id_aktivitas, $id_magang, $keterangan)
     {
 
+        $file = $request->file('file');
+        $date = Carbon::parse(now())->toDateString();
+        $filename = $id_magang . '_' . $date . '.' . $file->getClientOriginalExtension();
+        Storage::disk('public')->delete("aktivitas/{$data->foto_path}");
+        $file->storeAs('public/aktivitas', $filename);
+        AktivitasMagangModel::where('id_aktivitas', $id_aktivitas)
+            ->update([
+                'keterangan' => $keterangan,
+                'file_path' => $filename
+            ]);
+    }
+    public function deleteAktivitas(Request $request, $id_aktivitas)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            try {
+                DB::transaction(
+                    function () use ($request, $id_aktivitas) {
+                        $data = AktivitasMagangModel::where('id_aktivitas', $id_aktivitas)
+                            ->firstOrFail(['foto_path']);
+
+                        $file_path = $data->foto_path;
+
+                        if (Storage::disk('public')->exists("aktivitas/$file_path")) {
+                            Storage::disk('public')->delete("aktivitas/$file_path");
+                        }
+
+                        AktivitasMagangModel::where('id_dokumen', $id_aktivitas)
+                            ->delete();
+                    }
+                );
+                return response()->json(['success' => true]);
+            } catch (\Throwable $e) {
+                Log::error("Gagal update Dokumen: " . $e->getMessage());
+                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
+            }
+        }
     }
 }

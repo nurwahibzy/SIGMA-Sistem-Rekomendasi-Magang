@@ -100,7 +100,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [AktivitasController::class, 'getMagangDiterima']);
             Route::get('/{id_magang}', [AktivitasController::class, 'getAktivitas']);
             Route::get('/tambah', [AktivitasController::class, 'getAddAktivitas']);
-            Route::get('/edit/{id_magang}', [AktivitasController::class, 'getEditAktivitas']);
+            Route::get('/{id_magang}/edit/{id_aktivitas}', [AktivitasController::class, 'getEditAktivitas']);
 
             // Route::get('{id_dokumen}', [DokumenController::class, 'getDokumen']);
             // Route::post('/', [DokumenController::class, 'postDokumen']);

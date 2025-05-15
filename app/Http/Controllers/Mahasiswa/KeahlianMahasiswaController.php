@@ -114,12 +114,15 @@ class KeahlianMahasiswaController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             try {
                 DB::transaction(function () use ($request, $id_keahlian) {
-                    $dataLama = KeahlianMahasiswaModel::findOrFail($id_keahlian);
-                    $id_mahasiswa = $dataLama->id_mahasiswa;
+                    $id_mahasiswa = $this->idMahasiswa();
+                    $dataLama = KeahlianMahasiswaModel::where('id_mahasiswa', $id_mahasiswa)
+                        ->where('id_keahlian_mahasiswa', $id_keahlian)
+                        ->first();
                     $prioritasLama = $dataLama->prioritas;
                     $prioritasBaru = (int) $request->input('prioritas');
 
-                    KeahlianMahasiswaModel::where('id_keahlian_mahasiswa', $id_keahlian)
+                    KeahlianMahasiswaModel::where('id_mahasiswa', $id_mahasiswa)
+                        ->where('id_keahlian_mahasiswa', $id_keahlian)
                         ->update([
                             'prioritas' => null
                         ]);
@@ -130,7 +133,7 @@ class KeahlianMahasiswaController extends Controller
                         $this->updateNaikPrioritas($id_mahasiswa, $prioritasLama + 1, $prioritasBaru + 1);
                     }
 
-                    $this->updateKeahlian($id_keahlian, $request);
+                    $this->updateKeahlian($id_keahlian, $id_mahasiswa, $request);
                 });
                 return response()->json(['success' => true]);
             } catch (\Exception $e) {
@@ -164,13 +167,14 @@ class KeahlianMahasiswaController extends Controller
             });
     }
 
-    private function updateKeahlian($id_keahlian, $request)
+    private function updateKeahlian($id_keahlian, $id_mahasiswa, $request)
     {
-        KeahlianMahasiswaModel::where('id_keahlian_mahasiswa', $id_keahlian)->update([
-            'id_bidang' => $request->input('id_bidang'),
-            'prioritas' => $request->input('prioritas'),
-            'keahlian' => $request->input('keahlian')
-        ]);
+        KeahlianMahasiswaModel::where('id_mahasiswa', $id_mahasiswa)
+            ->where('id_keahlian_mahasiswa', $id_keahlian)->update([
+                    'id_bidang' => $request->input('id_bidang'),
+                    'prioritas' => $request->input('prioritas'),
+                    'keahlian' => $request->input('keahlian')
+                ]);
     }
 
     public function deleteKeahlian(Request $request, $id_keahlian, $prioritas)
@@ -179,7 +183,9 @@ class KeahlianMahasiswaController extends Controller
             try {
                 DB::transaction(function () use ($id_keahlian, $prioritas) {
                     $id_mahasiswa = $this->idMahasiswa();
-                    KeahlianMahasiswaModel::destroy($id_keahlian);
+                    KeahlianMahasiswaModel::where('id_mahasiswa', $id_mahasiswa)
+                        ->where('id_keahlian_mahasiswa', $id_keahlian)
+                        ->delete();
 
                     KeahlianMahasiswaModel::where('id_mahasiswa', operator: $id_mahasiswa)
                         ->where('prioritas', '>', $prioritas)

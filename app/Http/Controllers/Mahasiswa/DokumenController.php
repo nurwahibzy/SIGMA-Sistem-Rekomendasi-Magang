@@ -28,8 +28,20 @@ class DokumenController extends Controller
     }
     public function getDokumen($id_dokumen)
     {
-        $dokumen = DokumenModel::where('id_dokumen', $id_dokumen)->first(['id_dokumen', 'nama', 'file_path']);
-        return view('tes.editDokumen', ['dokumen' => $dokumen]);
+        try {
+            $dokumen = DB::transaction(function () use ($id_dokumen) {
+                $id_mahasiswa = $this->idMahasiswa();
+                $dokumen = DokumenModel::where('id_mahasiswa', $id_mahasiswa)
+                    ->where('id_dokumen', $id_dokumen)->first(['id_dokumen', 'nama', 'file_path']);
+                return $dokumen;
+            });
+            if ($dokumen != null) {
+                return view('tes.editDokumen', ['dokumen' => $dokumen]);
+            }
+        } catch (\Throwable $e) {
+            Log::error("Gagal menambahkan Dokumen: " . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
+        }
     }
 
     public function postDokumen(Request $request)
@@ -67,7 +79,8 @@ class DokumenController extends Controller
                 DB::transaction(
                     function () use ($request, $id_dokumen) {
                         $id_mahasiswa = $this->idMahasiswa();
-                        $data = DokumenModel::where('id_dokumen', $id_dokumen)
+                        $data = DokumenModel::where('id_mahasiswa', $id_mahasiswa)
+                            ->where('id_dokumen', $id_dokumen)
                             ->firstOrFail(['file_path', 'nama']);
 
                         $nama = $request->input('nama');
@@ -93,8 +106,9 @@ class DokumenController extends Controller
         $file = $request->file('file');
         $filename = $id_mahasiswa . '_' . $nama . '.' . $file->getClientOriginalExtension();
         Storage::disk('public')->delete("dokumen/{$data->file_path}");
-        $path = $file->storeAs('public/dokumen', $filename);
-        DokumenModel::where('id_dokumen', $id_dokumen)
+        $file->storeAs('public/dokumen', $filename);
+        DokumenModel::where('id_mahasiswa', $id_mahasiswa)
+            ->where('id_dokumen', $id_dokumen)
             ->update([
                 'nama' => $nama,
                 'file_path' => $filename
@@ -110,7 +124,8 @@ class DokumenController extends Controller
         if (Storage::disk('public')->exists("dokumen/$lama")) {
             Storage::disk('public')->move("dokumen/$lama", "dokumen/$file_path_baru");
 
-            DokumenModel::where('id_dokumen', $id_dokumen)
+            DokumenModel::where('id_mahasiswa', $id_mahasiswa)
+                ->where('id_dokumen', $id_dokumen)
                 ->update([
                     'nama' => $nama,
                     'file_path' => $file_path_baru
@@ -131,9 +146,8 @@ class DokumenController extends Controller
                     function () use ($request, $id_dokumen) {
 
                         $id_mahasiswa = $this->idMahasiswa();
-
-                        $dokumen = DokumenModel::where('id_dokumen', $id_dokumen)
-                            ->where('id_mahasiswa', $id_mahasiswa)
+                        $dokumen = DokumenModel::where('id_mahasiswa', $id_mahasiswa)
+                            ->where('id_dokumen', $id_dokumen)
                             ->firstOrFail(['file_path']);
 
                         $file_path = $dokumen->file_path;
@@ -142,8 +156,8 @@ class DokumenController extends Controller
                             Storage::disk('public')->delete("dokumen/$file_path");
                         }
 
-                        DokumenModel::where('id_dokumen', $id_dokumen)
-                            ->where('id_mahasiswa', $id_mahasiswa)
+                        DokumenModel::where('id_mahasiswa', $id_mahasiswa)
+                            ->where('id_dokumen', $id_dokumen)
                             ->delete();
                     }
                 );

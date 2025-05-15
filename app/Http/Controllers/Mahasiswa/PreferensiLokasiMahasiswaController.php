@@ -38,12 +38,8 @@ class PreferensiLokasiMahasiswaController extends Controller
                         'latitude' => $result->getCoordinates()->getLatitude(),
                         'longitude' => $result->getCoordinates()->getLongitude(),
                     ]);
-
-                return response()->json([
-                    'alamat' => $alamat,
-                    'latitude' => $result->getCoordinates()->getLatitude(),
-                    'longitude' => $result->getCoordinates()->getLongitude(),
-                ]);
+                    
+                return response()->json(['success' => true]);
             } catch (\Throwable $e) {
                 Log::error("Gagal update Preferensi Perusahaan: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);

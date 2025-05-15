@@ -29,7 +29,10 @@ class PengalamanController extends Controller
     public function getPengalaman($id_pengalaman)
     {
         try {
-            $pengalaman = PengalamanModel::where('id_pengalaman', $id_pengalaman)->first(['id_pengalaman', 'deskripsi']);
+            $id_mahasiswa = $this->idMahasiswa();
+            $pengalaman = PengalamanModel::where('id_mahasiswa', $id_mahasiswa)
+                ->where('id_pengalaman', $id_pengalaman)
+                ->first(['id_pengalaman', 'deskripsi']);
             return view('tes.editPengalaman', ['pengalaman' => $pengalaman]);
         } catch (\Exception $e) {
             Log::error("Gagal mendapatkan data Pengalaman: " . $e->getMessage());
@@ -61,7 +64,9 @@ class PengalamanController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             try {
                 $deskripsi = $request->input('deskripsi');
-                PengalamanModel::where('id_pengalaman', $id_pengalaman)
+                $id_mahasiswa = $this->idMahasiswa();
+                PengalamanModel::where('id_mahasiswa', $id_mahasiswa)
+                    ->where('id_pengalaman', $id_pengalaman)
                     ->update([
                         'deskripsi' => $deskripsi
                     ]);
@@ -77,7 +82,10 @@ class PengalamanController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                PengalamanModel::where('id_pengalaman', $id_pengalaman)->delete();
+                $id_mahasiswa = $this->idMahasiswa();
+                PengalamanModel::where('id_mahasiswa', $id_mahasiswa)
+                    ->where('id_pengalaman', $id_pengalaman)
+                    ->delete();
                 return response()->json(['success' => true]);
             } catch (\Exception $e) {
                 Log::error("Gagal hapus Pengalaman: " . $e->getMessage());
