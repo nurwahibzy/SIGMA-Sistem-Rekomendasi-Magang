@@ -89,10 +89,10 @@ Route::middleware(['auth'])->group(function () {
                     Route::post('{id_dokumen}', [DokumenController::class, 'putDokumen']);
                     Route::delete('{id_dokumen}', [DokumenController::class, 'deleteDokumen']);
                 });
- 
+
                 Route::post('/preferensi/perusahaan', [PreferensiPerusahaanMahasiswaController::class, 'postPreferensiPerusahaan']); //put
                 Route::put('/preferensi/lokasi/{id_preferensi}', [PreferensiLokasiMahasiswaController::class, 'putPreferensiLokasi']);
-                
+
             });
         });
 
@@ -104,12 +104,16 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{id_magang}/edit/{id_aktivitas}', [AktivitasController::class, 'getEditAktivitas']);
             Route::post('/{id_magang}/edit/{id_aktivitas}', [AktivitasController::class, 'putAktivitas']);
             Route::delete('/{id_magang}/edit/{id_aktivitas}', [AktivitasController::class, 'deleteAktivitas']);
-
-            // Route::get('{id_dokumen}', [DokumenController::class, 'getDokumen']);
-            // Route::post('/', [DokumenController::class, 'postDokumen']);
-            // Route::post('{id_dokumen}', [DokumenController::class, 'putDokumen']);
-            // Route::delete('{id_dokumen}', [DokumenController::class, 'deleteDokumen']);
         });
+
+        Route::prefix('riwayat')->group(function () {
+            Route::get('/', [MagangControllerMahasiswa::class, 'getRiwayat']);
+        });
+
+        Route::prefix('penilaian')->group(function () {
+            Route::get('/{id_magang}', [MagangControllerMahasiswa::class, 'getPenilaian']);
+        });
+
         // Route::get('/magang/{id_magang}', [MagangControllerMahasiswa::class, 'getMagang']);
         // Route::get('/perusahaan/{id_perusahaan}', [MagangControllerMahasiswa::class, 'getPerusahaan']);
         // Route::get('/profil', [AkunControllerMahasiswa::class, 'getProfil']);

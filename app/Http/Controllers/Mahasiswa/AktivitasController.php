@@ -82,11 +82,6 @@ class AktivitasController extends Controller
             ->first();
         $date = Carbon::parse(now())->toDateString();
         return view('tes.editAktivitas', ['id_magang' => $aktivitas->id_magang, 'id_aktivitas' => $aktivitas->id_aktivitas, 'keterangan' => $aktivitas->keterangan]);
-        // return response()->json([
-        //     'aktivitas' => $aktivitas,
-        //     'date' => $date
-        // ]);
-        // return response()->json(Carbon::parse(now())->toDateString());
     }
 
     public function postAktivitas(Request $request, $id_magang)
@@ -151,7 +146,7 @@ class AktivitasController extends Controller
                 );
                 return response()->json(['success' => true]);
             } catch (\Throwable $e) {
-                Log::error("Gagal update Dokumen: " . $e->getMessage());
+                Log::error("Gagal update Aktivitas: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
             }
         }
@@ -209,7 +204,7 @@ class AktivitasController extends Controller
                 );
                 return response()->json(['success' => true]);
             } catch (\Throwable $e) {
-                Log::error("Gagal update Dokumen: " . $e->getMessage());
+                Log::error("Gagal update Aktivitas: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
             }
         }
