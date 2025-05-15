@@ -32,31 +32,48 @@ class KeahlianMahasiswaController extends Controller
 
     public function getAddKeahlian()
     {
-        $id_mahasiswa = $this->idMahasiswa();
-        $bidangDipilih = $this->bidangDipilih($id_mahasiswa);
-        $bidang = BidangModel::whereNotIn('id_bidang', $bidangDipilih)->get(['id_bidang', 'nama']);
-        return view('tes.addKeahlian', [
-            'data' => [
-                'bidang' => $bidang,
-                'prioritas' => count($bidangDipilih) + 1
-            ]
-        ]);
+        try {
+            $data = DB::transaction(function () {
+                $id_mahasiswa = $this->idMahasiswa();
+                $bidangDipilih = $this->bidangDipilih($id_mahasiswa);
+                $bidang = BidangModel::whereNotIn('id_bidang', $bidangDipilih)->get(['id_bidang', 'nama']);
+
+                $data = [
+                    'bidang' => $bidang,
+                    'prioritas' => count($bidangDipilih) + 1
+                ];
+
+                return $data;
+            });
+            if ($data) {
+                return view('tes.addKeahlian', ['data' => $data]);
+            }
+        } catch (\Exception $e) {
+            Log::error("Gagal mendapatkan data keahlian: " . $e->getMessage());
+            abort(500, "Terjadi kesalahan.");
+        }
     }
 
     public function getKeahlian($id_keahlian)
     {
         try {
-            $pilihanTerakhir = KeahlianMahasiswaModel::findOrFail($id_keahlian);
-            $bidangDipilih = $this->bidangDipilih($pilihanTerakhir->id_mahasiswa);
-            $bidang = BidangModel::whereNotIn('id_bidang', array_diff($bidangDipilih, [$pilihanTerakhir->id_bidang]))
-                ->get(['id_bidang', 'nama']);
-            return view('tes.editKeahlian', [
-                'data' => [
+            $data = DB::transaction(function () use ($id_keahlian) {
+                $pilihanTerakhir = KeahlianMahasiswaModel::findOrFail($id_keahlian);
+                $bidangDipilih = $this->bidangDipilih($pilihanTerakhir->id_mahasiswa);
+                $bidang = BidangModel::whereNotIn('id_bidang', array_diff($bidangDipilih, [$pilihanTerakhir->id_bidang]))
+                    ->get(['id_bidang', 'nama']);
+
+                $data = [
                     'bidang' => $bidang,
                     'prioritas' => count($bidangDipilih),
                     'pilihan_terakhir' => $pilihanTerakhir
-                ]
-            ]);
+                ];
+
+                return $data;
+            });
+            if ($data) {
+                return view('tes.editKeahlian', ['data' => $data]);
+            }
         } catch (\Exception $e) {
             Log::error("Gagal mendapatkan data keahlian: " . $e->getMessage());
             abort(500, "Terjadi kesalahan.");

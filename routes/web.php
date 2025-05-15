@@ -99,8 +99,11 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('aktivitas')->group(callback: function () {
             Route::get('/', [AktivitasController::class, 'getMagangDiterima']);
             Route::get('/{id_magang}', [AktivitasController::class, 'getAktivitas']);
-            Route::get('/tambah', [AktivitasController::class, 'getAddAktivitas']);
+            Route::get('/{id_magang}/tambah', [AktivitasController::class, 'getAddAktivitas']);
+            Route::post('/{id_magang}/tambah', [AktivitasController::class, 'postAktivitas']);
             Route::get('/{id_magang}/edit/{id_aktivitas}', [AktivitasController::class, 'getEditAktivitas']);
+            Route::post('/{id_magang}/edit/{id_aktivitas}', [AktivitasController::class, 'putAktivitas']);
+            Route::delete('/{id_magang}/edit/{id_aktivitas}', [AktivitasController::class, 'deleteAktivitas']);
 
             // Route::get('{id_dokumen}', [DokumenController::class, 'getDokumen']);
             // Route::post('/', [DokumenController::class, 'postDokumen']);

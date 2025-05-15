@@ -52,33 +52,40 @@ class AktivitasController extends Controller
     public function getAktivitas($id_magang)
     {
         $id_mahasiswa = $this->idMahasiswa();
-
         $aktivitas = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
             ->where('id_magang', $id_magang)
             ->whereHas('magang', function ($query) use ($id_mahasiswa) {
                 $query->where('id_mahasiswa', $id_mahasiswa);
             })
             ->get();
-        
+
         return response()->json($aktivitas);
-        
+
     }
 
 
 
-    public function getAddAktivitas()
+    public function getAddAktivitas($id_magang)
     {
-        return view();
+        return view('tes.aktivitas', ['id_magang' => $id_magang]);
     }
 
     public function getEditAktivitas($id_magang, $id_aktivitas)
     {
-        $aktivitas = AktivitasMagangModel::where('id_aktivitas', $id_aktivitas)->first();
+        $id_mahasiswa = $this->idMahasiswa();
+        $aktivitas = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
+            ->where('id_aktivitas', $id_aktivitas)
+            ->where('id_magang', $id_magang)
+            ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+                $query->where('id_mahasiswa', $id_mahasiswa);
+            })
+            ->first();
         $date = Carbon::parse(now())->toDateString();
-        return response()->json([
-            'aktivitas' => $aktivitas,
-            'date' => $date
-        ]);
+        return view('tes.editAktivitas', ['id_magang' => $aktivitas->id_magang, 'id_aktivitas' => $aktivitas->id_aktivitas, 'keterangan' => $aktivitas->keterangan]);
+        // return response()->json([
+        //     'aktivitas' => $aktivitas,
+        //     'date' => $date
+        // ]);
         // return response()->json(Carbon::parse(now())->toDateString());
     }
 
@@ -95,8 +102,8 @@ class AktivitasController extends Controller
                         $filename = $id_magang . '_' . $date . '.' . $file->getClientOriginalExtension();
                         AktivitasMagangModel::insert([
                             'id_magang' => $id_magang,
-                            'tangga;' => $date,
-                            'keterangan;' => $keterangan,
+                            'tanggal' => $date,
+                            'keterangan' => $keterangan,
                             'foto_path' => $filename
                         ]);
 
@@ -110,22 +117,33 @@ class AktivitasController extends Controller
             }
         }
     }
-    public function putAktivitas(Request $request, $id_aktivitas, $id_magang)
+    public function putAktivitas(Request $request, $id_magang, $id_aktivitas)
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
                 DB::transaction(
                     function () use ($request, $id_aktivitas, $id_magang) {
-                        $data = AktivitasMagangModel::where('id_aktivitas', $id_aktivitas)
-                            ->firstOrFail(['foto_path', 'nama']);
+                        $id_mahasiswa = $this->idMahasiswa();
+                        $data = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
+                            ->where('id_aktivitas', $id_aktivitas)
+                            ->where('id_magang', $id_magang)
+                            ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+                                $query->where('id_mahasiswa', $id_mahasiswa);
+                            })
+                            ->first(['foto_path']);
 
                         $keterangan = $request->input('keterangan');
 
                         if ($request->hasFile('file')) {
-                            $this->handleFileUpload($request, $data, $id_aktivitas, $id_magang, $keterangan);
+                            $this->handleFileUpload($request, $data, $id_aktivitas, $id_magang, $id_mahasiswa, $keterangan);
                         } else {
-                            AktivitasMagangModel::where('id_aktivitas', $id_aktivitas)
-                                ->update(attributes: [
+                            AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
+                            ->where('id_aktivitas', $id_aktivitas)
+                            ->where('id_magang', $id_magang)
+                            ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+                                $query->where('id_mahasiswa', $id_mahasiswa);
+                            })
+                                ->update([
                                     'keterangan' => $keterangan
                                 ]);
                         }
@@ -137,9 +155,10 @@ class AktivitasController extends Controller
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
             }
         }
+
     }
 
-    private function handleFileUpload(Request $request, $data, $id_aktivitas, $id_magang, $keterangan)
+    private function handleFileUpload(Request $request, $data, $id_aktivitas, $id_magang, $id_mahasiswa, $keterangan)
     {
 
         $file = $request->file('file');
@@ -147,19 +166,30 @@ class AktivitasController extends Controller
         $filename = $id_magang . '_' . $date . '.' . $file->getClientOriginalExtension();
         Storage::disk('public')->delete("aktivitas/{$data->foto_path}");
         $file->storeAs('public/aktivitas', $filename);
-        AktivitasMagangModel::where('id_aktivitas', $id_aktivitas)
+        AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
+        ->where('id_aktivitas', $id_aktivitas)
+        ->where('id_magang', $id_magang)
+        ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+            $query->where('id_mahasiswa', $id_mahasiswa);
+        })
             ->update([
                 'keterangan' => $keterangan,
-                'file_path' => $filename
+                'foto_path' => $filename
             ]);
     }
-    public function deleteAktivitas(Request $request, $id_aktivitas)
+    public function deleteAktivitas(Request $request, $id_magang, $id_aktivitas)
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
                 DB::transaction(
-                    function () use ($request, $id_aktivitas) {
-                        $data = AktivitasMagangModel::where('id_aktivitas', $id_aktivitas)
+                    function () use ($request, $id_magang, $id_aktivitas) {
+                        $id_mahasiswa = $this->idMahasiswa();
+                        $data = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
+                        ->where('id_aktivitas', $id_aktivitas)
+                        ->where('id_magang', $id_magang)
+                        ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+                            $query->where('id_mahasiswa', $id_mahasiswa);
+                        })
                             ->firstOrFail(['foto_path']);
 
                         $file_path = $data->foto_path;
@@ -168,7 +198,12 @@ class AktivitasController extends Controller
                             Storage::disk('public')->delete("aktivitas/$file_path");
                         }
 
-                        AktivitasMagangModel::where('id_dokumen', $id_aktivitas)
+                        AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
+                        ->where('id_aktivitas', $id_aktivitas)
+                        ->where('id_magang', $id_magang)
+                        ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+                            $query->where('id_mahasiswa', $id_mahasiswa);
+                        })
                             ->delete();
                     }
                 );
