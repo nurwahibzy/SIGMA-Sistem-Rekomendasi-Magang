@@ -55,12 +55,4 @@ class MagangController extends Controller
 
     }
 
-    public function getAktivitas(){
-
-    }
-
-    public function getDaftarAktifitas(){
-        
-    }
-
 }
