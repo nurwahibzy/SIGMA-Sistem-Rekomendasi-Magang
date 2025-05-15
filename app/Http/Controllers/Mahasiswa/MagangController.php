@@ -57,6 +57,18 @@ class MagangController extends Controller
         return response()->json($magang);
     }
 
+    public function postMagang($id_periode)
+    {
+        $id_mahasiswa = $this->idMahasiswa();
+        $tanggal_pengajuan = now();
+
+        MagangModel::create([
+            'id_mahasiswa' => $id_mahasiswa,
+            'id_periode' => $id_periode,
+            'tanggal_pengajuan' => $tanggal_pengajuan
+        ]);
+    }
+
     public function getPerusahaan($id_magang)
     {
         $magang = PeriodeMagangModel::with(
@@ -82,40 +94,6 @@ class MagangController extends Controller
             )
             ->get();
         return response()->json($magang);
-    }
-
-    public function getPenilaian($id_magang)
-    {
-        $id_mahasiswa = $this->idMahasiswa();
-        $magang = MagangModel::where('id_mahasiswa', $id_mahasiswa)
-            ->where('id_magang', $id_magang)
-            ->first(['id_magang']);
-        return response()->json($magang->id_magang);
-    }
-
-    public function postPenilaian(Request $request, $id_magang)
-    {
-        if ($request->ajax() || $request->wantsJson()) {
-            try {
-                DB::transaction(function () use ($request, $id_magang) {
-                    $id_mahasiswa = $this->idMahasiswa();
-                    $fasilitas = $request->input('fasilitas');
-                    $tugas = $request->input('tugas');
-                    $kedisiplinan = $request->input('kedisiplinan');
-
-                    PenilaianModel::insert([
-                        'id_magang' => $id_magang,
-                        'fasilitas' => $fasilitas,
-                        'tugas' => $tugas,
-                        'kedisiplinan' => $kedisiplinan
-                    ]);
-                });
-                return response()->json(['success' => true]);
-            } catch (\Throwable $e) {
-                Log::error("Gagal menambahkan Aktivitas: " . $e->getMessage());
-                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
-            }
-        }
     }
 
 }

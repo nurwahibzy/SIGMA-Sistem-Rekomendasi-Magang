@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\AkunController as AkunControllerAdmin;
 use App\Http\Controllers\Mahasiswa\AkunController as AkunControllerMahasiswa;
 use App\Http\Controllers\Dosen\AkunController as AkunControllerDosen;
 use App\Http\Controllers\Mahasiswa\PengalamanController;
+use App\Http\Controllers\Mahasiswa\PenilaianController;
 use App\Http\Controllers\Mahasiswa\PreferensiLokasiMahasiswaController;
 use App\Http\Controllers\Mahasiswa\PreferensiPerusahaanMahasiswaController;
 use Illuminate\Support\Facades\Route;
@@ -111,17 +112,13 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::prefix('penilaian')->group(function () {
-            Route::get('/{id_magang}', [MagangControllerMahasiswa::class, 'getPenilaian']);
+            Route::get('/{id_magang}', [PenilaianController::class, 'getPenilaian']);
+            Route::post('/{id_magang}', [PenilaianController::class, 'postPenilaian']);
         });
 
-        // Route::get('/magang/{id_magang}', [MagangControllerMahasiswa::class, 'getMagang']);
-        // Route::get('/perusahaan/{id_perusahaan}', [MagangControllerMahasiswa::class, 'getPerusahaan']);
-        // Route::get('/profil', [AkunControllerMahasiswa::class, 'getProfil']);
-        // Route::get('/akun', [AkunControllerMahasiswa::class, 'getAkun']);
-        // Route::post('/keahlian', [AkunControllerMahasiswa::class, 'postKeahlian']);
-        // Route::post('/pengalaman', [AkunControllerMahasiswa::class, 'postPengalaman']);
-        // Route::post('/kompetensi', [AkunControllerMahasiswa::class, 'postKompetensi']);
-        // Route::post('/preferensi/perusahaan', [AkunControllerMahasiswa::class, 'postPreferensiPerusahaan']);
+        Route::prefix('magang')->group(function(){
+            Route::post('/{id_periode}', [MagangControllerMahasiswa::class, 'postMagang']);
+        });
     });
 
     Route::middleware(['authorize:DSN'])->prefix('dosen')->group(function () {
