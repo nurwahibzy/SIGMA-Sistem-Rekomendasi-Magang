@@ -4,10 +4,13 @@ use App\Http\Controllers\AkunController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Dosen\AktivitasController as AktivitasControllerDosen;
+use App\Http\Controllers\Dosen\EvaluasiController;
+use App\Http\Controllers\Dosen\KeahlianDosenController;
 use App\Http\Controllers\GeolokasiController;
 use App\Http\Controllers\JarakController;
 use App\Http\Controllers\Admin\MagangController as MagangControllerAdmin;
-use App\Http\Controllers\Mahasiswa\AktivitasController;
+use App\Http\Controllers\Mahasiswa\AktivitasController as AktivitasControllerMahasiswa;
 use App\Http\Controllers\Mahasiswa\DokumenController;
 use App\Http\Controllers\Mahasiswa\KeahlianMahasiswaController;
 use App\Http\Controllers\Mahasiswa\MagangController as MagangControllerMahasiswa;
@@ -98,13 +101,13 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::prefix('aktivitas')->group(callback: function () {
-            Route::get('/', [AktivitasController::class, 'getMagangDiterima']);
-            Route::get('/{id_magang}', [AktivitasController::class, 'getAktivitas']);
-            Route::get('/{id_magang}/tambah', [AktivitasController::class, 'getAddAktivitas']);
-            Route::post('/{id_magang}/tambah', [AktivitasController::class, 'postAktivitas']);
-            Route::get('/{id_magang}/edit/{id_aktivitas}', [AktivitasController::class, 'getEditAktivitas']);
-            Route::post('/{id_magang}/edit/{id_aktivitas}', [AktivitasController::class, 'putAktivitas']);
-            Route::delete('/{id_magang}/edit/{id_aktivitas}', [AktivitasController::class, 'deleteAktivitas']);
+            Route::get('/', [AktivitasControllerMahasiswa::class, 'getMagangDiterima']);
+            Route::get('/{id_magang}', [AktivitasControllerMahasiswa::class, 'getAktivitas']);
+            Route::get('/{id_magang}/tambah', [AktivitasControllerMahasiswa::class, 'getAddAktivitas']);
+            Route::post('/{id_magang}/tambah', [AktivitasControllerMahasiswa::class, 'postAktivitas']);
+            Route::get('/{id_magang}/edit/{id_aktivitas}', [AktivitasControllerMahasiswa::class, 'getEditAktivitas']);
+            Route::post('/{id_magang}/edit/{id_aktivitas}', [AktivitasControllerMahasiswa::class, 'putAktivitas']);
+            Route::delete('/{id_magang}/edit/{id_aktivitas}', [AktivitasControllerMahasiswa::class, 'deleteAktivitas']);
         });
 
         Route::prefix('riwayat')->group(function () {
@@ -116,12 +119,44 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/{id_magang}', [PenilaianController::class, 'postPenilaian']);
         });
 
-        Route::prefix('magang')->group(function(){
+        Route::prefix('magang')->group(function () {
+            Route::get('/{id_periode}', [MagangControllerMahasiswa::class, 'getMagang']);
             Route::post('/{id_periode}', [MagangControllerMahasiswa::class, 'postMagang']);
         });
     });
 
     Route::middleware(['authorize:DSN'])->prefix('dosen')->group(function () {
         Route::get('/dashboard', [MagangControllerDosen::class, 'getDashboard']);
+        Route::prefix('profil')->group(function () {
+            Route::get('/', [AkunControllerDosen::class, 'getProfil']);
+
+            Route::prefix('edit')->group(function () {
+                Route::get('/', [AkunControllerDosen::class, 'getEditProfil']);
+
+                Route::prefix('keahlian')->group(callback: function () {
+                    Route::get('/', [KeahlianDosenController::class, 'getAddKeahlian']);
+                    Route::get('{id_keahlian}', [KeahlianDosenController::class, 'getKeahlian']);
+                    Route::post('/', [KeahlianDosenController::class, 'postKeahlian']);
+                    Route::put('{id_keahlian}', [KeahlianDosenController::class, 'putKeahlian']);
+                    Route::delete('{id_keahlian}', [KeahlianDosenController::class, 'deleteKeahlian']);
+                });
+                
+            });
+        });
+
+        Route::prefix('aktivitas')->group(callback: function () {
+            Route::get('/', [AktivitasControllerDosen::class, 'getMagangDiterima']);
+            Route::get('/{id_magang}', [AktivitasControllerDosen::class, 'getAktivitas']);
+            Route::get('/{id_magang}/evaluasi', [EvaluasiController::class, 'getEvaluasi']);
+            Route::post('/{id_magang}/evaluasi', [EvaluasiController::class, 'postEvaluasi']);
+            Route::get('/{id_magang}/evaluasi/{id_evaluasi}', [EvaluasiController::class, 'getEditEvaluasi']);
+            Route::put('/{id_magang}/evaluasi/{id_evaluasi}', [EvaluasiController::class, 'putEvaluasi']); 
+            Route::delete('/{id_magang}/evaluasi/{id_evaluasi}', [EvaluasiController::class, 'deleteEvaluasi']); 
+            // Route::get('/{id_magang}/tambah', [AktivitasController::class, 'getAddAktivitas']);
+            // Route::post('/{id_magang}/tambah', [AktivitasController::class, 'postAktivitas']);
+            // Route::get('/{id_magang}/edit/{id_aktivitas}', [AktivitasController::class, 'getEditAktivitas']);
+            // Route::post('/{id_magang}/edit/{id_aktivitas}', [AktivitasController::class, 'putAktivitas']);
+            // Route::delete('/{id_magang}/edit/{id_aktivitas}', [AktivitasController::class, 'deleteAktivitas']);
+        });
     });
 });

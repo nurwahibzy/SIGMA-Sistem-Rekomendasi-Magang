@@ -69,12 +69,8 @@ class AkunController extends Controller
     }
 
     // crud akun
-    public function postAkun(Request $request)
-    {
 
-    }
-
-    public function updateAkun()
+    public function putAkun()
     {
 
     }

@@ -16,6 +16,7 @@ use Storage;
 
 class AktivitasController extends Controller
 {
+    // add try catch and transaction
     private function idMahasiswa()
     {
         $id_mahasiswa = AkunModel::with(relations: 'mahasiswa:id_mahasiswa,id_akun')
@@ -60,7 +61,6 @@ class AktivitasController extends Controller
             ->get();
 
         return response()->json($aktivitas);
-
     }
 
 
@@ -91,16 +91,21 @@ class AktivitasController extends Controller
                 DB::transaction(function () use ($request, $id_magang) {
                     if ($request->hasFile('file')) {
                         $file = $request->file('file');
+                        $id_mahasiswa = $this->idMahasiswa();
                         $keterangan = $request->input('keterangan');
                         $date = Carbon::parse(now())->toDateString();
 
                         $filename = $id_magang . '_' . $date . '.' . $file->getClientOriginalExtension();
-                        AktivitasMagangModel::insert([
-                            'id_magang' => $id_magang,
-                            'tanggal' => $date,
-                            'keterangan' => $keterangan,
-                            'foto_path' => $filename
-                        ]);
+                        AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
+                            ->where('id_magang', $id_magang)
+                            ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+                                $query->where('id_mahasiswa', $id_mahasiswa);
+                            })->insert([
+                                    'id_magang' => $id_magang,
+                                    'tanggal' => $date,
+                                    'keterangan' => $keterangan,
+                                    'foto_path' => $filename
+                                ]);
 
                         $file->storeAs('public/aktivitas', $filename);
                     }
@@ -133,11 +138,11 @@ class AktivitasController extends Controller
                             $this->handleFileUpload($request, $data, $id_aktivitas, $id_magang, $id_mahasiswa, $keterangan);
                         } else {
                             AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
-                            ->where('id_aktivitas', $id_aktivitas)
-                            ->where('id_magang', $id_magang)
-                            ->whereHas('magang', function ($query) use ($id_mahasiswa) {
-                                $query->where('id_mahasiswa', $id_mahasiswa);
-                            })
+                                ->where('id_aktivitas', $id_aktivitas)
+                                ->where('id_magang', $id_magang)
+                                ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+                                    $query->where('id_mahasiswa', $id_mahasiswa);
+                                })
                                 ->update([
                                     'keterangan' => $keterangan
                                 ]);
@@ -162,11 +167,11 @@ class AktivitasController extends Controller
         Storage::disk('public')->delete("aktivitas/{$data->foto_path}");
         $file->storeAs('public/aktivitas', $filename);
         AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
-        ->where('id_aktivitas', $id_aktivitas)
-        ->where('id_magang', $id_magang)
-        ->whereHas('magang', function ($query) use ($id_mahasiswa) {
-            $query->where('id_mahasiswa', $id_mahasiswa);
-        })
+            ->where('id_aktivitas', $id_aktivitas)
+            ->where('id_magang', $id_magang)
+            ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+                $query->where('id_mahasiswa', $id_mahasiswa);
+            })
             ->update([
                 'keterangan' => $keterangan,
                 'foto_path' => $filename
@@ -180,11 +185,11 @@ class AktivitasController extends Controller
                     function () use ($request, $id_magang, $id_aktivitas) {
                         $id_mahasiswa = $this->idMahasiswa();
                         $data = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
-                        ->where('id_aktivitas', $id_aktivitas)
-                        ->where('id_magang', $id_magang)
-                        ->whereHas('magang', function ($query) use ($id_mahasiswa) {
-                            $query->where('id_mahasiswa', $id_mahasiswa);
-                        })
+                            ->where('id_aktivitas', $id_aktivitas)
+                            ->where('id_magang', $id_magang)
+                            ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+                                $query->where('id_mahasiswa', $id_mahasiswa);
+                            })
                             ->firstOrFail(['foto_path']);
 
                         $file_path = $data->foto_path;
@@ -194,11 +199,11 @@ class AktivitasController extends Controller
                         }
 
                         AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
-                        ->where('id_aktivitas', $id_aktivitas)
-                        ->where('id_magang', $id_magang)
-                        ->whereHas('magang', function ($query) use ($id_mahasiswa) {
-                            $query->where('id_mahasiswa', $id_mahasiswa);
-                        })
+                            ->where('id_aktivitas', $id_aktivitas)
+                            ->where('id_magang', $id_magang)
+                            ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+                                $query->where('id_mahasiswa', $id_mahasiswa);
+                            })
                             ->delete();
                     }
                 );
