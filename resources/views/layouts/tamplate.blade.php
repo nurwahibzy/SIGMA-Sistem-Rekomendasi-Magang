@@ -10,30 +10,30 @@
     <link rel="stylesheet" href="{{ asset('template/assets/compiled/css/app-dark.css') }}">
     <link rel="stylesheet" href="{{ asset('template/assets/compiled/css/iconly.css') }}">
 </head>
-
 <body>
     <script src="{{ asset('template/assets/static/js/initTheme.js') }}"></script>
 
     <div id="app">
-        <div id="main" class="layout-horizontal">
+        {{-- Sidebar --}}
+        @include('layouts.sidebar')  {{-- HARUS DI SINI, sebelum #main --}}
 
+        <div id="main" class="layout-navbar">
             {{-- Header --}}
             @include('layouts.header')
 
-            {{-- Sidebar --}}
-            @include('layouts.sidebar')
-
-            {{-- Main content --}}
-            <div class="page-content">
-                <div class="container">
-                    @yield('content')
+            <div id="main-content">
+                <div class="page-content">
+                    <div class="container">
+                        @yield('content')
+                    </div>
                 </div>
+
+                {{-- Footer --}}
+                @include('layouts.footer')
             </div>
-
-            {{-- Footer --}}
-            @include('layouts.footer')
-
         </div>
     </div>
+
+    <script src="{{ asset('template/assets/compiled/js/app.js') }}"></script>
 </body>
 </html>

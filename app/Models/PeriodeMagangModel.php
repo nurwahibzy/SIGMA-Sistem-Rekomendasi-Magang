@@ -13,6 +13,11 @@ class PeriodeMagangModel extends Model
 
     protected $table = 'periode_magang';
     protected $primaryKey = 'id_periode';
+    protected $casts = [
+    'tanggal_mulai' => 'datetime',
+    'tanggal_selesai' => 'datetime',
+];
+
     protected $fillable = ['id_lowongan', 'nama', 'tanggal_mulai', 'tanggal_selesai'];
     public function lowongan_magang(): BelongsTo
     {
