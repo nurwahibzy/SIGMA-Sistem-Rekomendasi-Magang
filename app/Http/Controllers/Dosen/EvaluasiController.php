@@ -69,7 +69,7 @@ class EvaluasiController extends Controller
                             'feedback' => $feedback
                         ]);
                 });
-                return response()->json(['success' => $request->all()]);
+                return response()->json(['success' => true]);
             } catch (\Exception $e) {
                 Log::error("Gagal menambahkan evaluasi: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
@@ -109,7 +109,7 @@ class EvaluasiController extends Controller
                             'feedback' => $feedback
                         ]);
                 });
-                return response()->json(['success' => $request->all()]);
+                return response()->json(['success' => true]);
             } catch (\Exception $e) {
                 Log::error("Gagal update evaluasi: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
@@ -133,7 +133,7 @@ class EvaluasiController extends Controller
                         })
                         ->delete();
                 });
-                return response()->json(['success' => $request->all()]);
+                return response()->json(['success' => true]);
             } catch (\Exception $e) {
                 Log::error("Gagal menghapus evaluasi: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);

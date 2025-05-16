@@ -131,11 +131,6 @@ class DokumenController extends Controller
                     'file_path' => $file_path_baru
                 ]);
         }
-
-        return response()->json([
-            'status' => false,
-            'message' => "File lama tidak ditemukan: dokumen/$lama"
-        ]);
     }
 
     public function deleteDokumen(Request $request, $id_dokumen)

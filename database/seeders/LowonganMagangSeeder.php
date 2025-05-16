@@ -26,7 +26,6 @@ class LowonganMagangSeeder extends Seeder
         ];
 
         foreach ($lowonganMagang as $lowongan) {
-            $slugifiedName = Str::slug($lowongan[2], '_');
 
             DB::table('lowongan_magang')->insert([
                 'id_perusahaan' => $lowongan[0],
@@ -34,7 +33,6 @@ class LowonganMagangSeeder extends Seeder
                 'nama' => $lowongan[2],
                 'persyaratan' => $lowongan[3],
                 'deskripsi' => $lowongan[4],
-                'foto_path' => 'images/lowongan_magang/' . $lowongan[0] . '_' . $slugifiedName . '.jpg',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

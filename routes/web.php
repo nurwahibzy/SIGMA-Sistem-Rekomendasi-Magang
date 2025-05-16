@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\PerusahaanController;
 use App\Http\Controllers\AkunController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
@@ -54,8 +55,17 @@ Route::middleware(['auth'])->group(function () {
     //     return view('welcome');
     // });
     Route::get('/', [LoginController::class, 'getDashoboard']);
-    Route::middleware(['authorize:ADM'])->prefix(prefix: 'admin')->group(function () {
+    Route::middleware(['authorize:ADM'])->prefix( 'admin')->group(function () {
         Route::get('/dashboard', [MagangControllerAdmin::class, 'getDashboard']);
+        Route::prefix('profil')->group(function () {
+
+        });
+        Route::prefix('perusahaan')->group(function () {
+            Route::get('/', [PerusahaanController::class, 'getPerusahaan']);
+            Route::post('/', [PerusahaanController::class, 'postPerusahaan']);
+            Route::post('/{id_perusahaan}', [PerusahaanController::class, 'putPerusahaan']);
+            Route::delete('/{id_perusahaan}', [PerusahaanController::class, 'deletePerusahaan']);
+        });
 
         // Route::prefix('dashboard')->group(function (){
 
@@ -100,7 +110,7 @@ Route::middleware(['auth'])->group(function () {
             });
         });
 
-        Route::prefix('aktivitas')->group(callback: function () {
+        Route::prefix('aktivitas')->group( function () {
             Route::get('/', [AktivitasControllerMahasiswa::class, 'getMagangDiterima']);
             Route::get('/{id_magang}', [AktivitasControllerMahasiswa::class, 'getAktivitas']);
             Route::get('/{id_magang}/tambah', [AktivitasControllerMahasiswa::class, 'getAddAktivitas']);
@@ -133,7 +143,7 @@ Route::middleware(['auth'])->group(function () {
             Route::prefix('edit')->group(function () {
                 Route::get('/', [AkunControllerDosen::class, 'getEditProfil']);
 
-                Route::prefix('keahlian')->group(callback: function () {
+                Route::prefix('keahlian')->group( function () {
                     Route::get('/', [KeahlianDosenController::class, 'getAddKeahlian']);
                     Route::get('{id_keahlian}', [KeahlianDosenController::class, 'getKeahlian']);
                     Route::post('/', [KeahlianDosenController::class, 'postKeahlian']);
@@ -144,19 +154,19 @@ Route::middleware(['auth'])->group(function () {
             });
         });
 
-        Route::prefix('aktivitas')->group(callback: function () {
+        Route::prefix('aktivitas')->group( function () {
             Route::get('/', [AktivitasControllerDosen::class, 'getMagangDiterima']);
             Route::get('/{id_magang}', [AktivitasControllerDosen::class, 'getAktivitas']);
+            Route::get('/{id_magang}/profil', [AkunControllerDosen::class, 'getProfilMahasiswa']);
             Route::get('/{id_magang}/evaluasi', [EvaluasiController::class, 'getEvaluasi']);
             Route::post('/{id_magang}/evaluasi', [EvaluasiController::class, 'postEvaluasi']);
             Route::get('/{id_magang}/evaluasi/{id_evaluasi}', [EvaluasiController::class, 'getEditEvaluasi']);
             Route::put('/{id_magang}/evaluasi/{id_evaluasi}', [EvaluasiController::class, 'putEvaluasi']); 
             Route::delete('/{id_magang}/evaluasi/{id_evaluasi}', [EvaluasiController::class, 'deleteEvaluasi']); 
-            // Route::get('/{id_magang}/tambah', [AktivitasController::class, 'getAddAktivitas']);
-            // Route::post('/{id_magang}/tambah', [AktivitasController::class, 'postAktivitas']);
-            // Route::get('/{id_magang}/edit/{id_aktivitas}', [AktivitasController::class, 'getEditAktivitas']);
-            // Route::post('/{id_magang}/edit/{id_aktivitas}', [AktivitasController::class, 'putAktivitas']);
-            // Route::delete('/{id_magang}/edit/{id_aktivitas}', [AktivitasController::class, 'deleteAktivitas']);
+        });
+        
+        Route::prefix('riwayat')->group( function () {
+            Route::get('/', [MagangControllerDosen::class, 'getRiwayat']);
         });
     });
 });

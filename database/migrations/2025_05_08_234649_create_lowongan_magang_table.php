@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('nama', 100);
             $table->text('persyaratan');
             $table->text('deskripsi');
-            $table->text('foto_path');
             $table->timestamps();
 
             $table->foreign('id_perusahaan')->references('id_perusahaan')->on('perusahaan')->onDelete('cascade');

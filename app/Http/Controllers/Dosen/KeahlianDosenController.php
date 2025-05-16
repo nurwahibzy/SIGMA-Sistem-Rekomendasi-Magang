@@ -76,7 +76,7 @@ class KeahlianDosenController extends Controller
                         'keahlian' => $keahlian
                     ]);
                 });
-                return response()->json(['success' => $request->all()]);
+                return response()->json(['success' => true]);
             } catch (\Exception $e) {
                 Log::error("Gagal menambahkan keahlian: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
@@ -100,7 +100,7 @@ class KeahlianDosenController extends Controller
                             'keahlian' => $keahlian
                         ]);
                 });
-                return response()->json(['success' => $request->all()]);
+                return response()->json(['success' => true]);
             } catch (\Exception $e) {
                 Log::error("Gagal update keahlian: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
@@ -119,7 +119,7 @@ class KeahlianDosenController extends Controller
                         ->where('id_keahlian_dosen', $id_keahlian)
                         ->delete();
                 });
-                return response()->json(['success' => $request->all()]);
+                return response()->json(['success' => true]);
             } catch (\Exception $e) {
                 Log::error("Gagal menghapus keahlian: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);

@@ -9,5 +9,6 @@ class MagangController extends Controller
 {
     public function getDashboard(){
         return view('welcome');
+        // return response()->json('a');
     }
 }

@@ -27,5 +27,13 @@ class MagangController extends Controller
         // return view('welcome');
     }
 
+    public function getRiwayat(){
+        $id_dosen = $this->idDosen();
+        $magang = MagangModel::where('id_dosen', $id_dosen)
+        ->where('status', 'lulus')
+        ->get();
+        return response()->json($magang);
+    }
+
 
 }
