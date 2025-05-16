@@ -15,11 +15,11 @@
 
     <div id="app">
         {{-- Sidebar --}}
-        @include('layouts.sidebar')  {{-- HARUS DI SINI, sebelum #main --}}
+        @include('layouts.sidebar')
 
-        <div id="main" class="layout-navbar">
-            {{-- Header --}}
-            @include('layouts.header')
+        <div id="main" class="layout-navbar navbar-fixed">
+            {{-- Navbar --}}
+            @include('layouts.navbar')
 
             <div id="main-content">
                 <div class="page-content">
