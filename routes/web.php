@@ -22,6 +22,7 @@ use App\Http\Controllers\Mahasiswa\AkunController as AkunControllerMahasiswa;
 use App\Http\Controllers\Dosen\AkunController as AkunControllerDosen;
 use App\Http\Controllers\Mahasiswa\PengalamanController;
 use App\Http\Controllers\Mahasiswa\PenilaianController;
+use App\Http\Controllers\Mahasiswa\PeriodeMagangController;
 use App\Http\Controllers\Mahasiswa\PreferensiLokasiMahasiswaController;
 use App\Http\Controllers\Mahasiswa\PreferensiPerusahaanMahasiswaController;
 use Illuminate\Support\Facades\Route;
@@ -140,8 +141,8 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/{id_magang}', [PenilaianController::class, 'postPenilaian']);
         });
 
-        Route::prefix('magang')->group(function () {
-            Route::get('/{id_periode}', [MagangControllerMahasiswa::class, 'getMagang']);
+        Route::prefix('periode')->group(function () {
+            Route::get('/{id_periode}', [PeriodeMagangController::class, 'getDetailPeriode']);
             Route::post('/{id_periode}', [MagangControllerMahasiswa::class, 'postMagang']);
         });
     });
