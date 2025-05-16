@@ -40,7 +40,23 @@ class AktivitasController extends Controller
                 'periode_magang.lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
             )
             ->get();
-        return response()->json($magang);
+        return view('mahasiswa.aktivitas.magang', [
+            'magang' => collect([
+                (object)[
+                    'id_magang' => 1,
+                    'periode_magang' => (object)[
+                        'tanggal_mulai' => '2025-08-01',
+                        'tanggal_selesai' => '2025-10-31',
+                        'lowongan_magang' => (object)[
+                            'nama' => 'Intern UI/UX',
+                            'perusahaan' => (object)['nama' => 'Tech Corp'],
+                            'bidang' => (object)['nama' => 'Design'],
+                        ]
+                    ]
+                ]
+            ])
+        ]);
+
         // $magang = PeriodeMagangModel::with(
         // 'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama,foto_path',
         // 'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama',
@@ -59,8 +75,10 @@ class AktivitasController extends Controller
                 $query->where('id_mahasiswa', $id_mahasiswa);
             })
             ->get();
-
-        return response()->json($aktivitas);
+        return view('mahasiswa.aktivitas.index', [
+            'aktivitas' => $aktivitas,
+            'id_magang' => $id_magang,
+        ]);
     }
 
 
@@ -88,35 +106,47 @@ class AktivitasController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                DB::transaction(function () use ($request, $id_magang) {
+                $keterangan = $request->input('keterangan');
+                $date = Carbon::parse(now())->toDateString();
+                $filename = null;
+
+                DB::transaction(function () use ($request, $id_magang, &$filename, $keterangan, $date) {
                     if ($request->hasFile('file')) {
                         $file = $request->file('file');
                         $id_mahasiswa = $this->idMahasiswa();
-                        $keterangan = $request->input('keterangan');
-                        $date = Carbon::parse(now())->toDateString();
 
                         $filename = $id_magang . '_' . $date . '.' . $file->getClientOriginalExtension();
+
                         AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
                             ->where('id_magang', $id_magang)
                             ->whereHas('magang', function ($query) use ($id_mahasiswa) {
                                 $query->where('id_mahasiswa', $id_mahasiswa);
                             })->insert([
-                                    'id_magang' => $id_magang,
-                                    'tanggal' => $date,
-                                    'keterangan' => $keterangan,
-                                    'foto_path' => $filename
-                                ]);
+                                'id_magang' => $id_magang,
+                                'tanggal' => $date,
+                                'keterangan' => $keterangan,
+                                'foto_path' => $filename
+                            ]);
 
                         $file->storeAs('public/aktivitas', $filename);
                     }
                 });
-                return response()->json(['success' => true]);
+
+                return response()->json([
+                    'success' => true,
+                    'data' => [
+                        'keterangan' => $keterangan,
+                        'foto_path' => $filename,
+                        'tanggal' => $date,
+                    ],
+                ]);
             } catch (\Throwable $e) {
                 Log::error("Gagal menambahkan Aktivitas: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
             }
         }
     }
+
     public function putAktivitas(Request $request, $id_magang, $id_aktivitas)
     {
         if ($request->ajax() || $request->wantsJson()) {
@@ -155,7 +185,6 @@ class AktivitasController extends Controller
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
             }
         }
-
     }
 
     private function handleFileUpload(Request $request, $data, $id_aktivitas, $id_magang, $id_mahasiswa, $keterangan)

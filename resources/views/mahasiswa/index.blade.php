@@ -111,44 +111,49 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-       $(document).on('click', '.btn-detail', function () {
-    let idPeriode = $(this).data('id');
-    let url = "{{ url('mahasiswa/periode/detail') }}/" + idPeriode;
+        $(document).on('click', '.btn-detail', function () {
+            let idPeriode = $(this).data('id');
+            let url = "{{ url('mahasiswa/periode/detail') }}/" + idPeriode;
 
-    $.ajax({
-        url: url,
-        method: 'GET',
-        success: function (response) {
-            if (response.length > 0) {
-                let magang = response[0];
+            $.ajax({
+                url: url,
+                method: 'GET',
+                success: function (response) {
+                    if (response.length > 0) {
+                        let magang = response[0];
 
-                $('#namaLowongan').text(magang.lowongan_magang.nama || '-');
-                $('#namaPerusahaan').text(magang.lowongan_magang.perusahaan.nama || '-');
-                $('#jenisPerusahaan').text(magang.lowongan_magang.perusahaan.jenis_perusahaan?.jenis || '-');
-                $('#bidang').text(magang.lowongan_magang.bidang.nama || '-');
-                $('#persyaratan').text(magang.lowongan_magang.persyaratan || '-');
-                $('#deskripsi').text(magang.lowongan_magang.deskripsi || '-');
+                        $('#namaLowongan').text(magang.lowongan_magang.nama || '-');
+                        $('#namaPerusahaan').text(magang.lowongan_magang.perusahaan.nama || '-');
+                        $('#jenisPerusahaan').text(magang.lowongan_magang.perusahaan.jenis_perusahaan?.jenis || '-');
+                        $('#bidang').text(magang.lowongan_magang.bidang.nama || '-');
+                        $('#persyaratan').text(magang.lowongan_magang.persyaratan || '-');
+                        $('#deskripsi').text(magang.lowongan_magang.deskripsi || '-');
 
-                let periodeText = '';
-                if (magang.lowongan_magang.periode_magang?.length > 0) {
-                    periodeText = magang.lowongan_magang.periode_magang.map(p => {
-                        return `${p.nama} (${p.tanggal_mulai} - ${p.tanggal_selesai})`;
-                    }).join(', ');
+                        let periodeText = '-';
+                        if (magang.tanggal_mulai && magang.tanggal_selesai) {
+                            let start = new Date(magang.tanggal_mulai).toLocaleDateString('en-GB', {
+                                day: '2-digit', month: 'short', year: 'numeric'
+                            });
+                            let end = new Date(magang.tanggal_selesai).toLocaleDateString('en-GB', {
+                                day: '2-digit', month: 'short', year: 'numeric'
+                            });
+                            periodeText = `${start} - ${end}`;
+                        }
+                        $('#periode').text(periodeText);
+
+
+                        $('#detailModal').modal('show');
+                    } else {
+                        alert('Data tidak ditemukan.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr.responseText);
+                    console.log('Status:', status);
+                    console.log('Error:', error);
+                    alert('Terjadi kesalahan saat mengambil data.');
                 }
-                $('#periode').text(periodeText || '-');
-
-                $('#detailModal').modal('show');
-            } else {
-                alert('Data tidak ditemukan.');
-            }
-        },
-        error: function (xhr, status, error) {
-            console.log(xhr.responseText);
-            console.log('Status:', status);
-            console.log('Error:', error);
-            alert('Terjadi kesalahan saat mengambil data.');
-        }
-    });
-});
+            });
+        });
     </script>
 @endpush

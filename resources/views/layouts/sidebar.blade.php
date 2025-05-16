@@ -45,31 +45,32 @@
             <ul class="menu">
                 <li class="sidebar-title">Menu</li>
 
-                <li class="sidebar-item active">
-                    <a href="#" class="sidebar-link">
+                  <li class="sidebar-item {{ (isset($activeMenu) && $activeMenu == 'dashboard') ? 'active' : '' }}">
+                    <a href="{{ url('/mahasiswa/dashboard') }}" class="sidebar-link">
                         <i class="bi bi-grid-fill"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
 
-                <li class="sidebar-item  has-sub">
-                    <a href="#" class='sidebar-link'>
-                        <i class="bi bi-stack"></i>
+
+                <li class="sidebar-item {{ request()->is('mahasiswa/aktivitas*') ? 'active' : '' }}">
+                    <a href="{{ url('/mahasiswa/aktivitas') }}" class="sidebar-link">
+                        <i class="bi bi-journal-check"></i>
                         <span>Log Aktivitas</span>
                     </a>
                 </li>
 
 
-                <li class="sidebar-item  has-sub">
-                    <a href="#" class='sidebar-link'>
-                        <i class="bi bi-collection-fill"></i>
+                <li class="sidebar-item {{ request()->is('mahasiswa/riwayat') ? 'active' : '' }}">
+                    <a href="{{ url('/mahasiswa/riwayat') }}" class="sidebar-link">
+                        <i class="bi bi-clock-history"></i>
                         <span>Riwayat</span>
                     </a>
                 </li>
 
-                <li class="sidebar-item  has-sub">
-                    <a href="#" class='sidebar-link'>
-                        <i class="bi bi-grid-1x2-fill"></i>
+                <li class="sidebar-item {{ request()->is('mahasiswa/penilaian*') ? 'active' : '' }}">
+                    <a href="{{ url('/mahasiswa/penilaian') }}" class="sidebar-link">
+                        <i class="bi bi-star-fill"></i>
                         <span>Feedback</span>
                     </a>
                 </li>
@@ -77,20 +78,3 @@
         </div>
     </div>
 </div>
-</div>
-</div>
-{{--
-<script src="{{  asset('template/assets/static/js/components/dark.js') }}"></script>
-<script src="{{  asset('template/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
-
-
-<script src="{{  asset('template/assets/compiled/js/app.js') }}"></script>
-
-<!-- Need: Apexcharts -->
-<script src="{{  asset('template/assets/extensions/apexcharts/apexcharts.min.js') }}"></script>
-<script src="{{  asset('template/assets/static/js/pages/dashboard.js') }}"></script> --}}
-
-{{--
-</body> --}}
-
-</html>
