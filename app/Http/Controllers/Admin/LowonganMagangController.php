@@ -38,26 +38,35 @@ class LowonganMagangController extends Controller
         return response()->json($lowongan);
     }
 
+    public function getDetailLowongan($id_lowongan){
+        $lowongan = LowonganMagangModel::with(
+            'perusahaan:id_perusahaan,nama,telepon,deskripsi,foto_path,provinsi,daerah',
+            'bidang:id_bidang,nama'
+            )
+        ->where('id_lowongan', $id_lowongan)
+        ->first();
+        return response()->json($lowongan);
+    }
+
     public function postLowongan(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                DB::transaction(function () use ($request) {
-                    $id_perusahaan = $request->input('id_perusahaan');
-                    $id_bidang = $request->input('id_bidang');
-                    $nama = $request->input('nama');
-                    $persyaratan = $request->input('persyaratan');
-                    $deskripsi = $request->input('deskripsi');
+
+                $id_perusahaan = $request->input('id_perusahaan');
+                $id_bidang = $request->input('id_bidang');
+                $nama = $request->input('nama');
+                $persyaratan = $request->input('persyaratan');
+                $deskripsi = $request->input('deskripsi');
 
 
-                    LowonganMagangModel::insert([
-                        'id_perusahaan' => $id_perusahaan,
-                        'id_bidang' => $id_bidang,
-                        'nama' => $nama,
-                        'persyaratan' => $persyaratan,
-                        'deskripsi' => $deskripsi,
-                    ]);
-                });
+                LowonganMagangModel::insert([
+                    'id_perusahaan' => $id_perusahaan,
+                    'id_bidang' => $id_bidang,
+                    'nama' => $nama,
+                    'persyaratan' => $persyaratan,
+                    'deskripsi' => $deskripsi,
+                ]);
                 return response()->json(['success' => true]);
             } catch (\Exception $e) {
                 Log::error("Gagal menambahkan lowongan: " . $e->getMessage());
@@ -70,25 +79,22 @@ class LowonganMagangController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                DB::transaction(
-                    function () use ($request, $id_lowongan) {
-                        $id_perusahaan = $request->input('id_perusahaan');
-                        $id_bidang = $request->input('id_bidang');
-                        $nama = $request->input('nama');
-                        $persyaratan = $request->input('persyaratan');
-                        $deskripsi = $request->input('deskripsi');
+                $id_perusahaan = $request->input('id_perusahaan');
+                $id_bidang = $request->input('id_bidang');
+                $nama = $request->input('nama');
+                $persyaratan = $request->input('persyaratan');
+                $deskripsi = $request->input('deskripsi');
 
 
-                        LowonganMagangModel::where('id_lowongan', $id_lowongan)
-                            ->update([
-                                'id_perusahaan' => $id_perusahaan,
-                                'id_bidang' => $id_bidang,
-                                'nama' => $nama,
-                                'persyaratan' => $persyaratan,
-                                'deskripsi' => $deskripsi,
-                            ]);
-                    }
-                );
+                LowonganMagangModel::where('id_lowongan', $id_lowongan)
+                    ->update([
+                        'id_perusahaan' => $id_perusahaan,
+                        'id_bidang' => $id_bidang,
+                        'nama' => $nama,
+                        'persyaratan' => $persyaratan,
+                        'deskripsi' => $deskripsi,
+                    ]);
+
                 return response()->json(['success' => true]);
             } catch (\Throwable $e) {
                 Log::error("Gagal update lowongan: " . $e->getMessage());
@@ -101,13 +107,9 @@ class LowonganMagangController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                DB::transaction(
-                    function () use ($request, $id_lowongan) {
+                LowonganMagangModel::where('id_lowongan', $id_lowongan)
+                    ->delete();
 
-                        LowonganMagangModel::where('id_lowongan', $id_lowongan)
-                            ->delete();
-                    }
-                );
                 return response()->json(['success' => true]);
             } catch (\Throwable $e) {
                 Log::error("Gagal menghapus lowongan: " . $e->getMessage());

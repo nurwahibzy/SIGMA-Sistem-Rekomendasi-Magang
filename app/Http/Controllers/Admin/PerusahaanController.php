@@ -46,7 +46,6 @@ class PerusahaanController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                DB::transaction(function () use ($request) {
                     $id_jenis = $request->input('id_jenis');
                     $nama = $request->input('nama');
                     $telepon = $request->input('telepon');
@@ -73,8 +72,6 @@ class PerusahaanController extends Controller
                         ]);
                         $file->storeAs('public/profil/perusahaan', $filename);
                     }
-
-                });
                 return response()->json(['success' => true]);
             } catch (\Exception $e) {
                 Log::error("Gagal menambahkan perusahaan: " . $e->getMessage());

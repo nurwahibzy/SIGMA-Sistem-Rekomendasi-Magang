@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\LowonganMagangController;
+use App\Http\Controllers\Admin\PeriodeMagangController as PeriodeMagangControllerAdmin;
 use App\Http\Controllers\Admin\PerusahaanController;
+use App\Http\Controllers\Admin\ProdiController;
 use App\Http\Controllers\AkunController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
@@ -22,7 +24,7 @@ use App\Http\Controllers\Mahasiswa\AkunController as AkunControllerMahasiswa;
 use App\Http\Controllers\Dosen\AkunController as AkunControllerDosen;
 use App\Http\Controllers\Mahasiswa\PengalamanController;
 use App\Http\Controllers\Mahasiswa\PenilaianController;
-use App\Http\Controllers\Mahasiswa\PeriodeMagangController;
+use App\Http\Controllers\Mahasiswa\PeriodeMagangController as PeriodeMagangControllerMahasiswa;
 use App\Http\Controllers\Mahasiswa\PreferensiLokasiMahasiswaController;
 use App\Http\Controllers\Mahasiswa\PreferensiPerusahaanMahasiswaController;
 use Illuminate\Support\Facades\Route;
@@ -62,6 +64,16 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('profil')->group(function () {
 
         });
+
+        Route::prefix('prodi')->group(function () {
+            Route::get('/', [ProdiController::class, 'getProdi']);
+            Route::get('/tambah', [ProdiController::class, 'getAddProdi']);
+            Route::post('/tambah', [ProdiController::class, 'postProdi']);
+            Route::get('/edit/{id_prodi}', [ProdiController::class, 'getEditProdi']);
+            Route::post('/edit/{id_prodi}', [ProdiController::class, 'putProdi']);
+            Route::delete('/edit/{id_prodi}', [ProdiController::class, 'deleteProdi']);
+        });
+
         Route::prefix('perusahaan')->group(function () {
             Route::get('/', [PerusahaanController::class, 'getPerusahaan']);
             Route::get('/tambah', [PerusahaanController::class, 'getAddPerusahaan']);
@@ -82,10 +94,20 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/edit/{id_lowongan}', [LowonganMagangController::class, 'deleteLowongan']);
         });
 
+        Route::prefix('periode')->group(function () {
+            Route::get('/', [PeriodeMagangControllerAdmin::class, 'getPeriode']);
+            Route::get('/tambah', [PeriodeMagangControllerAdmin::class, 'getAddPeriode']);
+            Route::post('/tambah', [PeriodeMagangControllerAdmin::class, 'postPeriode']);
+            Route::get('/detail/{id_periode}', [PeriodeMagangControllerAdmin::class, 'getDetailPeriode']);
+            Route::get('/edit/{id_periode}', [PeriodeMagangControllerAdmin::class, 'getEditPeriode']);
+            Route::post('/edit/{id_periode}', [PeriodeMagangControllerAdmin::class, 'putPeriode']);
+            Route::delete('/edit/{id_periode}', [PeriodeMagangControllerAdmin::class, 'deletePeriode']);
+        });
+
     });
 
     Route::middleware(['authorize:MHS'])->prefix('mahasiswa')->group(function () {
-        Route::get('/dashboard', [PeriodeMagangController::class, 'getDashboard']);
+        Route::get('/dashboard', [PeriodeMagangControllerMahasiswa::class, 'getDashboard']);
         Route::prefix('profil')->group(function () {
             Route::get('/', [AkunControllerMahasiswa::class, 'getProfil']);
 
@@ -142,7 +164,7 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::prefix('periode')->group(function () {
-            Route::get('/detail/{id_periode}', [PeriodeMagangController::class, 'getDetailPeriode']);
+            Route::get('/detail/{id_periode}', [PeriodeMagangControllerMahasiswa::class, 'getDetailPeriode']);
             Route::post('/daftar/{id_periode}', [MagangControllerMahasiswa::class, 'postMagang']);
         });
     });
