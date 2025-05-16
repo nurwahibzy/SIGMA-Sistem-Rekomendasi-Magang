@@ -17,12 +17,30 @@ use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
 
 class PerusahaanController extends Controller
 {
+    // add peringatan, try catch, transaction
     public function getPerusahaan()
     {
-        $jenis = JenisPerusahaanModel::get();
+        $perusahaan = PerusahaanModel::get();
+        return response()->json($perusahaan);
+    }
+
+    public function getAddPerusahaan()
+    {
+        $jenis = JenisPerusahaanModel::get(['id_jenis', 'jenis']);
         return view('tes.editPerusahaan', ['jenis' => $jenis]);
-        // return view('tes.perusahaan', ['jenis' => $jenis]);
-        // return response()->json($jenis);
+    }
+
+    public function getEditPerusahaan($id_perusahaan)
+    {
+        $jenis = JenisPerusahaanModel::get(['id_jenis', 'jenis']);
+        $perusahaan = PerusahaanModel::where('id_perusahaan', $id_perusahaan)->first();
+        return response()->json($perusahaan);
+    }
+
+    public function getDetailPerusahaan($id_perusahaan){
+        $perusahaan = PerusahaanModel::with('jenis_perusahaan:id_jenis,jenis')
+        ->where('id_perusahaan', $id_perusahaan)->first();
+        return response()->json($perusahaan);
     }
     public function postPerusahaan(Request $request)
     {
@@ -82,41 +100,41 @@ class PerusahaanController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                // DB::transaction(
-                // function () use ($request, $id_perusahaan) {
-                $id_jenis = $request->input('id_jenis');
-                $nama = $request->input('nama');
-                $telepon = $request->input('telepon');
-                $deskripsi = $request->input('deskripsi');
-                $provinsi = $request->input('provinsi');
-                $daerah = $request->input('daerah');
+                DB::transaction(
+                    function () use ($request, $id_perusahaan) {
+                        $id_jenis = $request->input('id_jenis');
+                        $nama = $request->input('nama');
+                        $telepon = $request->input('telepon');
+                        $deskripsi = $request->input('deskripsi');
+                        $provinsi = $request->input('provinsi');
+                        $daerah = $request->input('daerah');
 
-                $data = PerusahaanModel::where('id_perusahaan', $id_perusahaan)
-                    ->first();
+                        $data = PerusahaanModel::where('id_perusahaan', $id_perusahaan)
+                            ->first();
 
-                $latitude = $data->latitude;
-                $longitude = $data->longitude;
-
-
-                if ($data->provinsi != $provinsi || $data->daerah != $daerah) {
-                    $lokasi = $this->latitudeLongitude($provinsi, $daerah);
-                    $latitude = $lokasi->getCoordinates()->getLatitude();
-                    $longitude = $lokasi->getCoordinates()->getLongitude();
-                }
+                        $latitude = $data->latitude;
+                        $longitude = $data->longitude;
 
 
-                if ($request->hasFile('file')) {
-                    $this->handleFileUpload($request, $data, $id_perusahaan,$id_jenis, $nama, $telepon, $deskripsi, $provinsi, $daerah, $latitude, $longitude); 
-                }
+                        if ($data->provinsi != $provinsi || $data->daerah != $daerah) {
+                            $lokasi = $this->latitudeLongitude($provinsi, $daerah);
+                            $latitude = $lokasi->getCoordinates()->getLatitude();
+                            $longitude = $lokasi->getCoordinates()->getLongitude();
+                        }
 
-                if ($data->nama !== $nama) {
-                    $this->renameFileOnly($data, $id_perusahaan,$id_jenis, $nama, $telepon, $deskripsi, $provinsi, $daerah, $latitude, $longitude);
-                }
-                // }
-                // );
-                return response()->json(['success' => $longitude]);
+
+                        if ($request->hasFile('file')) {
+                            $this->handleFileUpload($request, $data, $id_perusahaan, $id_jenis, $nama, $telepon, $deskripsi, $provinsi, $daerah, $latitude, $longitude);
+                        }
+
+                        if ($data->nama !== $nama) {
+                            $this->renameFileOnly($data, $id_perusahaan, $id_jenis, $nama, $telepon, $deskripsi, $provinsi, $daerah, $latitude, $longitude);
+                        }
+                    }
+                );
+                return response()->json(['success' => true]);
             } catch (\Throwable $e) {
-                Log::error("Gagal update Dokumen: " . $e->getMessage());
+                Log::error("Gagal update perusahaan: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
             }
         }
@@ -130,20 +148,20 @@ class PerusahaanController extends Controller
         Storage::disk('public')->delete("profil/perusahaan/{$data->foto_path}");
         $file->storeAs('public/profil/perusahaan', $filename);
         PerusahaanModel::where('id_perusahaan', $id_perusahaan)
-        ->update([
-            'id_jenis' => $id_jenis,
-            'nama' => $nama,
-            'telepon' => $telepon,
-            'deskripsi' => $deskripsi,
-            'foto_path' => $filename,
-            'provinsi' => $provinsi,
-            'daerah' => $daerah,
-            'latitude' => $latitude,
-            'longitude' => $longitude
-        ]);
+            ->update([
+                'id_jenis' => $id_jenis,
+                'nama' => $nama,
+                'telepon' => $telepon,
+                'deskripsi' => $deskripsi,
+                'foto_path' => $filename,
+                'provinsi' => $provinsi,
+                'daerah' => $daerah,
+                'latitude' => $latitude,
+                'longitude' => $longitude
+            ]);
     }
 
-    private function renameFileOnly($data, $id_perusahaan,$id_jenis, $nama, $telepon, $deskripsi, $provinsi, $daerah, $latitude, $longitude)
+    private function renameFileOnly($data, $id_perusahaan, $id_jenis, $nama, $telepon, $deskripsi, $provinsi, $daerah, $latitude, $longitude)
     {
         $lama = $data->foto_path;
         $extension = pathinfo($lama, PATHINFO_EXTENSION);
@@ -153,17 +171,17 @@ class PerusahaanController extends Controller
             Storage::disk('public')->move("profil/perusahaan/$lama", "profil/perusahaan/$file_path_baru");
 
             PerusahaanModel::where('id_perusahaan', $id_perusahaan)
-        ->update([
-            'id_jenis' => $id_jenis,
-            'nama' => $nama,
-            'telepon' => $telepon,
-            'deskripsi' => $deskripsi,
-            'foto_path' => $file_path_baru,
-            'provinsi' => $provinsi,
-            'daerah' => $daerah,
-            'latitude' => $latitude,
-            'longitude' => $longitude
-        ]);
+                ->update([
+                    'id_jenis' => $id_jenis,
+                    'nama' => $nama,
+                    'telepon' => $telepon,
+                    'deskripsi' => $deskripsi,
+                    'foto_path' => $file_path_baru,
+                    'provinsi' => $provinsi,
+                    'daerah' => $daerah,
+                    'latitude' => $latitude,
+                    'longitude' => $longitude
+                ]);
         }
     }
 
@@ -189,7 +207,7 @@ class PerusahaanController extends Controller
                 );
                 return response()->json(['success' => true]);
             } catch (\Throwable $e) {
-                Log::error("Gagal update Dokumen: " . $e->getMessage());
+                Log::error("Gagal menghapus perusahaan: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
             }
         }

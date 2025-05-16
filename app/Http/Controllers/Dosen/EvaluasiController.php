@@ -12,6 +12,7 @@ use Log;
 
 class EvaluasiController extends Controller
 {
+    // add peringatan, try catch, transaction
     private function idDosen()
     {
         $id_dosen = AkunModel::with(relations: 'dosen:id_dosen,id_akun')

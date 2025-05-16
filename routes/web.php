@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\LowonganMagangController;
 use App\Http\Controllers\Admin\PerusahaanController;
 use App\Http\Controllers\AkunController;
 use App\Http\Controllers\Auth\LoginController;
@@ -62,14 +63,24 @@ Route::middleware(['auth'])->group(function () {
         });
         Route::prefix('perusahaan')->group(function () {
             Route::get('/', [PerusahaanController::class, 'getPerusahaan']);
-            Route::post('/', [PerusahaanController::class, 'postPerusahaan']);
-            Route::post('/{id_perusahaan}', [PerusahaanController::class, 'putPerusahaan']);
-            Route::delete('/{id_perusahaan}', [PerusahaanController::class, 'deletePerusahaan']);
+            Route::get('/tambah', [PerusahaanController::class, 'getAddPerusahaan']);
+            Route::post('/tambah', [PerusahaanController::class, 'postPerusahaan']);
+            Route::get('/detail/{id_perusahaan}', [PerusahaanController::class, 'getDetailPerusahaan']);
+            Route::get('/edit/{id_perusahaan}', [PerusahaanController::class, 'getEditPerusahaan']);
+            Route::post('/edit/{id_perusahaan}', [PerusahaanController::class, 'putPerusahaan']);
+            Route::delete('/edit/{id_perusahaan}', [PerusahaanController::class, 'deletePerusahaan']);
         });
 
-        // Route::prefix('dashboard')->group(function (){
+        Route::prefix('lowongan')->group(function () {
+            Route::get('/', [LowonganMagangController::class, 'getLowongan']);
+            Route::get('/tambah', [LowonganMagangController::class, 'getAddLowongan']);
+            Route::post('/tambah', [LowonganMagangController::class, 'postLowongan']);
+            Route::get('/detail/{id_lowongan}', [LowonganMagangController::class, 'getDetailLowongan']);
+            Route::get('/edit/{id_lowongan}', [LowonganMagangController::class, 'getEditLowongan']);
+            Route::post('/edit/{id_lowongan}', [LowonganMagangController::class, 'putLowongan']);
+            Route::delete('/edit/{id_lowongan}', [LowonganMagangController::class, 'deleteLowongan']);
+        });
 
-        // });
     });
 
     Route::middleware(['authorize:MHS'])->prefix('mahasiswa')->group(function () {

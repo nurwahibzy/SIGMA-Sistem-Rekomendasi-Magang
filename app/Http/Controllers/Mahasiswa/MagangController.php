@@ -36,9 +36,12 @@ class MagangController extends Controller
         ->where('tanggal_mulai', '>', now())
         ->get(['id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
 
-    return view('mahasiswa.index', [
-        'magang' => $magang
-    ]);
+        return view('mahasiswa.index', [
+            'magang' => $magang,
+            'activeMenu' => 'dashboard'
+        ]);
+        
+        
 }
 
 

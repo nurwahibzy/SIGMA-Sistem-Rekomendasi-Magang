@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 
 class AktivitasController extends Controller
 {
+    // add try catch, transaction
     private function idDosen()
     {
         $id_dosen = AkunModel::with(relations: 'dosen:id_dosen,id_akun')
