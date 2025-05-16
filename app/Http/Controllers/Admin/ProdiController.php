@@ -3,16 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProdiModel;
 use Illuminate\Http\Request;
 
 class ProdiController extends Controller
 {
     // add peringatan, try catch, transaction
-    // public function getPeriode()
-    // {
-    //     $lowongan = LowonganMagangModel::get();
-    //     return response()->json($lowongan);
-    // }
+    public function getProdi()
+    {
+        $prodi = ProdiModel::get();
+        return response()->json($prodi);
+    }
 
     // public function getAddLowongan()
     // {

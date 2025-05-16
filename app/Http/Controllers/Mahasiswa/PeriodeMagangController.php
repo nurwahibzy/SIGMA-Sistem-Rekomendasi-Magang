@@ -29,7 +29,7 @@ class PeriodeMagangController extends Controller
         'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
     )
         ->where('tanggal_mulai', '>', now())
-        ->get(['id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
+        ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
 
         return view('mahasiswa.index', [
             'magang' => $magang,
