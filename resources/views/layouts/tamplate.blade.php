@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
     <link rel="stylesheet" href="{{ asset('template/assets/compiled/css/app-dark.css') }}">
     <link rel="stylesheet" href="{{ asset('template/assets/compiled/css/iconly.css') }}">
 </head>
+
 <body>
     <script src="{{ asset('template/assets/static/js/initTheme.js') }}"></script>
 
@@ -35,5 +37,7 @@
     </div>
 
     <script src="{{ asset('template/assets/compiled/js/app.js') }}"></script>
+    @stack('scripts')
 </body>
+
 </html>
