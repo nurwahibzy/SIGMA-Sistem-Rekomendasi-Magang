@@ -59,10 +59,15 @@ Route::middleware(['auth'])->group(function () {
     //     return view('welcome');
     // });
     Route::get('/', [LoginController::class, 'getDashoboard']);
-    Route::middleware(['authorize:ADM'])->prefix( 'admin')->group(function () {
+    Route::middleware(['authorize:ADM'])->prefix('admin')->group(function () {
         Route::get('/dashboard', [MagangControllerAdmin::class, 'getDashboard']);
         Route::prefix('profil')->group(function () {
+            Route::get('/', [AkunControllerAdmin::class, 'getProfil']);
 
+            Route::prefix('edit')->group(function () {
+                Route::get('/', [AkunControllerAdmin::class, 'getEditProfil']);
+                Route::put('/', [AkunControllerAdmin::class, 'putAkun']);
+            });
         });
 
         Route::prefix('prodi')->group(function () {
@@ -114,6 +119,8 @@ Route::middleware(['auth'])->group(function () {
             Route::prefix('edit')->group(function () {
                 Route::get('/', [AkunControllerMahasiswa::class, 'getEditProfil']);
 
+                Route::put('/akun', [AkunControllerMahasiswa::class, 'putAkun']);
+
                 Route::prefix('keahlian')->group(callback: function () {
                     Route::get('/', [KeahlianMahasiswaController::class, 'getAddKeahlian']);
                     Route::get('{id_keahlian}', [KeahlianMahasiswaController::class, 'getKeahlian']);
@@ -144,7 +151,7 @@ Route::middleware(['auth'])->group(function () {
             });
         });
 
-        Route::prefix('aktivitas')->group( function () {
+        Route::prefix('aktivitas')->group(function () {
             Route::get('/', [AktivitasControllerMahasiswa::class, 'getMagangDiterima']);
             Route::get('/{id_magang}', [AktivitasControllerMahasiswa::class, 'getAktivitas']);
             Route::get('/{id_magang}/tambah', [AktivitasControllerMahasiswa::class, 'getAddAktivitas']);
@@ -177,29 +184,31 @@ Route::middleware(['auth'])->group(function () {
             Route::prefix('edit')->group(function () {
                 Route::get('/', [AkunControllerDosen::class, 'getEditProfil']);
 
-                Route::prefix('keahlian')->group( function () {
+                Route::post('/akun', [AkunControllerDosen::class, 'putAkun']);
+
+                Route::prefix('keahlian')->group(function () {
                     Route::get('/', [KeahlianDosenController::class, 'getAddKeahlian']);
                     Route::get('{id_keahlian}', [KeahlianDosenController::class, 'getKeahlian']);
                     Route::post('/', [KeahlianDosenController::class, 'postKeahlian']);
                     Route::put('{id_keahlian}', [KeahlianDosenController::class, 'putKeahlian']);
                     Route::delete('{id_keahlian}', [KeahlianDosenController::class, 'deleteKeahlian']);
                 });
-                
+
             });
         });
 
-        Route::prefix('aktivitas')->group( function () {
+        Route::prefix('aktivitas')->group(function () {
             Route::get('/', [AktivitasControllerDosen::class, 'getMagangDiterima']);
             Route::get('/{id_magang}', [AktivitasControllerDosen::class, 'getAktivitas']);
             Route::get('/{id_magang}/profil', [AkunControllerDosen::class, 'getProfilMahasiswa']);
             Route::get('/{id_magang}/evaluasi', [EvaluasiController::class, 'getEvaluasi']);
             Route::post('/{id_magang}/evaluasi', [EvaluasiController::class, 'postEvaluasi']);
             Route::get('/{id_magang}/evaluasi/{id_evaluasi}', [EvaluasiController::class, 'getEditEvaluasi']);
-            Route::put('/{id_magang}/evaluasi/{id_evaluasi}', [EvaluasiController::class, 'putEvaluasi']); 
-            Route::delete('/{id_magang}/evaluasi/{id_evaluasi}', [EvaluasiController::class, 'deleteEvaluasi']); 
+            Route::put('/{id_magang}/evaluasi/{id_evaluasi}', [EvaluasiController::class, 'putEvaluasi']);
+            Route::delete('/{id_magang}/evaluasi/{id_evaluasi}', [EvaluasiController::class, 'deleteEvaluasi']);
         });
-        
-        Route::prefix('riwayat')->group( function () {
+
+        Route::prefix('riwayat')->group(function () {
             Route::get('/', [MagangControllerDosen::class, 'getRiwayat']);
         });
     });

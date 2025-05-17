@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Models\DokumenModel;
+use App\Models\MahasiswaModel;
 use App\Models\PreferensiLokasiMahasiswaModel;
 use DB;
 use App\Http\Controllers\Controller;
@@ -14,17 +15,28 @@ use App\Models\KeahlianMahasiswaModel;
 use App\Models\KompetensiModel;
 use App\Models\PengalamanModel;
 use App\Models\PreferensiPerusahaanMahasiswaModel;
+use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Geocoder\Query\GeocodeQuery;
 use Geocoder\Provider\Nominatim\Nominatim;
 use Geocoder\StatefulGeocoder;
-use Http\Adapter\Guzzle7\Client as GuzzleAdapter; 
+use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
 use Illuminate\Support\Facades\Storage;
+use Log;
 
 
 class AkunController extends Controller
 {
+    private function idMahasiswa()
+    {
+        $id_mahasiswa = AkunModel::with(relations: 'mahasiswa:id_mahasiswa,id_akun')
+            ->where('id_akun', Auth::user()->id_akun)
+            ->first(['id_akun', 'id_level'])
+            ->mahasiswa
+            ->id_mahasiswa;
+        return $id_mahasiswa;
+    }
     public function getProfil()
     {
         $akun = $this->allDataProfil();
@@ -70,40 +82,75 @@ class AkunController extends Controller
 
     // crud akun
 
-    public function putAkun()
+    public function putAkun(Request $request)
     {
+        if ($request->ajax() || $request->wantsJson()) {
+            try {
+                DB::transaction(function () use ($request) {
+                    $id_mahasiswa = $this->idMahasiswa();
+                    $nama = $request->input('nama');
+                    $alamat = $request->input('alamat');
+                    $telepon = $request->input('telepon');
+                    $tanggal_lahir = $request->input('tanggal_lahir');
+                    $email = $request->input('email');
 
+                    if ($request->filled('password')) {
+                        $password = $request->input('password');
+                        AkunModel::with('mahasiswa:id_akun,id_mahasiswa')
+                            ->whereHas('mahasiswa', function ($query) use ($id_mahasiswa) {
+                                $query->where('id_mahasiswa', $id_mahasiswa);
+                            })
+                            ->update([
+                                'password' => Hash::make($password)
+                            ]);
+                    }
+
+                    MahasiswaModel::where('id_mahasiswa', $id_mahasiswa)
+                        ->update([
+                            'nama' => $nama,
+                            'alamat' => $alamat,
+                            'telepon' => $telepon,
+                            'tanggal_lahir' => $tanggal_lahir,
+                            'email' => $email
+                        ]);
+                });
+                return response()->json(['success' => true]);
+            } catch (\Exception $e) {
+                Log::error("Gagal update profil: " . $e->getMessage());
+                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
+            }
+        }
     }
 
     // crud preferensi lokasi
-    public function putPreferensiLokasi(Request $request, $id_preferensi)
-    {
-        $provinsi = $request->input('provinsi');
-        $daerah = $request->input('daerah');
-        $alamat = "$daerah, $provinsi, Indonesia";
+    // public function putPreferensiLokasi(Request $request, $id_preferensi)
+    // {
+    //     $provinsi = $request->input('provinsi');
+    //     $daerah = $request->input('daerah');
+    //     $alamat = "$daerah, $provinsi, Indonesia";
 
-        $httpClient = new GuzzleAdapter();
-        $provider = Nominatim::withOpenStreetMapServer($httpClient, 'my-laravel-app');
-        $geocoder = new StatefulGeocoder($provider, 'en');
+    //     $httpClient = new GuzzleAdapter();
+    //     $provider = Nominatim::withOpenStreetMapServer($httpClient, 'my-laravel-app');
+    //     $geocoder = new StatefulGeocoder($provider, 'en');
 
-        $result = $geocoder->geocodeQuery(GeocodeQuery::create($alamat))->first();
+    //     $result = $geocoder->geocodeQuery(GeocodeQuery::create($alamat))->first();
 
-        if (!$result) {
-            return response()->json(['error' => 'Lokasi tidak ditemukan.'], 404);
-        }
+    //     if (!$result) {
+    //         return response()->json(['error' => 'Lokasi tidak ditemukan.'], 404);
+    //     }
 
-        PreferensiLokasiMahasiswaModel::where('id_preferensi_lokasi', $id_preferensi)
-            ->update([
-                'provinsi' => $provinsi,
-                'daerah' => $daerah,
-                'latitude' => $result->getCoordinates()->getLatitude(),
-                'longitude' => $result->getCoordinates()->getLongitude(),
-            ]);
+    //     PreferensiLokasiMahasiswaModel::where('id_preferensi_lokasi', $id_preferensi)
+    //         ->update([
+    //             'provinsi' => $provinsi,
+    //             'daerah' => $daerah,
+    //             'latitude' => $result->getCoordinates()->getLatitude(),
+    //             'longitude' => $result->getCoordinates()->getLongitude(),
+    //         ]);
 
-        return response()->json([
-            'alamat' => $alamat,
-            'latitude' => $result->getCoordinates()->getLatitude(),
-            'longitude' => $result->getCoordinates()->getLongitude(),
-        ]);
-    }
+    //     return response()->json([
+    //         'alamat' => $alamat,
+    //         'latitude' => $result->getCoordinates()->getLatitude(),
+    //         'longitude' => $result->getCoordinates()->getLongitude(),
+    //     ]);
+    // }
 }

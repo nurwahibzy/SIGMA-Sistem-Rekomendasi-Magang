@@ -7,7 +7,10 @@ use App\Models\AkunModel;
 use App\Models\DosenModel;
 use App\Models\MagangModel;
 use Auth;
+use DB;
+use Hash;
 use Illuminate\Http\Request;
+use Log;
 
 class AkunController extends Controller
 {
@@ -41,8 +44,44 @@ class AkunController extends Controller
         return response()->json($akun);
     }
 
-    public function putAkun(){
+    public function putAkun(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            try {
+                DB::transaction(function () use ($request) {
+                    $id_dosen = $this->idDosen();
+                    $nama = $request->input('nama');
+                    $alamat = $request->input('alamat');
+                    $telepon = $request->input('telepon');
+                    $tanggal_lahir = $request->input('tanggal_lahir');
+                    $email = $request->input('email');
 
+                    if ($request->filled('password')) {
+                        $password = $request->input('password');
+                        AkunModel::with('dosen:id_akun,id_dosen')
+                            ->whereHas('dosen', function ($query) use ($id_dosen) {
+                                $query->where('id_dosen', $id_dosen);
+                            })
+                            ->update([
+                                'password' => Hash::make($password)
+                            ]);
+                    }
+
+                    DosenModel::where('id_dosen', $id_dosen)
+                        ->update([
+                            'nama' => $nama,
+                            'alamat' => $alamat,
+                            'telepon' => $telepon,
+                            'tanggal_lahir' => $tanggal_lahir,
+                            'email' => $email
+                        ]);
+                });
+                return response()->json(['success' => true]);
+            } catch (\Exception $e) {
+                Log::error("Gagal update profil: " . $e->getMessage());
+                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
+            }
+        }
     }
 
     public function getProfilMahasiswa($id_magang){
