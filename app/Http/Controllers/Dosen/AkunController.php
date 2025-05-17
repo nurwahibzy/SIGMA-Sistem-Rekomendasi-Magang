@@ -11,6 +11,7 @@ use DB;
 use Hash;
 use Illuminate\Http\Request;
 use Log;
+use Storage;
 
 class AkunController extends Controller
 {
@@ -79,6 +80,44 @@ class AkunController extends Controller
                 return response()->json(['success' => true]);
             } catch (\Exception $e) {
                 Log::error("Gagal update profil: " . $e->getMessage());
+                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
+            }
+        }
+    }
+
+    public function getFoto()
+    {
+        $id_dosen = $this->idDosen();
+        $foto_path = DosenModel::with('akun:id_akun,foto_path')
+            ->where('id_dosen', $id_dosen)
+            ->first(['id_akun']);
+        return response()->json($foto_path);
+    }
+
+    public function putFoto(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            try {
+                DB::transaction(
+                    function () use ($request) {
+                        $id_dosen = $this->idDosen();
+                        $data = DosenModel::with('akun:id_akun,id_user,foto_path')
+                            ->where('id_dosen', $id_dosen)
+                            ->first(['id_akun']);
+
+                        $file = $request->file('file');
+                        $filename = $data->akun->id_user . '.' . $file->getClientOriginalExtension();
+                        Storage::disk('public')->delete("dokumen/profil/akun/{$data->akun->foto_path}");
+                        $file->storeAs('public/dokumen/profil/akun', $filename);
+                        AkunModel::where('id_akun', $data->akun->id_akun)
+                            ->update([
+                                'foto_path' => $filename
+                            ]);
+                    }
+                );
+                return response()->json(['success' => true]);
+            } catch (\Throwable $e) {
+                Log::error("Gagal update foto: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
             }
         }

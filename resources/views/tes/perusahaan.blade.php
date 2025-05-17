@@ -73,7 +73,7 @@
             let formData = new FormData(this);
 
             $.ajax({
-                url: "{{ url('/admin/perusahaan') }}",
+                url: "{{ url('/admin/perusahaan/tambah') }}",
                 method: "POST",
                 data: formData,
                 processData: false,

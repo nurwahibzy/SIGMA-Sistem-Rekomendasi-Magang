@@ -73,8 +73,8 @@
             let formData = new FormData(this);
 
             $.ajax({
-                url: "{{ url('/admin/perusahaan/21') }}",
-                method: "DELETE",
+                url: "{{ url('/admin/perusahaan/edit/1') }}",
+                method: "POST",
                 data: formData,
                 processData: false,
                 contentType: false,

@@ -73,6 +73,7 @@ class MagangController extends Controller
         $id_mahasiswa = $this->idMahasiswa();
         $tanggal_pengajuan = now();
 
+        // tentukan tanggal pengajuan kurang dari tanggal
         MagangModel::create([
             'id_mahasiswa' => $id_mahasiswa,
             'id_periode' => $id_periode,
