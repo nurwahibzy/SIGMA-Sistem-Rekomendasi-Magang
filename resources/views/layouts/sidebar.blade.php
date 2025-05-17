@@ -61,7 +61,7 @@
                 </li>
 
 
-                <li class="sidebar-item {{ request()->is('mahasiswa/riwayat') ? 'active' : '' }}">
+                <li class="sidebar-item {{ request()->is('mahasiswa/riwayat*') ? 'active' : '' }}">
                     <a href="{{ url('/mahasiswa/riwayat') }}" class="sidebar-link">
                         <i class="bi bi-clock-history"></i>
                         <span>Riwayat</span>
