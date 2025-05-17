@@ -162,7 +162,8 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::prefix('riwayat')->group(function () {
-            Route::get('/', [MagangControllerMahasiswa::class, 'getRiwayat']);
+              Route::get('/', [MagangControllerMahasiswa::class, 'indexRiwayat']);
+            Route::get('/data', [MagangControllerMahasiswa::class, 'getRiwayatData']);
         });
 
         Route::prefix('penilaian')->group(function () {
