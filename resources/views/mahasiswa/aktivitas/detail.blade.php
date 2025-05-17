@@ -1,58 +1,32 @@
-<!-- DataTables CDN -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<div class="mb-3">
+    <h5>Deskripsi:</h5>
+    <p>{{ $aktivitas->keterangan }}</p>
+</div>
 
-<script>
-    $(document).ready(function () {
-        let table = $('#aktivitasTable').DataTable({
-            responsive: true
-        });
+<div class="mb-3">
+    <h5>File:</h5>
+    @if($aktivitas->foto_path)
+        <img src="{{ asset('storage/aktivitas/' . $aktivitas->foto_path) }}" alt="Foto Aktivitas" class="img-thumbnail mt-2"
+            style="max-width: 300px; height: auto;">
+    @else
+        <span class="text-muted">Tidak ada file</span>
+    @endif
 
-        $('#uploadForm').on('submit', function (e) {
-            e.preventDefault();
+</div>
 
-            let formData = new FormData(this);
+<div class="mb-3">
+    <h5>Tanggal:</h5>
+    <p>{{ \Carbon\Carbon::parse($aktivitas->tanggal ?? $aktivitas->created_at)->format('d M Y') }}</p>
+</div>
 
-            $.ajax({
-                url: '{{ url("/mahasiswa/aktivitas/$id_magang/tambah") }}',
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (res) {
-                    if (res.success) {
-                        $('#result').html(`<div class="alert alert-success">Aktivitas berhasil ditambahkan!</div>`);
-
-                        // Ambil data dari form
-                        const keterangan = $('#keterangan').val();
-                        const fileInput = $('input[name="file"]')[0];
-                        const file = fileInput.files[0];
-                        const fileName = file ? file.name : '-';
-
-                        // Asumsikan format tanggal lokal
-                        const today = new Date().toLocaleDateString('id-ID', {
-                            day: '2-digit', month: 'short', year: 'numeric'
-                        });
-
-                        // Generate row baru
-                        const newRow = table.row.add([
-                            table.rows().count() + 1,
-                            keterangan,
-                            file ? `<span class="text-muted">${fileName}</span>` : '-',
-                            today
-                        ]).draw(false).node();
-
-                        $(newRow).addClass('table-success');
-
-                        // Reset form & tutup modal
-                        $('#uploadForm')[0].reset();
-                        $('#modalTambah').modal('hide');
-                    } else {
-                        $('#result').html(`<div class="alert alert-danger">Gagal menyimpan aktivitas.</div>`);
-                    }
-                }
-            });
-        });
-    });
-</script>
+<div class="d-flex justify-content-end">
+    <button class="btn btn-warning me-2" id="btnEdit" data-id="{{ $aktivitas->id_aktivitas }}">
+        <i class="bi bi-pencil"></i> Edit
+    </button>
+    <button class="btn btn-danger me-2" id="btnHapus" data-id="{{ $aktivitas->id_aktivitas }}">
+        <i class="bi bi-trash"></i> Hapus
+    </button>
+    <button class="btn btn-secondary" data-bs-dismiss="modal">
+        Batal
+    </button>
+</div>

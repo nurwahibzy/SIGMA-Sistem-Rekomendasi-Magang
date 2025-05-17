@@ -154,6 +154,7 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('aktivitas')->group(function () {
             Route::get('/', [AktivitasControllerMahasiswa::class, 'getMagangDiterima']);
             Route::get('/{id_magang}', [AktivitasControllerMahasiswa::class, 'getAktivitas']);
+            Route::get('/{id}/detail', [AktivitasControllerMahasiswa::class, 'detail']);
             Route::get('/{id_magang}/tambah', [AktivitasControllerMahasiswa::class, 'getAddAktivitas']);
             Route::post('/{id_magang}/tambah', [AktivitasControllerMahasiswa::class, 'postAktivitas']);
             Route::get('/{id_magang}/edit/{id_aktivitas}', [AktivitasControllerMahasiswa::class, 'getEditAktivitas']);
