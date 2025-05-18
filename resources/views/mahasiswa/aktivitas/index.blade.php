@@ -89,8 +89,8 @@
                     <div id="result"></div>
 
                     <div class="mb-3">
-                        <label for="file" class="form-label">File Aktivitas (PDF, JPG, PNG, JPEG)</label>
-                        <input type="file" name="file" class="form-control" required>
+                        <label for="file" class="form-label">File Aktivitas (JPG, PNG, JPEG)</label>
+                        <input type="file" name="file" class="form-control" required accept=".jpg,.jpeg,.png" >
                     </div>
 
                     <div class="mb-3">

@@ -3,12 +3,12 @@
 
     <div class="mb-3">
         <label for="file" class="form-label">Unggah File</label>
-        <input class="form-control" type="file" id="file" name="file">
+        <input class="form-control" type="file" id="file" name="file" accept=".jpg,.jpeg,.png>
     </div>
 
     <div class="mb-3">
         <label for="deskripsi" class="form-label">Deskripsi</label>
-        <textarea class="form-control" id="deskripsi" name="keterangan" rows="5">{{ $keterangan }}</textarea>
+        <textarea class="form-control" id="deskripsi" name="keterangan" required rows="5">{{ $keterangan }}</textarea>
     </div>
 
     <div class="d-flex justify-content-between align-items-center">

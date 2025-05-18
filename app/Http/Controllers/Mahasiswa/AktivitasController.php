@@ -13,6 +13,7 @@ use DB;
 use Illuminate\Http\Request;
 use Log;
 use Storage;
+use Validator;
 
 class AktivitasController extends Controller
 {
@@ -164,6 +165,13 @@ class AktivitasController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
+                $validator = Validator::make($request->all(), [
+                    'file' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+                    'keterangan' => 'required'
+                ]);
+                if ($validator->fails()) {
+                    return response()->json($validator->errors(), 422);
+                }
                 $keterangan = $request->input('keterangan');
                 $date = Carbon::parse(now())->toDateString();
                 $filename = null;
@@ -209,6 +217,12 @@ class AktivitasController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
+                $validator = Validator::make($request->all(), [
+                    'keterangan' => 'required'
+                ]);
+                if ($validator->fails()) {
+                    return response()->json($validator->errors(), 422);
+                }
                 $result = DB::transaction(function () use ($request, $id_magang, $id_aktivitas) {
                     $id_mahasiswa = $this->idMahasiswa();
                     $data = AktivitasMagangModel::where('id_aktivitas', $id_aktivitas)
@@ -286,7 +300,7 @@ class AktivitasController extends Controller
         try {
             $result = DB::transaction(function () use ($id_magang, $id_aktivitas) {
                 $id_mahasiswa = $this->idMahasiswa();
-    
+
                 $aktivitas = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
                     ->where('id_aktivitas', $id_aktivitas)
                     ->where('id_magang', $id_magang)
@@ -294,21 +308,21 @@ class AktivitasController extends Controller
                         $query->where('id_mahasiswa', $id_mahasiswa);
                     })
                     ->firstOrFail();
-    
+
                 $activityDate = Carbon::parse($aktivitas->tanggal ?? $aktivitas->created_at)->startOfDay();
                 $today = Carbon::now()->startOfDay();
                 $isPastActivity = $activityDate->lt($today);
-    
+
                 return compact('aktivitas', 'id_magang', 'isPastActivity');
             });
-    
+
             return view('mahasiswa.aktivitas.confirm', $result);
         } catch (\Throwable $e) {
             Log::error('Gagal mengambil data konfirmasi hapus aktivitas: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
         }
     }
-    
+
 
     public function deleteAktivitas(Request $request, $id_magang, $id_aktivitas)
     {
