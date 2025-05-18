@@ -42,15 +42,15 @@ class AktivitasController extends Controller
             ->get();
         return view('mahasiswa.aktivitas.magang', [
             'magang' => collect([
-                (object)[
+                (object) [
                     'id_magang' => 1,
-                    'periode_magang' => (object)[
+                    'periode_magang' => (object) [
                         'tanggal_mulai' => '2025-08-01',
                         'tanggal_selesai' => '2025-10-31',
-                        'lowongan_magang' => (object)[
+                        'lowongan_magang' => (object) [
                             'nama' => 'Intern UI/UX',
-                            'perusahaan' => (object)['nama' => 'Tech Corp'],
-                            'bidang' => (object)['nama' => 'Design'],
+                            'perusahaan' => (object) ['nama' => 'Tech Corp'],
+                            'bidang' => (object) ['nama' => 'Design'],
                         ]
                     ]
                 ]
@@ -68,33 +68,42 @@ class AktivitasController extends Controller
     }
     public function getAktivitas($id_magang)
     {
-        $id_mahasiswa = $this->idMahasiswa();
-        $aktivitas = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
-            ->where('id_magang', $id_magang)
-            ->whereHas('magang', function ($query) use ($id_mahasiswa) {
-                $query->where('id_mahasiswa', $id_mahasiswa);
-            })
-            ->get();
-            
-        // Check if there's an activity for today
-        $today = Carbon::now()->toDateString();
-        $hasActivityToday = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
-            ->where('id_magang', $id_magang)
-            ->where(function($query) use ($today) {
-                $query->where('tanggal', $today)
-                      ->orWhereDate('created_at', $today);
-            })
-            ->whereHas('magang', function ($query) use ($id_mahasiswa) {
-                $query->where('id_mahasiswa', $id_mahasiswa);
-            })
-            ->exists();
-            
-        return view('mahasiswa.aktivitas.index', [
-            'aktivitas' => $aktivitas,
-            'id_magang' => $id_magang,
-            'hasActivityToday' => $hasActivityToday,
-        ]);
+        try {
+            return DB::transaction(function () use ($id_magang) {
+                $id_mahasiswa = $this->idMahasiswa();
+
+                $aktivitas = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
+                    ->where('id_magang', $id_magang)
+                    ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+                        $query->where('id_mahasiswa', $id_mahasiswa);
+                    })
+                    ->get();
+
+                $today = Carbon::now()->toDateString();
+
+                $hasActivityToday = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
+                    ->where('id_magang', $id_magang)
+                    ->where(function ($query) use ($today) {
+                        $query->where('tanggal', $today)
+                            ->orWhereDate('created_at', $today);
+                    })
+                    ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+                        $query->where('id_mahasiswa', $id_mahasiswa);
+                    })
+                    ->exists();
+
+                return view('mahasiswa.aktivitas.index', [
+                    'aktivitas' => $aktivitas,
+                    'id_magang' => $id_magang,
+                    'hasActivityToday' => $hasActivityToday,
+                ]);
+            });
+        } catch (\Exception $e) {
+            Log::error('Gagal mengambil aktivitas magang: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
+        }
     }
+
 
     public function detail($id)
     {
@@ -109,33 +118,47 @@ class AktivitasController extends Controller
 
     public function getEditAktivitas($id_magang, $id_aktivitas)
     {
-        $id_mahasiswa = $this->idMahasiswa();
-        $aktivitas = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
-            ->where('id_aktivitas', $id_aktivitas)
-            ->where('id_magang', $id_magang)
-            ->whereHas('magang', function ($query) use ($id_mahasiswa) {
-                $query->where('id_mahasiswa', $id_mahasiswa);
-            })
-            ->first();
-            
-        if (!$aktivitas) {
-            return response()->json(['success' => false, 'message' => 'Data aktivitas tidak ditemukan'], 404);
+        try {
+            return DB::transaction(function () use ($id_magang, $id_aktivitas) {
+                $id_mahasiswa = $this->idMahasiswa();
+
+                $aktivitas = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
+                    ->where('id_aktivitas', $id_aktivitas)
+                    ->where('id_magang', $id_magang)
+                    ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+                        $query->where('id_mahasiswa', $id_mahasiswa);
+                    })
+                    ->first();
+
+                if (!$aktivitas) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Data aktivitas tidak ditemukan'
+                    ], 404);
+                }
+
+                $activityDate = Carbon::parse($aktivitas->tanggal ?? $aktivitas->created_at)->startOfDay();
+                $today = Carbon::now()->startOfDay();
+
+                if ($activityDate->lt($today)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Aktivitas tanggal sebelumnya tidak dapat diubah'
+                    ], 403);
+                }
+
+                return view('mahasiswa.aktivitas.edit', [
+                    'id_magang' => $aktivitas->id_magang,
+                    'id_aktivitas' => $aktivitas->id_aktivitas,
+                    'keterangan' => $aktivitas->keterangan
+                ]);
+            });
+        } catch (\Exception $e) {
+            Log::error('Gagal mengambil data edit aktivitas: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
         }
-        
-        // Check if the activity is from today
-        $activityDate = Carbon::parse($aktivitas->tanggal ?? $aktivitas->created_at)->startOfDay();
-        $today = Carbon::now()->startOfDay();
-        
-        if ($activityDate->lt($today)) {
-            return response()->json(['success' => false, 'message' => 'Aktivitas tanggal sebelumnya tidak dapat diubah'], 403);
-        }
-        
-        return view('mahasiswa.aktivitas.edit', [
-            'id_magang' => $aktivitas->id_magang, 
-            'id_aktivitas' => $aktivitas->id_aktivitas, 
-            'keterangan' => $aktivitas->keterangan
-        ]);
     }
+
 
     public function postAktivitas(Request $request, $id_magang)
     {
@@ -157,11 +180,11 @@ class AktivitasController extends Controller
                             ->whereHas('magang', function ($query) use ($id_mahasiswa) {
                                 $query->where('id_mahasiswa', $id_mahasiswa);
                             })->insert([
-                                'id_magang' => $id_magang,
-                                'tanggal' => $date,
-                                'keterangan' => $keterangan,
-                                'foto_path' => $filename
-                            ]);
+                                    'id_magang' => $id_magang,
+                                    'tanggal' => $date,
+                                    'keterangan' => $keterangan,
+                                    'foto_path' => $filename
+                                ]);
 
                         $file->storeAs('public/aktivitas', $filename);
                     }
@@ -186,55 +209,56 @@ class AktivitasController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                $id_mahasiswa = $this->idMahasiswa();
-                
-                $data = AktivitasMagangModel::where('id_aktivitas', $id_aktivitas)
-                    ->where('id_magang', $id_magang)
-                    ->whereHas('magang', function ($query) use ($id_mahasiswa) {
-                        $query->where('id_mahasiswa', $id_mahasiswa);
-                    })
-                    ->first();
+                $result = DB::transaction(function () use ($request, $id_magang, $id_aktivitas) {
+                    $id_mahasiswa = $this->idMahasiswa();
+                    $data = AktivitasMagangModel::where('id_aktivitas', $id_aktivitas)
+                        ->where('id_magang', $id_magang)
+                        ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+                            $query->where('id_mahasiswa', $id_mahasiswa);
+                        })
+                        ->first();
 
-                if (!$data) {
-                    return response()->json(['success' => false, 'message' => "Data aktivitas tidak ditemukan atau tidak punya akses."], 404);
-                }
-                
-                // Check if the activity is from today
-                $activityDate = Carbon::parse($data->tanggal ?? $data->created_at)->startOfDay();
-                $today = Carbon::now()->startOfDay();
-                
-                if ($activityDate->lt($today)) {
-                    return response()->json(['success' => false, 'message' => 'Aktivitas tanggal sebelumnya tidak dapat diubah'], 403);
-                }
+                    if (!$data) {
+                        throw new \Exception("Data aktivitas tidak ditemukan atau tidak punya akses.");
+                    }
 
-                DB::transaction(function () use ($request, $data, $id_aktivitas, $id_magang, $id_mahasiswa) {
-                    $keterangan = $request->input('keterangan');
+                    $activityDate = Carbon::parse($data->tanggal ?? $data->created_at)->startOfDay();
+                    $today = Carbon::now()->startOfDay();
+                    if ($activityDate->lt($today)) {
+                        throw new \Exception("Aktivitas tanggal sebelumnya tidak dapat diubah.");
+                    }
+
+                    $data->keterangan = $request->input('keterangan');
 
                     if ($request->hasFile('file')) {
-                        $this->handleFileUpload($request, $data, $id_aktivitas, $id_magang, $id_mahasiswa, $keterangan);
-                    } else {
-                        $data->keterangan = $keterangan;
-                        $data->save();
+                        $file = $request->file('file');
+                        $filename = $id_magang . '_' . Carbon::now()->toDateString() . '.' . $file->getClientOriginalExtension();
+
+                        $file->storeAs('public/aktivitas', $filename);
+                        $data->foto_path = $filename;
                     }
+
+                    $data->save();
+
+                    return [
+                        'id_aktivitas' => $data->id_aktivitas,
+                        'keterangan' => $data->keterangan,
+                        'foto_path' => $data->foto_path,
+                        'tanggal' => $data->tanggal ?? $data->created_at,
+                    ];
                 });
 
-                // Ambil data terbaru untuk dikembalikan ke JS
-                $updated = AktivitasMagangModel::find($id_aktivitas);
                 return response()->json([
                     'success' => true,
-                    'data' => [
-                        'id_aktivitas' => $updated->id_aktivitas,
-                        'keterangan' => $updated->keterangan,
-                        'foto_path' => $updated->foto_path,
-                        'tanggal' => $updated->tanggal ?? $updated->created_at
-                    ]
+                    'data' => $result
                 ]);
             } catch (\Throwable $e) {
                 Log::error("Gagal update Aktivitas: " . $e->getMessage());
-                return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
             }
         }
     }
+
 
 
     private function handleFileUpload(Request $request, $data, $id_aktivitas, $id_magang, $id_mahasiswa, $keterangan)
@@ -259,23 +283,32 @@ class AktivitasController extends Controller
 
     public function confirm($id_magang, $id_aktivitas)
     {
-        $id_mahasiswa = $this->idMahasiswa();
-
-        $aktivitas = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
-            ->where('id_aktivitas', $id_aktivitas)
-            ->where('id_magang', $id_magang)
-            ->whereHas('magang', function ($query) use ($id_mahasiswa) {
-                $query->where('id_mahasiswa', $id_mahasiswa);
-            })
-            ->firstOrFail();
-            
-        // Check if the activity is from today
-        $activityDate = Carbon::parse($aktivitas->tanggal ?? $aktivitas->created_at)->startOfDay();
-        $today = Carbon::now()->startOfDay();
-        $isPastActivity = $activityDate->lt($today);
-
-        return view('mahasiswa.aktivitas.confirm', compact('aktivitas', 'id_magang', 'isPastActivity'));
+        try {
+            $result = DB::transaction(function () use ($id_magang, $id_aktivitas) {
+                $id_mahasiswa = $this->idMahasiswa();
+    
+                $aktivitas = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
+                    ->where('id_aktivitas', $id_aktivitas)
+                    ->where('id_magang', $id_magang)
+                    ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+                        $query->where('id_mahasiswa', $id_mahasiswa);
+                    })
+                    ->firstOrFail();
+    
+                $activityDate = Carbon::parse($aktivitas->tanggal ?? $aktivitas->created_at)->startOfDay();
+                $today = Carbon::now()->startOfDay();
+                $isPastActivity = $activityDate->lt($today);
+    
+                return compact('aktivitas', 'id_magang', 'isPastActivity');
+            });
+    
+            return view('mahasiswa.aktivitas.confirm', $result);
+        } catch (\Throwable $e) {
+            Log::error('Gagal mengambil data konfirmasi hapus aktivitas: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
+        }
     }
+    
 
     public function deleteAktivitas(Request $request, $id_magang, $id_aktivitas)
     {
