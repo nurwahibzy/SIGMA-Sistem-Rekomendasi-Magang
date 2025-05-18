@@ -45,6 +45,7 @@
     <!-- Load DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="{{ asset('template/assets/static/js/components/dark.js') }}"></script>
 
     <script src="{{ asset('template/assets/compiled/js/app.js') }}"></script>
 
