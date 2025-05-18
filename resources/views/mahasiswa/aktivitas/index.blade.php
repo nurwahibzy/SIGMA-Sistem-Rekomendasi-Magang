@@ -208,7 +208,7 @@
                     $('#detailContent .modal-body').html(res);
 
                     // Bind ulang submit form edit di dalam modal
-                    $('#uploadForm').off('submit').on('submit', function (e) {
+                    $('#editForm').off('submit').on('submit', function (e) {
                         e.preventDefault();
                         let formData = new FormData(this);
 

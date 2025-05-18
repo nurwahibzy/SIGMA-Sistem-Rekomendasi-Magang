@@ -1,4 +1,4 @@
-<form id="uploadForm" enctype="multipart/form-data" class="mt-4">
+<form id="editForm" enctype="multipart/form-data" class="mt-4">
     @csrf
 
     <div class="mb-3">
@@ -30,7 +30,7 @@
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
         });
 
-        $('#uploadForm').on('submit', function (e) {
+        $('#editForm').on('submit', function (e) {
             e.preventDefault();
 
             let formData = new FormData(this);
@@ -58,7 +58,7 @@
                     success: function (res) {
                         if (res.status) {
                             $('#result').html(`<p style="color:green;">${res.message}</p>`);
-                            $('#uploadForm')[0].reset();
+                            $('#editForm')[0].reset();
                         } else {
                             $('#result').html(`<p style="color:red;">${res.message}</p>`);
                         }
