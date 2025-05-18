@@ -4,6 +4,7 @@
 </div>
 
 <div class="modal-body" style="max-height: 80vh; overflow-y: auto;">
+    
     <p>Yakin ingin menghapus aktivitas berikut?</p>
 
     <ul style="padding-left: 1.2rem;">

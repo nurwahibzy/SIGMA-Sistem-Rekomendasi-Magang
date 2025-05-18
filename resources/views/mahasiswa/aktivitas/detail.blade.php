@@ -19,11 +19,23 @@
     <p>{{ \Carbon\Carbon::parse($aktivitas->tanggal ?? $aktivitas->created_at)->format('d M Y') }}</p>
 </div>
 
+@php
+    $activityDate = \Carbon\Carbon::parse($aktivitas->tanggal ?? $aktivitas->created_at)->startOfDay();
+    $today = \Carbon\Carbon::now()->startOfDay();
+    $isPastActivity = $activityDate->lt($today);
+@endphp
+
+@if($isPastActivity)
+<div class="alert alert-info mb-3">
+    <i class="bi bi-info-circle"></i> Aktivitas tanggal sebelumnya tidak dapat diubah atau dihapus.
+</div>
+@endif
+
 <div class="d-flex justify-content-end">
-    <button class="btn btn-warning me-2" id="btnEdit" data-id="{{ $aktivitas->id_aktivitas }}">
+    <button class="btn btn-warning me-2" id="btnEdit" data-id="{{ $aktivitas->id_aktivitas }}" {{ $isPastActivity ? 'disabled' : '' }}>
         <i class="bi bi-pencil"></i> Edit
     </button>
-    <button class="btn btn-danger me-2" id="btnHapus" data-id="{{ $aktivitas->id_aktivitas }}">
+    <button class="btn btn-danger me-2" id="btnHapus" data-id="{{ $aktivitas->id_aktivitas }}" {{ $isPastActivity ? 'disabled' : '' }}>
         <i class="bi bi-trash"></i> Hapus
     </button>
     <button class="btn btn-secondary" data-bs-dismiss="modal">
