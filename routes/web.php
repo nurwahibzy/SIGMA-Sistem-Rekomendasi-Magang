@@ -159,7 +159,8 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/{id_magang}/tambah', [AktivitasControllerMahasiswa::class, 'postAktivitas']);
             Route::get('/{id_magang}/edit/{id_aktivitas}', [AktivitasControllerMahasiswa::class, 'getEditAktivitas']);
             Route::post('/{id_magang}/edit/{id_aktivitas}', [AktivitasControllerMahasiswa::class, 'putAktivitas']);
-            Route::delete('/{id_magang}/edit/{id_aktivitas}', [AktivitasControllerMahasiswa::class, 'deleteAktivitas']);
+            Route::get('/{id_magang}/confirm/{id_aktivitas}', [AktivitasControllerMahasiswa::class, 'confirm']);
+            Route::delete('/{id_magang}/delete/{id_aktivitas}', [AktivitasControllerMahasiswa::class, 'deleteAktivitas']);
         });
 
         Route::prefix('riwayat')->group(function () {

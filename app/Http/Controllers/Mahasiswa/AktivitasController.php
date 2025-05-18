@@ -151,51 +151,51 @@ class AktivitasController extends Controller
         }
     }
 
-  public function putAktivitas(Request $request, $id_magang, $id_aktivitas)
-{
-    if ($request->ajax() || $request->wantsJson()) {
-        try {
-            DB::transaction(function () use ($request, $id_aktivitas, $id_magang, &$data) {
-                $id_mahasiswa = $this->idMahasiswa();
+    public function putAktivitas(Request $request, $id_magang, $id_aktivitas)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            try {
+                DB::transaction(function () use ($request, $id_aktivitas, $id_magang, &$data) {
+                    $id_mahasiswa = $this->idMahasiswa();
 
-                $data = AktivitasMagangModel::where('id_aktivitas', $id_aktivitas)
-                    ->where('id_magang', $id_magang)
-                    ->whereHas('magang', function ($query) use ($id_mahasiswa) {
-                        $query->where('id_mahasiswa', $id_mahasiswa);
-                    })
-                    ->first();
+                    $data = AktivitasMagangModel::where('id_aktivitas', $id_aktivitas)
+                        ->where('id_magang', $id_magang)
+                        ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+                            $query->where('id_mahasiswa', $id_mahasiswa);
+                        })
+                        ->first();
 
-                if (!$data) {
-                    throw new \Exception("Data aktivitas tidak ditemukan atau tidak punya akses.");
-                }
+                    if (!$data) {
+                        throw new \Exception("Data aktivitas tidak ditemukan atau tidak punya akses.");
+                    }
 
-                $keterangan = $request->input('keterangan');
+                    $keterangan = $request->input('keterangan');
 
-                if ($request->hasFile('file')) {
-                    $this->handleFileUpload($request, $data, $id_aktivitas, $id_magang, $id_mahasiswa, $keterangan);
-                } else {
-                    $data->keterangan = $keterangan;
-                    $data->save();
-                }
-            });
+                    if ($request->hasFile('file')) {
+                        $this->handleFileUpload($request, $data, $id_aktivitas, $id_magang, $id_mahasiswa, $keterangan);
+                    } else {
+                        $data->keterangan = $keterangan;
+                        $data->save();
+                    }
+                });
 
-            // Ambil data terbaru untuk dikembalikan ke JS
-            $updated = AktivitasMagangModel::find($id_aktivitas);
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'id_aktivitas' => $updated->id_aktivitas,
-                    'keterangan' => $updated->keterangan,
-                    'foto_path' => $updated->foto_path,
-                    'tanggal' => $updated->tanggal ?? $updated->created_at
-                ]
-            ]);
-        } catch (\Throwable $e) {
-            Log::error("Gagal update Aktivitas: " . $e->getMessage());
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+                // Ambil data terbaru untuk dikembalikan ke JS
+                $updated = AktivitasMagangModel::find($id_aktivitas);
+                return response()->json([
+                    'success' => true,
+                    'data' => [
+                        'id_aktivitas' => $updated->id_aktivitas,
+                        'keterangan' => $updated->keterangan,
+                        'foto_path' => $updated->foto_path,
+                        'tanggal' => $updated->tanggal ?? $updated->created_at
+                    ]
+                ]);
+            } catch (\Throwable $e) {
+                Log::error("Gagal update Aktivitas: " . $e->getMessage());
+                return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            }
         }
     }
-}
 
 
     private function handleFileUpload(Request $request, $data, $id_aktivitas, $id_magang, $id_mahasiswa, $keterangan)
@@ -217,6 +217,22 @@ class AktivitasController extends Controller
                 'foto_path' => $filename
             ]);
     }
+
+    public function confirm($id_magang, $id_aktivitas)
+    {
+        $id_mahasiswa = $this->idMahasiswa();
+
+        $aktivitas = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
+            ->where('id_aktivitas', $id_aktivitas)
+            ->where('id_magang', $id_magang)
+            ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+                $query->where('id_mahasiswa', $id_mahasiswa);
+            })
+            ->firstOrFail();
+
+        return view('mahasiswa.aktivitas.confirm', compact('aktivitas', 'id_magang'));
+    }
+
     public function deleteAktivitas(Request $request, $id_magang, $id_aktivitas)
     {
         if ($request->ajax() || $request->wantsJson()) {

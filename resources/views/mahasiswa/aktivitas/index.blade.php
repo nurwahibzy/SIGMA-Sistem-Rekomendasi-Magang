@@ -140,6 +140,18 @@
         </div>
     </div>
 
+    <!-- Modal Konfirmasi Hapus -->
+    <div class="modal fade" id="modalKonfirmasiHapus" tabindex="-1">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content" id="konfirmasiContent">
+                <div class="modal-body text-center">
+                    <div class="spinner-border text-primary"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 @endsection
 
 @push('scripts')
@@ -258,28 +270,43 @@
                 });
             });
 
-
-
             $(document).on('click', '#btnHapus', function () {
                 const id = $(this).data('id');
-                if (confirm('Yakin ingin menghapus aktivitas ini?')) {
-                    $.ajax({
-                        url: `/mahasiswa/aktivitas/delete/${id}`,
-                        type: 'DELETE',
-                        data: {
-                            _token: '{{ csrf_token() }}'
-                        },
-                        success: function () {
-                            alert('Aktivitas berhasil dihapus.');
-                            $('#modalDetail').modal('hide');
-                            location.reload();
-                        },
-                        error: function () {
-                            alert('Gagal menghapus aktivitas.');
-                        }
-                    });
-                }
+                const idMagang = '{{ $id_magang }}';
+
+                $('#modalDetail').modal('hide'); // sembunyikan modal detail dulu
+                $('#modalKonfirmasiHapus').modal('show');
+                $('#konfirmasiContent').html(`<div class="text-center"><div class="spinner-border text-primary"></div></div>`);
+
+                // load konfirmasi ke dalam modal
+                $.get(`/mahasiswa/aktivitas/${idMagang}/confirm/${id}`, function (res) {
+                    $('#konfirmasiContent').html(res);
+                });
             });
+
+            $(document).on('click', '#confirmDeleteBtn', function () {
+                const id = $(this).data('id');
+                const idMagang = $(this).data('idmagang');
+
+                $.ajax({
+                    url: `/mahasiswa/aktivitas/${idMagang}/delete/${id}`,
+                    type: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function () {
+                        $('#modalKonfirmasiHapus').modal('hide');
+                        alert('Aktivitas berhasil dihapus.');
+                        location.reload();
+                    },
+                    error: function () {
+                        alert('Gagal menghapus aktivitas.');
+                    }
+                });
+            });
+
+
+
         });
     </script>
 
