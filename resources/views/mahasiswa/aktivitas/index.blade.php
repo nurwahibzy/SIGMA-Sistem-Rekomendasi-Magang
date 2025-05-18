@@ -62,6 +62,10 @@
                             </table>
                         </div>
                     </div>
+                    {{-- Tombol Kembali --}}
+                    <a href="javascript:history.back()" class="btn btn-secondary mb-3">
+                        <i class="bi bi-arrow-left-circle"></i> Kembali
+                    </a>
                 @endif
             </div>
         </section>

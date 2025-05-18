@@ -91,6 +91,12 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                                <div class="mt-3 d-flex justify-content-end gap-2">
+                                    <form id="formLamar" method="POST" action="">
+                                        @csrf
+                                        <button type="submit" class="btn btn-primary">Lamar</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -141,6 +147,8 @@
                         }
                         $('#periode').text(periodeText);
 
+                        // atur routenya belum benar
+                        $('#formLamar').attr('action', `/mahasiswa/lamar/${idPeriode}`);
 
                         $('#detailModal').modal('show');
                     } else {
