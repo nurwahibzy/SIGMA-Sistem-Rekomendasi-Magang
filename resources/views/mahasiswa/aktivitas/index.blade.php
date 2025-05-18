@@ -208,9 +208,10 @@
                 $('#modalDetail').modal('show');
                 $('#detailContent .modal-body').html(`<div class="text-center"><div class="spinner-border text-primary"></div></div>`);
 
-                $.get(`/mahasiswa/aktivitas/${id}/detail`, function (res) {
+                $.get("{{ url('/mahasiswa/aktivitas') }}/" + id + "/detail", function (res) {
                     $('#detailContent .modal-body').html(res);
                 });
+
             });
 
             $(document).on('click', '#btnEdit', function () {
@@ -220,7 +221,7 @@
                 $('#modalDetail').modal('show');
                 $('#detailContent .modal-body').html(`<div class="text-center"><div class="spinner-border text-primary"></div></div>`);
 
-                $.get(`/mahasiswa/aktivitas/${idMagang}/edit/${id}`, function (res) {
+                $.get("{{ url('/mahasiswa/aktivitas') }}/" + idMagang + "/edit/" + id, function (res) {
                     $('#detailContent .modal-body').html(res);
 
                     // Bind ulang submit form edit di dalam modal
@@ -229,7 +230,7 @@
                         let formData = new FormData(this);
 
                         $.ajax({
-                            url: `/mahasiswa/aktivitas/${idMagang}/edit/${id}`,
+                            url: "{{ url('/mahasiswa/aktivitas') }}/" + idMagang + "/edit/" + id,
                             type: 'POST',
                             data: formData,
                             contentType: false,
@@ -283,9 +284,10 @@
                 $('#konfirmasiContent').html(`<div class="text-center"><div class="spinner-border text-primary"></div></div>`);
 
                 // load konfirmasi ke dalam modal
-                $.get(`/mahasiswa/aktivitas/${idMagang}/confirm/${id}`, function (res) {
+                $.get("{{ url('/mahasiswa/aktivitas') }}/" + idMagang + "/confirm/" + id, function (res) {
                     $('#konfirmasiContent').html(res);
                 });
+
             });
 
             $(document).on('click', '#confirmDeleteBtn', function () {
@@ -293,7 +295,7 @@
                 const idMagang = $(this).data('idmagang');
 
                 $.ajax({
-                    url: `/mahasiswa/aktivitas/${idMagang}/delete/${id}`,
+                    url: "{{ url('/mahasiswa/aktivitas') }}/" + idMagang + "/delete/" + id,
                     type: 'DELETE',
                     data: {
                         _token: '{{ csrf_token() }}'

@@ -470,4 +470,32 @@ class AkunController extends Controller
             }
         }
     }
+
+    public function postUserAdminExcel(Request $request){
+         $file = $request->file('file_barang'); // ambil file dari request
+            $reader = IOFactory::createReader('Xlsx'); // load reader file excel
+            $reader->setReadDataOnly(true); // hanya membaca data
+            $spreadsheet = $reader->load($file->getRealPath()); // load file excel
+            $sheet = $spreadsheet->getActiveSheet(); // ambil sheet yang aktif
+            $data = $sheet->toArray(null, false, true, true); // ambil data excel
+            $insert = [];
+            if (count($data) > 1) { // jika data lebih dari 1 baris
+                foreach ($data as $baris => $value) {
+                    if ($baris > 1) { // baris ke 1 adalah header, maka lewati
+                        $insert[] = [
+                            'kategori_id' => $value['A'],
+                            'barang_kode' => $value['B'],
+                            'barang_nama' => $value['C'],
+                            'harga_beli' => $value['D'],
+                            'harga_jual' => $value['E'],
+                            'created_at' => now(),
+                        ];
+                    }
+                }
+                // if (count($insert) > 0) {
+                //     // insert data ke database, jika data sudah ada, maka diabaikan
+                //     BarangModel::insertOrIgnore($insert);
+                // }
+            }
+    }
 }
