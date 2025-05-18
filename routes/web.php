@@ -169,6 +169,7 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::prefix('penilaian')->group(function () {
+            Route::get('/', [PenilaianController::class, 'index']);
             Route::get('/{id_magang}', [PenilaianController::class, 'getPenilaian']);
             Route::post('/{id_magang}', [PenilaianController::class, 'postPenilaian']);
         });
