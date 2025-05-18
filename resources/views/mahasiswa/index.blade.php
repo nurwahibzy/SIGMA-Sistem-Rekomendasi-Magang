@@ -1,11 +1,11 @@
 @extends('layouts.tamplate')
 
 @section('content')
-    <link rel="stylesheet"
+    <!-- <link rel="stylesheet"
         href="{{ asset('template/assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}">
     <link rel="stylesheet" href="{{ asset('template/assets/compiled/css/table-datatable-jquery.css') }}">
     <link rel="stylesheet" href="{{ asset('template/assets/compiled/css/app.css') }}">
-    <link rel="stylesheet" href="{{ asset('template/assets/compiled/css/app-dark.css') }}">
+    <link rel="stylesheet" href="{{ asset('template/assets/compiled/css/app-dark.css') }}"> -->
 
     <div class="card">
         <div class="card-header">
@@ -108,13 +108,13 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('template/assets/extensions/jquery/jquery.min.js') }}"></script>
+    <!-- <script src="{{ asset('template/assets/extensions/jquery/jquery.min.js') }}"></script> -->
     <script src="{{ asset('template/assets/extensions/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('template/assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
     <script src="{{ asset('template/assets/static/js/pages/datatables.js') }}"></script>
     <script src="{{ asset('template/assets/static/js/components/dark.js') }}"></script>
-    <script src="{{ asset('template/assets/compiled/js/app.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- <script src="{{ asset('template/assets/compiled/js/app.js') }}"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
 
     <script>
         $(document).on('click', '.btn-detail', function () {

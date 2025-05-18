@@ -159,6 +159,7 @@
 @endsection
 
 @push('scripts')
+<script src="{{ asset('template/assets/static/js/components/dark.js') }}"></script>
     <script>
         $(document).ready(function () {
             let table = $('#aktivitasTable').DataTable({ responsive: true });
@@ -176,22 +177,7 @@
                     processData: false,
                     success: function (res) {
                         if (res.success) {
-                            $('#result').html(`<div class="alert alert-success">Aktivitas berhasil ditambahkan!</div>`);
-                            const data = res.data;
-                            const today = new Date(data.tanggal).toLocaleDateString('id-ID', {
-                                day: '2-digit', month: 'short', year: 'numeric'
-                            });
-
-                            table.row.add([
-                                table.rows().count() + 1,
-                                data.keterangan,
-                                `<a href="{{ asset('storage/aktivitas/') }}/${data.foto_path}" target="_blank">${data.foto_path}</a>`,
-                                today,
-                                `<button type="button" class="btn btn-sm btn-info btn-detail" data-id="${data.id_aktivitas}">Detail</button>`
-                            ]).draw(false);
-
-                            $('#uploadForm')[0].reset();
-                            bootstrap.Modal.getInstance(document.getElementById('modalTambah')).hide();
+                            location.reload();
                         } else {
                             $('#result').html(`<div class="alert alert-danger">Gagal menyimpan aktivitas.</div>`);
                         }
@@ -237,32 +223,7 @@
                             processData: false,
                             success: function (res) {
                                 if (res.success) {
-                                    $('#result').html(`<div class="alert alert-success">Aktivitas berhasil diperbarui!</div>`);
-                                    const data = res.data;
-
-                                    const today = new Date(data.tanggal).toLocaleDateString('id-ID', {
-                                        day: '2-digit', month: 'short', year: 'numeric'
-                                    });
-
-                                    // Update baris di DataTable
-                                    $('#aktivitasTable tbody tr').each(function () {
-                                        let btn = $(this).find('.btn-detail');
-                                        if (btn.data('id') == data.id_aktivitas) {
-                                            let rowIndex = table.row($(this)).index();
-
-                                            table.row(rowIndex).data([
-                                                rowIndex + 1,
-                                                data.keterangan,
-                                                data.foto_path
-                                                    ? `<a href="{{ asset('storage/aktivitas/') }}/${data.foto_path}" target="_blank">${data.foto_path}</a>`
-                                                    : '-',
-                                                today,
-                                                `<button type="button" class="btn btn-sm btn-info btn-detail" data-id="${data.id_aktivitas}">Detail</button>`
-                                            ]).draw(false);
-                                        }
-                                    });
-
-                                    bootstrap.Modal.getInstance(document.getElementById('modalDetail')).hide();
+                                    location.reload();
                                 } else {
                                     $('#result').html(`<div class="alert alert-danger">Gagal memperbarui aktivitas.</div>`);
                                 }
@@ -300,19 +261,18 @@
                     data: {
                         _token: '{{ csrf_token() }}'
                     },
-                    success: function () {
-                        $('#modalKonfirmasiHapus').modal('hide');
-                        alert('Aktivitas berhasil dihapus.');
-                        location.reload();
+                    success: function (res) {
+                        if (res.success) {
+                            location.reload();
+                        } else {
+                            $('#result').html(`<div class="alert alert-danger">Gagal menghapus aktivitas.</div>`);
+                        }
                     },
-                    error: function () {
-                        alert('Gagal menghapus aktivitas.');
+                    error: function (xhr) {
+                        $('#result').html(`<div class="alert alert-danger">Gagal: ${xhr.responseJSON?.message || 'Terjadi kesalahan.'}</div>`);
                     }
                 });
             });
-
-
-
         });
     </script>
 

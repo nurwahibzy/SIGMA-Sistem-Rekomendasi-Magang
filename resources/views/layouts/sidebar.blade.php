@@ -45,7 +45,7 @@
             <ul class="menu">
                 <li class="sidebar-title">Menu</li>
 
-                  <li class="sidebar-item {{ (isset($activeMenu) && $activeMenu == 'dashboard') ? 'active' : '' }}">
+                <li class="sidebar-item {{ (isset($activeMenu) && $activeMenu == 'dashboard') ? 'active' : '' }}">
                     <a href="{{ url('/mahasiswa/dashboard') }}" class="sidebar-link">
                         <i class="bi bi-grid-fill"></i>
                         <span>Dashboard</span>
