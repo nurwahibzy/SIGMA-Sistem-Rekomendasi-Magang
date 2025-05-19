@@ -28,7 +28,7 @@ class AkunSeeder extends Seeder
                 'id_level' => $a[1],
                 'password' => Hash::make('password'), // default password
                 'status' => 'aktif',
-                'foto_path' => 'images/akun/' . $a[0] . '.jpg',
+                'foto_path' =>  $a[0] . '.jpg',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

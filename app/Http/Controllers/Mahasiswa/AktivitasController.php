@@ -78,6 +78,7 @@ class AktivitasController extends Controller
                     ->whereHas('magang', function ($query) use ($id_mahasiswa) {
                         $query->where('id_mahasiswa', $id_mahasiswa);
                     })
+                    ->orderByDesc('tanggal')
                     ->get();
 
                 $today = Carbon::now()->toDateString();
@@ -187,7 +188,7 @@ class AktivitasController extends Controller
                             ->where('id_magang', $id_magang)
                             ->whereHas('magang', function ($query) use ($id_mahasiswa) {
                                 $query->where('id_mahasiswa', $id_mahasiswa);
-                            })->insert([
+                            })->create([
                                     'id_magang' => $id_magang,
                                     'tanggal' => $date,
                                     'keterangan' => $keterangan,

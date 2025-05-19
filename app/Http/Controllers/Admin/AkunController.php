@@ -12,6 +12,8 @@ use DB;
 use Hash;
 use Illuminate\Http\Request;
 use Log;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Storage;
 
 class AkunController extends Controller
@@ -109,8 +111,8 @@ class AkunController extends Controller
 
                         $file = $request->file('file');
                         $filename = $data->akun->id_user . '.' . $file->getClientOriginalExtension();
-                        Storage::disk('public')->delete("dokumen/profil/akun/{$data->akun->foto_path}");
-                        $file->storeAs('public/dokumen/profil/akun', $filename);
+                        Storage::disk('public')->delete("profil/akun/{$data->akun->foto_path}");
+                        $file->storeAs('public/profil/akun', $filename);
                         AkunModel::where('id_akun', $data->akun->id_akun)
                             ->update([
                                 'foto_path' => $filename
@@ -451,8 +453,8 @@ class AkunController extends Controller
         $extension = pathinfo($lama, PATHINFO_EXTENSION);
         $file_path_baru = $id_user . '.' . $extension;
 
-        if (Storage::disk('public')->exists("dokumen/profil/akun/$lama")) {
-            Storage::disk('public')->move("dokumen/profil/akun/$lama", "dokumen/profil/akun/$file_path_baru");
+        if (Storage::disk('public')->exists("profil/akun/$lama")) {
+            Storage::disk('public')->move("profil/akun/$lama", "profil/akun/$file_path_baru");
         }
     }
 
@@ -471,31 +473,62 @@ class AkunController extends Controller
         }
     }
 
-    // public function postUserAdminExcel(Request $request){
-    //      $file = $request->file('file_barang'); // ambil file dari request
-    //         $reader = IOFactory::createReader('Xlsx'); // load reader file excel
-    //         $reader->setReadDataOnly(true); // hanya membaca data
-    //         $spreadsheet = $reader->load($file->getRealPath()); // load file excel
-    //         $sheet = $spreadsheet->getActiveSheet(); // ambil sheet yang aktif
-    //         $data = $sheet->toArray(null, false, true, true); // ambil data excel
-    //         $insert = [];
-    //         if (count($data) > 1) { // jika data lebih dari 1 baris
-    //             foreach ($data as $baris => $value) {
-    //                 if ($baris > 1) { // baris ke 1 adalah header, maka lewati
-    //                     $insert[] = [
-    //                         'kategori_id' => $value['A'],
-    //                         'barang_kode' => $value['B'],
-    //                         'barang_nama' => $value['C'],
-    //                         'harga_beli' => $value['D'],
-    //                         'harga_jual' => $value['E'],
-    //                         'created_at' => now(),
-    //                     ];
-    //                 }
-    //             }
-                // if (count($insert) > 0) {
-                //     // insert data ke database, jika data sudah ada, maka diabaikan
-                //     BarangModel::insertOrIgnore($insert);
-                // }
-    //         }
-    // }
+    public function postUserAdminExcel(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|mimes:xlsx,xls',
+            // jika id_prodi di-passing sebagai input
+            'id_prodi' => 'nullable|exists:prodi,id_prodi',
+        ]);
+
+        $file = $request->file('file_excel'); // ambil file dari request
+        $reader = IOFactory::createReader('Xlsx'); // load reader file excel
+        $reader->setReadDataOnly(true); // hanya membaca data
+        $spreadsheet = $reader->load($file->getRealPath()); // load file excel
+        $sheet = $spreadsheet->getActiveSheet(); // ambil sheet yang aktif
+        $data = $sheet->toArray(null, false, true, true); // ambil data excel
+        // Mulai transaction agar rollback jika ada error
+        DB::transaction(function () use ($data, $request) {
+            foreach ($data as $index => $row) {
+                if ($index === 1) {
+                    continue;
+                }
+
+                $nim = trim($row['A']);
+                $nama = trim($row['B']);
+                $alamat = trim($row['C']);
+                $telepon = trim($row['D']);
+                $tanggal_lahir = trim($row['E']);
+                $email = trim($row['F']);
+
+                if (is_numeric($tanggal_lahir)) {
+                    $tanggal_lahir = Date::excelToDateTimeObject($tanggal_lahir)->format('Y-m-d');
+                }
+
+                $akun = AkunModel::create([
+                    'id_user' => $nim,
+                    'id_level' => 2,
+                    'password' => bcrypt('defaultPassword123'),
+                    'status' => 'aktif',
+                    'foto_path' => "$nim.jpg",
+                ]);
+
+                MahasiswaModel::create([
+                    'id_mahasiswa' => $nim,
+                    'id_akun' => $akun->id_akun,
+                    'id_prodi' => 1,
+                    'nama' => $nama,
+                    'alamat' => $alamat,
+                    'telepon' => $telepon,
+                    'tanggal_lahir' => $tanggal_lahir,
+                    'email' => $email,
+                ]);
+            }
+        });
+
+        // return redirect()->back()
+        //     ->with('success', 'Semua data dari Excel berhasil diimport.');
+
+        return response()->json($data);
+    }
 }

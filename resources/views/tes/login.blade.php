@@ -32,7 +32,7 @@
                     <form action="{{ url('login') }}" method="POST">
                         @csrf
                         <div class="form-group position-relative has-icon-left mb-4">
-                            <input type="text" id="id_user" name="id_user" class="form-control form-control-xl" placeholder="id_user">
+                            <input type="text" id="id_user" name="id_user" class="form-control form-control-xl" placeholder="ID">
                             <div class="form-control-icon">
                                 <i class="bi bi-person"></i>
                             </div>

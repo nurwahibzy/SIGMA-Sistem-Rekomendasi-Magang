@@ -12,7 +12,7 @@ class AkunModel extends Authenticatable
 
     protected $table = 'akun';
     protected $primaryKey = 'id_akun';
-    protected $fillable = ['id_level', 'username', 'password', 'status', 'foto_path'];
+    protected $fillable = ['id_user', 'id_level', 'username', 'password', 'status', 'foto_path'];
     protected $hidden = ['password'];
     protected $casts = ['password' => 'hashed'];
 

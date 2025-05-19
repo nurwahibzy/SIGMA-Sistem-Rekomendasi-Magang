@@ -19,7 +19,7 @@ class AktivitasMagangSeeder extends Seeder
                 'id_magang'  => 2,
                 'tanggal'    => Carbon::parse('2025-05-09')->toDateString(),
                 'keterangan' => 'Membuat laporan kegiatan harian',
-                'foto_path'  => 'foto/1_2025-05-09.jpg',
+                'foto_path'  => '1_2025-05-09.jpg',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]

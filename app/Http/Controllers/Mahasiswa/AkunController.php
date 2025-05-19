@@ -144,8 +144,8 @@ class AkunController extends Controller
 
                         $file = $request->file('file');
                         $filename = $data->akun->id_user . '.' . $file->getClientOriginalExtension();
-                        Storage::disk('public')->delete("dokumen/profil/akun/{$data->akun->foto_path}");
-                        $file->storeAs('public/dokumen/profil/akun', $filename);
+                        Storage::disk('public')->delete("profil/akun/{$data->akun->foto_path}");
+                        $file->storeAs('public/profil/akun', $filename);
                         AkunModel::where('id_akun', $data->akun->id_akun)
                             ->update([
                                 'foto_path' => $filename
