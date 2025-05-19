@@ -20,24 +20,22 @@ class PeriodeMagangController extends Controller
             ->id_mahasiswa;
         return $id_mahasiswa;
     }
-  public function getDashboard()
-{
-    $magang = PeriodeMagangModel::with(
-        'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
-        'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama',
-        'lowongan_magang.bidang:id_bidang,nama',
-        'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
-    )
-        ->where('tanggal_mulai', '>', now())
-        ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
+    public function getDashboard()
+    {
+        $magang = PeriodeMagangModel::with(
+            'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
+            'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama',
+            'lowongan_magang.bidang:id_bidang,nama',
+            'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
+        )
+            ->where('tanggal_mulai', '>', now())
+            ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
 
         return view('mahasiswa.index', [
             'magang' => $magang,
             'activeMenu' => 'dashboard'
         ]);
-        
-        
-}
+    }
 
 
     public function getDetailPeriode($id_periode)

@@ -15,8 +15,10 @@ class LowonganMagangController extends Controller
     // add peringatan, try catch, transaction
     public function getLowongan()
     {
-        $lowongan = LowonganMagangModel::get();
-        return response()->json($lowongan);
+        $lowongan = LowonganMagangModel::with('perusahaan')
+        ->get();
+
+        return view('admin.lowongan.index', ['lowongan' => $lowongan]);
     }
 
     public function getAddLowongan()

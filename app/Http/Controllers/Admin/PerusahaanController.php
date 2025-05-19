@@ -21,7 +21,8 @@ class PerusahaanController extends Controller
     public function getPerusahaan()
     {
         $perusahaan = PerusahaanModel::get();
-        return response()->json($perusahaan);
+        return view('admin.perusahaan.index', ['perusahaan' => $perusahaan]);
+        
     }
 
     public function getAddPerusahaan()

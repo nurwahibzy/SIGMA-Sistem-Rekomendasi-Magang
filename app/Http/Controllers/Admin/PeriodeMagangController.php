@@ -12,8 +12,11 @@ class PeriodeMagangController extends Controller
 {
     public function getPeriode()
     {
-        $lowongan = PeriodeMagangModel::get();
-        return response()->json($lowongan);
+        $periode = PeriodeMagangModel::with(
+            'lowongan_magang', 'lowongan_magang.perusahaan'
+        )
+            ->get();
+            return view('admin.periode.index', ['periode' => $periode]);
     }
 
     public function getAddPeriode()

@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\DosenController;
 use App\Http\Controllers\Admin\LowonganMagangController;
+use App\Http\Controllers\Admin\MahasiswaController;
 use App\Http\Controllers\Admin\PeriodeMagangController as PeriodeMagangControllerAdmin;
 use App\Http\Controllers\Admin\PerusahaanController;
 use App\Http\Controllers\Admin\ProdiController;
@@ -61,6 +64,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/', [LoginController::class, 'getDashoboard']);
     Route::middleware(['authorize:ADM'])->prefix('admin')->group(function () {
         Route::get('/dashboard', [MagangControllerAdmin::class, 'getDashboard']);
+        Route::get('/tes', [AkunControllerAdmin::class, 'tes']);
+        Route::post('/tes', [AkunControllerAdmin::class, 'postUserAdminExcel']);
+
         Route::prefix('profil')->group(function () {
             Route::get('/', [AkunControllerAdmin::class, 'getProfil']);
 
@@ -68,6 +74,33 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/', [AkunControllerAdmin::class, 'getEditProfil']);
                 Route::put('/', [AkunControllerAdmin::class, 'putAkun']);
             });
+        });
+
+        Route::prefix('admin')->group(function () {
+            Route::get('/', [AdminController::class, 'getadmin']);
+            Route::get('/tambah', [AdminController::class, 'getAddadmin']);
+            Route::post('/tambah', [AdminController::class, 'postadmin']);
+            Route::get('/edit/{id_admin}', [AdminController::class, 'getEditadmin']);
+            Route::post('/edit/{id_admin}', [AdminController::class, 'putadmin']);
+            Route::delete('/edit/{id_admin}', [AdminController::class, 'deleteadmin']);
+        });
+
+        Route::prefix('mahasiswa')->group(function () {
+            Route::get('/', [MahasiswaController::class, 'getmahasiswa']);
+            Route::get('/tambah', [MahasiswaController::class, 'getAddmahasiswa']);
+            Route::post('/tambah', [MahasiswaController::class, 'postmahasiswa']);
+            Route::get('/edit/{id_mahasiswa}', [MahasiswaController::class, 'getEditmahasiswa']);
+            Route::post('/edit/{id_mahasiswa}', [MahasiswaController::class, 'putmahasiswa']);
+            Route::delete('/edit/{id_mahasiswa}', [MahasiswaController::class, 'deletemahasiswa']);
+        });
+
+        Route::prefix('dosen')->group(function () {
+            Route::get('/', [DosenController::class, 'getdosen']);
+            Route::get('/tambah', [DosenController::class, 'getAdddosen']);
+            Route::post('/tambah', [DosenController::class, 'postdosen']);
+            Route::get('/edit/{id_dosen}', [DosenController::class, 'getEditdosen']);
+            Route::post('/edit/{id_dosen}', [DosenController::class, 'putdosen']);
+            Route::delete('/edit/{id_dosen}', [DosenController::class, 'deletedosen']);
         });
 
         Route::prefix('prodi')->group(function () {
@@ -107,6 +140,16 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/edit/{id_periode}', [PeriodeMagangControllerAdmin::class, 'getEditPeriode']);
             Route::post('/edit/{id_periode}', [PeriodeMagangControllerAdmin::class, 'putPeriode']);
             Route::delete('/edit/{id_periode}', [PeriodeMagangControllerAdmin::class, 'deletePeriode']);
+        });
+
+        Route::prefix('kegiatan')->group(function () {
+            Route::get('/', [MagangControllerAdmin::class, 'getkegiatan']);
+            Route::get('/tambah', [MagangControllerAdmin::class, 'getAddkegiatan']);
+            Route::post('/tambah', [MagangControllerAdmin::class, 'postkegiatan']);
+            Route::get('/detail/{id_kegiatan}', [MagangControllerAdmin::class, 'getDetailkegiatan']);
+            Route::get('/edit/{id_kegiatan}', [MagangControllerAdmin::class, 'getEditkegiatan']);
+            Route::post('/edit/{id_kegiatan}', [MagangControllerAdmin::class, 'putkegiatan']);
+            Route::delete('/edit/{id_kegiatan}', [MagangControllerAdmin::class, 'deletekegiatan']);
         });
 
     });

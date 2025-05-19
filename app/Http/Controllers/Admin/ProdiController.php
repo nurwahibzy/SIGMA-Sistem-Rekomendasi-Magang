@@ -14,7 +14,7 @@ class ProdiController extends Controller
     public function getProdi()
     {
         $prodi = ProdiModel::get();
-        return response()->json($prodi);
+        return view('admin.prodi.index', ['prodi' => $prodi]);
     }
 
     public function getAddProdi()

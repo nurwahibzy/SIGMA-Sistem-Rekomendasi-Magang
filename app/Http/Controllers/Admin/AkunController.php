@@ -531,4 +531,9 @@ class AkunController extends Controller
 
         return response()->json($data);
     }
+
+
+    public function tes(){
+        return view('tes.excelForm');
+    }
 }

@@ -41,40 +41,107 @@
                 </div>
             </div>
         </div>
-        <div class="sidebar-menu">
-            <ul class="menu">
-                <li class="sidebar-title">Menu</li>
+        @if(Auth::check() && Auth::user()->level->kode == 'ADM')
+            <div class="sidebar-menu">
+                <ul class="menu">
+                    <li class="sidebar-title">User</li>
 
-                <li class="sidebar-item {{ (isset($activeMenu) && $activeMenu == 'dashboard') ? 'active' : '' }}">
-                    <a href="{{ url('/mahasiswa/dashboard') }}" class="sidebar-link">
-                        <i class="bi bi-grid-fill"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
+                    <li class="sidebar-item {{ request()->is('admin/admin*') ? 'active' : '' }}">
+                        <a href="{{ url('admin/admin') }}" class="sidebar-link">
+                            <i class="bi bi-grid-fill"></i>
+                            <div class="icon dripicons dripicons-user"></div>
+                            <span>Admin</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item {{ request()->is('admin/mahasiswa*') ? 'active' : '' }}">
+                        <a href="{{ url('admin/mahasiswa') }}" class="sidebar-link">
+                            <i class="bi bi-grid-fill"></i>
+                            <span>Mahasiswa</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item {{ request()->is('admin/dosen*') ? 'active' : '' }}">
+                        <a href="{{ url('admin/dosen') }}" class="sidebar-link">
+                            <i class="bi bi-grid-fill"></i>
+                            <span>Dosen</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-title">Perusahaan</li>
 
 
-                <li class="sidebar-item {{ request()->is('mahasiswa/aktivitas*') ? 'active' : '' }}">
-                    <a href="{{ url('/mahasiswa/aktivitas') }}" class="sidebar-link">
-                        <i class="bi bi-journal-check"></i>
-                        <span>Log Aktivitas</span>
-                    </a>
-                </li>
+                    <li class="sidebar-item {{ request()->is('admin/perusahaan*') ? 'active' : '' }}">
+                        <a href="{{ url('admin/perusahaan') }}" class="sidebar-link">
+                            <i class="bi bi-journal-check"></i>
+                            <span>Perusahaan</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-title">Magang</li>
 
 
-                <li class="sidebar-item {{ request()->is('mahasiswa/riwayat*') ? 'active' : '' }}">
-                    <a href="{{ url('/mahasiswa/riwayat') }}" class="sidebar-link">
-                        <i class="bi bi-clock-history"></i>
-                        <span>Riwayat</span>
-                    </a>
-                </li>
+                    <li class="sidebar-item {{ request()->is('admin/lowongan*') ? 'active' : '' }}">
+                        <a href="{{ url('admin/lowongan') }}" class="sidebar-link">
+                            <i class="bi bi-clock-history"></i>
+                            <span>Lowongan</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item {{ request()->is('admin/periode*') ? 'active' : '' }}">
+                        <a href="{{ url('admin/periode') }}" class="sidebar-link">
+                            <i class="bi bi-clock-history"></i>
+                            <span>Periode</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item {{ request()->is('admin/kegiatan*') ? 'active' : '' }}">
+                        <a href="{{ url('admin/kegiatan') }}" class="sidebar-link">
+                            <i class="bi bi-clock-history"></i>
+                            <span>Kegiatan</span>
+                        </a>
+                    </li>
 
-                <li class="sidebar-item {{ request()->is('mahasiswa/penilaian*') ? 'active' : '' }}">
-                    <a href="{{ url('/mahasiswa/penilaian') }}" class="sidebar-link">
-                        <i class="bi bi-star-fill"></i>
-                        <span>Feedback</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
+                    <li class="sidebar-title">Prodi</li>
+
+                    <li class="sidebar-item {{ request()->is('admin/prod*') ? 'active' : '' }}">
+                        <a href="{{ url('admin/prodi') }}" class="sidebar-link">
+                            <i class="bi bi-star-fill"></i>
+                            <span>Prodi</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        @elseif(Auth::check() && Auth::user()->level->kode == 'MHS')
+            <div class="sidebar-menu">
+                <ul class="menu">
+                    <li class="sidebar-title">Menu</li>
+
+                    <li class="sidebar-item {{ request()->is('admin/mahasiswa*') ? 'active' : '' }}">
+                        <a href="{{ url('/mahasiswa/dashboard') }}" class="sidebar-link">
+                            <i class="bi bi-grid-fill"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+
+
+                    <li class="sidebar-item {{ request()->is('mahasiswa/aktivitas*') ? 'active' : '' }}">
+                        <a href="{{ url('/mahasiswa/aktivitas') }}" class="sidebar-link">
+                            <i class="bi bi-journal-check"></i>
+                            <span>Log Aktivitas</span>
+                        </a>
+                    </li>
+
+
+                    <li class="sidebar-item {{ request()->is('mahasiswa/riwayat*') ? 'active' : '' }}">
+                        <a href="{{ url('/mahasiswa/riwayat') }}" class="sidebar-link">
+                            <i class="bi bi-clock-history"></i>
+                            <span>Riwayat</span>
+                        </a>
+                    </li>
+
+                    <li class="sidebar-item {{ request()->is('mahasiswa/penilaian*') ? 'active' : '' }}">
+                        <a href="{{ url('/mahasiswa/penilaian') }}" class="sidebar-link">
+                            <i class="bi bi-star-fill"></i>
+                            <span>Feedback</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        @endif
     </div>
 </div>

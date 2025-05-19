@@ -47,7 +47,7 @@ $(document).ready(function(){
         let formData = new FormData(this);
 
         $.ajax({
-            url: '{{ url('mahasiswa/tes') }}',  // Pastikan route ini ada dan sesuai
+            url: '{{ url('admin/tes') }}',  // Pastikan route ini ada dan sesuai
             method: 'POST',
             data: formData,
             contentType: false,
