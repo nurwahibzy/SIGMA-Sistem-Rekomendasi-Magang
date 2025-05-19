@@ -44,9 +44,9 @@
                                 @endphp
 
                                 @if(!$sudahDinilai)
-                                    <a href="{{ url('mahasiswa/penilaian/' . $item->id_magang) }}" class="btn btn-primary">
-                                        Beri Penilaian
-                                    </a>
+                                        <a href="{{ route('penilaian.get', $item->id_magang) }}" class="btn btn-primary">
+                                            Beri Penilaian
+                                        </a>
                                 @endif
                             </div>
                         </div>
