@@ -87,7 +87,7 @@
                     $('#response-message').html('<div class="alert alert-danger">Gagal menambahkan perusahaan.</div>');
                     console.error(xhr.responseText);
                 }
-            });
+            }); 
         });
     </script>
 </body>

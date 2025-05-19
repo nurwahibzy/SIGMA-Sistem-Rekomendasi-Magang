@@ -3,11 +3,10 @@
 @section('content')
 
     <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
+        <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="card-title mb-0">Perusahaan</h5>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahPerusahaan">
-                <i class="bi bi-plus"></i> Tambah Perusahaan
-            </button>
+            <button onclick="modalAction('{{ url('/admin/perusahaan/tambah') }}')" class="btn btn-primary">Tambah
+                Perusahaan</button>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -29,13 +28,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($perusahaan as $item)  
+                        @forelse ($perusahaan as $item)
                             <tr>
                                 <td>{{ $item->nama ?? '-' }}</td>
                                 <td>{{ $item->telepon ?? '-' }}</td>
                                 <td>{{ $item->provinsi ?? '-' }}</td>
                                 <td>{{ $item->daerah }}</td>
-                                <td class="text-center"> <button class="btn btn-sm btn-info btn-detail" data-id="{{ $item->id_perusahaan }}">
+                                <td class="text-center"> <button class="btn btn-sm btn-info btn-detail"
+                                        onclick="modalAction('{{ url('/admin/perusahaan/detail/' . $item->id_perusahaan) }}')">
                                         Detail
                                     </button></td>
                             </tr>
@@ -50,9 +50,19 @@
             </div>
         </div>
     </div>
-    @include('admin.perusahaan.tambah')
+    <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
+        data-keyboard="false" data-width="75%" aria-hidden="true"></div>
+    </div>
 @endsection
-
-@push('scripts')
+@push('css')
+@endpush
+@push('js')
     <script src="{{ asset('template/assets/static/js/components/dark.js') }}"></script>
+    <script>
+        function modalAction(url = '') {
+            $('#myModal').load(url, function () {
+                $('#myModal').modal('show');
+            });
+        }
+    </script>
 @endpush

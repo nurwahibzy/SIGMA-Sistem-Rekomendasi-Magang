@@ -73,4 +73,9 @@ class MagangController extends Controller
             return response()->json(['success' => true]);
         }
     }
+
+    public function deleteKegiatan(Request $request, $id_magang){
+        MagangModel::where('id_magang', $id_magang)->delete();
+        return response()->json(['success' => true]);
+    }
 }

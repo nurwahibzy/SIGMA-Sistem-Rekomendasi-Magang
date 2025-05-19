@@ -21,7 +21,6 @@
                     </ul>
 
                     <div class="tab-content" id="detailTabContent">
-                        <!-- Tab Info Magang -->
                         <div class="tab-pane fade show active" id="magang" role="tabpanel">
                             <table class="table table-bordered">
                                 <tr>
@@ -145,8 +144,9 @@
                     </div>
                 @endif
                 <div class="w-100 d-flex justify-content-end gap-2 mt-2">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="bi bi-trash"></i>
-                        Hapus</button>
+                    <button type="button" class="btn btn-danger" id="btn-hapus">
+                        <i class="bi bi-trash"></i> Hapus
+                    </button>
                     <button type="submit" class="btn btn-info"><i class="bi bi-save"></i> Simpan</button>
                 </div>
             </div>
@@ -189,9 +189,7 @@
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil',
-                            text: response.message || 'Status berhasil diperbarui.',
-                            timer: 2000,
-                            showConfirmButton: false
+                            text: 'Data berhasil dihapus.'
                         }).then(() => {
                             location.reload();
                         });
@@ -221,5 +219,45 @@
             $(element).removeClass('is-invalid');
         }
         });
+        
+    $('#btn-hapus').click(function () {
+        Swal.fire({
+            title: 'Yakin ingin menghapus data ini?',
+            text: "Tindakan ini tidak dapat dibatalkan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ url('admin/kegiatan/edit/' . $magang->id_magang) }}",
+                    type: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function (response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: 'Data berhasil dihapus.'
+                        }).then(() => {
+                            location.reload();
+                        });
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: 'Gagal menghapus data. Silakan coba lagi.'
+                        });
+                    }
+                });
+            }
+        });
+    });
+
     });
 </script>

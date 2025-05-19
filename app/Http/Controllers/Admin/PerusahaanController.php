@@ -14,6 +14,7 @@ use Geocoder\Query\GeocodeQuery;
 use Geocoder\Provider\Nominatim\Nominatim;
 use Geocoder\StatefulGeocoder;
 use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
+use Validator;
 
 class PerusahaanController extends Controller
 {
@@ -22,58 +23,74 @@ class PerusahaanController extends Controller
     {
         $perusahaan = PerusahaanModel::get();
         return view('admin.perusahaan.index', ['perusahaan' => $perusahaan]);
-        
+
     }
 
     public function getAddPerusahaan()
     {
         $jenis = JenisPerusahaanModel::get(['id_jenis', 'jenis']);
-        // return view('tes.editPerusahaan', ['jenis' => $jenis]);
-        return response()->json($jenis);
+        return view('admin.perusahaan.tambah', ['jenis' => $jenis]);
     }
 
     public function getEditPerusahaan($id_perusahaan)
     {
-        $jenis = JenisPerusahaanModel::get(['id_jenis', 'jenis']);
-        $perusahaan = PerusahaanModel::where('id_perusahaan', $id_perusahaan)->first();
-        return response()->json($perusahaan);
-    }
-
-    public function getDetailPerusahaan($id_perusahaan){
         $perusahaan = PerusahaanModel::with('jenis_perusahaan:id_jenis,jenis')
         ->where('id_perusahaan', $id_perusahaan)->first();
-        return response()->json($perusahaan);
+        return view('admin.perusahaan.edit', ['perusahaan' => $perusahaan]);
+    }
+
+    public function getDetailPerusahaan($id_perusahaan)
+    {
+        $perusahaan = PerusahaanModel::with('jenis_perusahaan:id_jenis,jenis')
+            ->where('id_perusahaan', $id_perusahaan)->first();
+        // return response()->json($perusahaan);
+        return view('admin.perusahaan.detail', ['perusahaan' => $perusahaan]);
     }
     public function postPerusahaan(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                    $id_jenis = $request->input('id_jenis');
-                    $nama = $request->input('nama');
-                    $telepon = $request->input('telepon');
-                    $deskripsi = $request->input('deskripsi');
-                    $provinsi = $request->input('provinsi');
-                    $daerah = $request->input('daerah');
-                    $file = $request->file('file');
-                    $slugifiedName = Str::slug($nama, '_');
-                    $filename = $slugifiedName . "." . $file->getClientOriginalExtension();
 
-                    $lokasi = $this->latitudeLongitude($provinsi, $daerah);
+                $validator = Validator::make($request->all(), [
+                    'file' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+                    'id_jenis' => 'required|exists:jenis_perusahaan,id_jenis',
+                    'nama' => 'required|string|max:255',
+                    'telepon' => 'required|digits_between:8,15',
+                    'deskripsi' => 'required|string',
+                    'provinsi' => 'required|string|max:255',
+                    'daerah' => 'required|string|max:255',
+                ]);
 
-                    if ($lokasi) {
-                        PerusahaanModel::insert([
-                            'id_jenis' => $id_jenis,
-                            'nama' => $nama,
-                            'telepon' => $telepon,
-                            'deskripsi' => $deskripsi,
-                            'foto_path' => $filename,
-                            'provinsi' => $provinsi,
-                            'daerah' => $daerah,
-                            'latitude' => $lokasi->getCoordinates()->getLatitude(),
-                            'longitude' => $lokasi->getCoordinates()->getLongitude(),
-                        ]);
-                        $file->storeAs('public/profil/perusahaan', $filename);
-                    }
+                if ($validator->fails()) {
+                    return response()->json(['errors' => $validator->errors()], 422);
+                }
+
+                $id_jenis = $request->input('id_jenis');
+                $nama = $request->input('nama');
+                $telepon = $request->input('telepon');
+                $deskripsi = $request->input('deskripsi');
+                $provinsi = $request->input('provinsi');
+                $daerah = $request->input('daerah');
+                $file = $request->file('file');
+                $slugifiedName = Str::slug($nama, '_');
+                $filename = $slugifiedName . "." . $file->getClientOriginalExtension();
+
+                $lokasi = $this->latitudeLongitude($provinsi, $daerah);
+
+                if ($lokasi) {
+                    PerusahaanModel::insert([
+                        'id_jenis' => $id_jenis,
+                        'nama' => $nama,
+                        'telepon' => $telepon,
+                        'deskripsi' => $deskripsi,
+                        'foto_path' => $filename,
+                        'provinsi' => $provinsi,
+                        'daerah' => $daerah,
+                        'latitude' => $lokasi->getCoordinates()->getLatitude(),
+                        'longitude' => $lokasi->getCoordinates()->getLongitude(),
+                    ]);
+                    $file->storeAs('public/profil/perusahaan', $filename);
+                }
                 return response()->json(['success' => true]);
             } catch (\Exception $e) {
                 Log::error("Gagal menambahkan perusahaan: " . $e->getMessage());
