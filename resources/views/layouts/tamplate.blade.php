@@ -40,8 +40,8 @@
     </div>
 
     <!-- Load jQuery dulu -->
-    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
-    <script src="{{ asset('template/assets/extensions/jquery/jquery.min.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- <script src="{{ asset('template/assets/extensions/jquery/jquery.min.js') }}"></script> -->
     <script src="{{ asset('template/assets/extensions/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('template/assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
     <script src="{{ asset('template/assets/static/js/pages/datatables.js') }}"></script>

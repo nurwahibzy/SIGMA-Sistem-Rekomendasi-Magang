@@ -13,6 +13,7 @@
 @endsection
 
 @push('scripts')
+<script src="{{ asset('template/assets/static/js/components/dark.js') }}"></script>
 <script>
     $(document).ready(function () {
         $.ajax({

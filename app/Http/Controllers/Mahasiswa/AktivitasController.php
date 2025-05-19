@@ -35,28 +35,30 @@ class AktivitasController extends Controller
             ->where('status', 'diterima')
             ->with(
                 'periode_magang:id_periode,id_lowongan,nama,tanggal_mulai,tanggal_selesai',
-                'periode_magang.lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama,foto_path',
+                'periode_magang.lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
                 'periode_magang.lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama',
                 'periode_magang.lowongan_magang.bidang:id_bidang,nama',
                 'periode_magang.lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
             )
-            ->get();
-        return view('mahasiswa.aktivitas.magang', [
-            'magang' => collect([
-                (object) [
-                    'id_magang' => 1,
-                    'periode_magang' => (object) [
-                        'tanggal_mulai' => '2025-08-01',
-                        'tanggal_selesai' => '2025-10-31',
-                        'lowongan_magang' => (object) [
-                            'nama' => 'Intern UI/UX',
-                            'perusahaan' => (object) ['nama' => 'Tech Corp'],
-                            'bidang' => (object) ['nama' => 'Design'],
-                        ]
-                    ]
-                ]
-            ])
-        ]);
+            ->first();
+        // return view('mahasiswa.aktivitas.magang', [
+        //     'magang' => collect([
+        //         (object) [
+        //             'id_magang' => 1,
+        //             'periode_magang' => (object) [
+        //                 'tanggal_mulai' => '2025-08-01',
+        //                 'tanggal_selesai' => '2025-10-31',
+        //                 'lowongan_magang' => (object) [
+        //                     'nama' => 'Intern UI/UX',
+        //                     'perusahaan' => (object) ['nama' => 'Tech Corp'],
+        //                     'bidang' => (object) ['nama' => 'Design'],
+        //                 ]
+        //             ]
+        //         ]
+        //     ])
+        // ]);
+
+        return view('mahasiswa.aktivitas.magang', ['magang' => collect([$magang])]);
 
         // $magang = PeriodeMagangModel::with(
         // 'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama,foto_path',
@@ -86,8 +88,7 @@ class AktivitasController extends Controller
                 $hasActivityToday = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
                     ->where('id_magang', $id_magang)
                     ->where(function ($query) use ($today) {
-                        $query->where('tanggal', $today)
-                            ->orWhereDate('created_at', $today);
+                        $query->where('tanggal', $today);
                     })
                     ->whereHas('magang', function ($query) use ($id_mahasiswa) {
                         $query->where('id_mahasiswa', $id_mahasiswa);
@@ -139,7 +140,7 @@ class AktivitasController extends Controller
                     ], 404);
                 }
 
-                $activityDate = Carbon::parse($aktivitas->tanggal ?? $aktivitas->created_at)->startOfDay();
+                $activityDate = Carbon::parse($aktivitas->tanggal)->startOfDay();
                 $today = Carbon::now()->startOfDay();
 
                 if ($activityDate->lt($today)) {
@@ -237,7 +238,7 @@ class AktivitasController extends Controller
                         throw new \Exception("Data aktivitas tidak ditemukan atau tidak punya akses.");
                     }
 
-                    $activityDate = Carbon::parse($data->tanggal ?? $data->created_at)->startOfDay();
+                    $activityDate = Carbon::parse($data->tanggal)->startOfDay();
                     $today = Carbon::now()->startOfDay();
                     if ($activityDate->lt($today)) {
                         throw new \Exception("Aktivitas tanggal sebelumnya tidak dapat diubah.");
@@ -259,7 +260,7 @@ class AktivitasController extends Controller
                         'id_aktivitas' => $data->id_aktivitas,
                         'keterangan' => $data->keterangan,
                         'foto_path' => $data->foto_path,
-                        'tanggal' => $data->tanggal ?? $data->created_at,
+                        'tanggal' => $data->tanggal,
                     ];
                 });
 
@@ -310,7 +311,7 @@ class AktivitasController extends Controller
                     })
                     ->firstOrFail();
 
-                $activityDate = Carbon::parse($aktivitas->tanggal ?? $aktivitas->created_at)->startOfDay();
+                $activityDate = Carbon::parse($aktivitas->tanggal)->startOfDay();
                 $today = Carbon::now()->startOfDay();
                 $isPastActivity = $activityDate->lt($today);
 

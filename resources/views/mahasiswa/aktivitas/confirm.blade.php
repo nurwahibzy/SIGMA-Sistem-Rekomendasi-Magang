@@ -23,7 +23,7 @@
         </li>
         <li>
             <strong>Tanggal:</strong>
-            {{ \Carbon\Carbon::parse($aktivitas->tanggal ?? $aktivitas->created_at)->format('d M Y') }}
+            {{ \Carbon\Carbon::parse($aktivitas->tanggal)->format('d M Y') }}
         </li>
     </ul>
 

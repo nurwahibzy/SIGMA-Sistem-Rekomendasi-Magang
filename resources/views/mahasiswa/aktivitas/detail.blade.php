@@ -16,11 +16,11 @@
 
 <div class="mb-3">
     <h5>Tanggal:</h5>
-    <p>{{ \Carbon\Carbon::parse($aktivitas->tanggal ?? $aktivitas->created_at)->format('d M Y') }}</p>
+    <p>{{ \Carbon\Carbon::parse($aktivitas->tanggal)->format('d M Y') }}</p>
 </div>
 
 @php
-    $activityDate = \Carbon\Carbon::parse($aktivitas->tanggal ?? $aktivitas->created_at)->startOfDay();
+    $activityDate = \Carbon\Carbon::parse($aktivitas->tanggal)->startOfDay();
     $today = \Carbon\Carbon::now()->startOfDay();
     $isPastActivity = $activityDate->lt($today);
 @endphp

@@ -52,7 +52,7 @@
                                                 -
                                             @endif
                                         </td>
-                                        <td>{{ \Carbon\Carbon::parse($item->tanggal ?? $item->created_at)->format('d M Y') }}
+                                        <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}
                                         </td>
                                         <td>
                                             <button type="button" class="btn btn-sm btn-info btn-detail"
