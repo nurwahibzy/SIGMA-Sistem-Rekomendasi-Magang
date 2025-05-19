@@ -157,11 +157,12 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['authorize:MHS'])->prefix('mahasiswa')->group(function () {
         Route::get('/dashboard', [PeriodeMagangControllerMahasiswa::class, 'getDashboard']);
         Route::prefix('profil')->group(function () {
-            Route::get('/', [AkunControllerMahasiswa::class, 'getProfil']);
+            Route::get('/', [AkunControllerMahasiswa::class, 'getProfil'])->name('mahasiswa.profil');
 
             Route::prefix('edit')->group(function () {
-                Route::get('/', [AkunControllerMahasiswa::class, 'getEditProfil']);
-
+                Route::get('/', [AkunControllerMahasiswa::class, 'getEditProfil'])->name('mahasiswa.edit');
+                Route::post('/update', [AkunControllerMahasiswa::class, 'updateProfil'])->name('mahasiswa.update');
+                
                 Route::put('/akun', [AkunControllerMahasiswa::class, 'putAkun']);
 
                 Route::prefix('keahlian')->group(callback: function () {

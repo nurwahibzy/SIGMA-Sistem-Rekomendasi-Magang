@@ -43,7 +43,7 @@ class AkunController extends Controller
         $bidang = BidangModel::get();
         $jenis = JenisPerusahaanModel::get();
         return view(
-            'tes.keahlian',
+            'mahasiswa.profil',
             [
                 'pengalaman' => $akun->mahasiswa->pengalaman,
                 'bidang' => $bidang,
@@ -61,6 +61,19 @@ class AkunController extends Controller
         return view('tes.dashboard', ['akun' => $akun]);
         // return response()->json($akun);
     }
+    public function updateProfil(Request $request)
+    {
+        $user = Auth::user();
+
+        $mahasiswa = $user->mahasiswa;
+        $mahasiswa->nama = $request->input('nama');
+        $mahasiswa->alamat = $request->input('alamat');
+        $mahasiswa->telepon = $request->input('telepon');
+        $mahasiswa->save();
+
+        return response()->json(['status' => 'success', 'message' => 'Profil berhasil diperbarui!']);
+    }
+
 
     private function allDataProfil()
     {
