@@ -36,7 +36,8 @@ class PerusahaanController extends Controller
     {
         $perusahaan = PerusahaanModel::with('jenis_perusahaan:id_jenis,jenis')
         ->where('id_perusahaan', $id_perusahaan)->first();
-        return view('admin.perusahaan.edit', ['perusahaan' => $perusahaan]);
+        $jenis =  JenisPerusahaanModel::get(['id_jenis', 'jenis']);
+        return view('admin.perusahaan.edit', ['perusahaan' => $perusahaan, 'jenis' => $jenis]);
     }
 
     public function getDetailPerusahaan($id_perusahaan)
@@ -145,6 +146,17 @@ class PerusahaanController extends Controller
 
                         if ($data->nama !== $nama) {
                             $this->renameFileOnly($data, $id_perusahaan, $id_jenis, $nama, $telepon, $deskripsi, $provinsi, $daerah, $latitude, $longitude);
+                        } else{
+                            PerusahaanModel::where('id_perusahaan', $id_perusahaan)
+                            ->update([
+                                'id_jenis' => $id_jenis,
+                                'telepon' => $telepon,
+                                'deskripsi' => $deskripsi,
+                                'provinsi' => $provinsi,
+                                'daerah' => $daerah,
+                                'latitude' => $latitude,
+                                'longitude' => $longitude
+                            ]);
                         }
                     }
                 );

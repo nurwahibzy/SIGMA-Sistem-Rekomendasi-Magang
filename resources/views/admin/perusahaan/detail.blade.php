@@ -64,8 +64,11 @@
             </div>
         </div>
 
-        <div class="modal-footer d-flex justify-content-between">
-            <button type="button" data-bs-dismiss="modal" class="btn btn-danger">Hapus</button>
+        <div class="modal-footer">
+        <!-- d-flex justify-content-between -->
+            <button type="button" class="btn btn-danger" id="btn-hapus">
+                <i class="bi bi-trash"></i> Hapus
+            </button>
             <button type="button" class="btn btn-primary"
                 onclick="modalAction('{{ url('/admin/perusahaan/edit/' . $perusahaan->id_perusahaan) }}')">
                 Edit
@@ -74,3 +77,45 @@
 
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $('#btn-hapus').click(function () {
+            Swal.fire({
+                title: 'Yakin ingin menghapus data ini?',
+                text: "Tindakan ini tidak dapat dibatalkan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ url('admin/perusahaan/edit/' . $perusahaan->id_perusahaan) }}",
+                        type: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function (response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: 'Data berhasil dihapus.'
+                            }).then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: 'Gagal menghapus data. Silakan coba lagi.'
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    })
+</script>
