@@ -3,8 +3,11 @@
 @section('content')
 
     <div class="card">
-        <div class="card-header">
-            <h5 class="card-title">Lowongan Magang</h5>
+    <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Admin</h5>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahAdmin">
+                <i class="bi bi-plus"></i> Tambah Admin
+            </button>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -35,7 +38,7 @@
                                 <td>{{ $item->telepon ?? '-' }}</td>
                                 <td>{{ $item->email }}</td>
                                 <td>{{ $item->akun->status }}</td>
-                                <td> <button class="btn btn-sm btn-info btn-detail" data-id="{{ $item->akun->id_akun }}">
+                                <td class="text-center"> <button class="btn btn-sm btn-info btn-detail" data-id="{{ $item->akun->id_akun }}">
                                         Detail
                                     </button></td>
                             </tr>
@@ -50,6 +53,7 @@
             </div>
         </div>
     </div>
+    @include('admin.admin.tambah')
 @endsection
 
 @push('scripts')

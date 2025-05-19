@@ -3,8 +3,11 @@
 @section('content')
 
     <div class="card">
-        <div class="card-header">
-            <h5 class="card-title">Lowongan Magang</h5>
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Mahasiswa</h5>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahMahasiswa">
+                <i class="bi bi-plus"></i> Tambah Mahasiswa
+            </button>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -28,14 +31,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($mahasiswa as $item)  
+                        @forelse ($mahasiswa as $item)
                             <tr>
                                 <td>{{ $item->akun->id_user ?? '-' }}</td>
                                 <td>{{ $item->nama ?? '-' }}</td>
                                 <td>{{ $item->telepon ?? '-' }}</td>
                                 <td>{{ $item->email }}</td>
                                 <td>{{ $item->akun->status }}</td>
-                                <td> <button class="btn btn-sm btn-info btn-detail" data-id="{{ $item->akun->id_akun }}">
+                                <td class="text-center"> <button class="btn btn-sm btn-info btn-detail"
+                                        data-id="{{ $item->akun->id_akun }}">
                                         Detail
                                     </button></td>
                             </tr>
@@ -50,6 +54,7 @@
             </div>
         </div>
     </div>
+    @include('admin.mahasiswa.tambah')
 @endsection
 
 @push('scripts')

@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ asset('template/assets/compiled/css/app.css') }}" />
     <link rel="stylesheet" href="{{ asset('template/assets/compiled/css/app-dark.css') }}" />
     <link rel="stylesheet" href="{{ asset('template/assets/compiled/css/iconly.css') }}" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
@@ -50,9 +51,14 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
     <script src="{{ asset('template/assets/compiled/js/app.js') }}"></script>
 
     @stack('scripts')
+    @stack('js')
 </body>
 
 </html>

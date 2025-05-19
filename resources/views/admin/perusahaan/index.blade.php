@@ -3,8 +3,11 @@
 @section('content')
 
     <div class="card">
-        <div class="card-header">
-            <h5 class="card-title">Lowongan Magang</h5>
+    <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Perusahaan</h5>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahPerusahaan">
+                <i class="bi bi-plus"></i> Tambah Perusahaan
+            </button>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -32,7 +35,7 @@
                                 <td>{{ $item->telepon ?? '-' }}</td>
                                 <td>{{ $item->provinsi ?? '-' }}</td>
                                 <td>{{ $item->daerah }}</td>
-                                <td> <button class="btn btn-sm btn-info btn-detail" data-id="{{ $item->id_perusahaan }}">
+                                <td class="text-center"> <button class="btn btn-sm btn-info btn-detail" data-id="{{ $item->id_perusahaan }}">
                                         Detail
                                     </button></td>
                             </tr>
@@ -47,6 +50,7 @@
             </div>
         </div>
     </div>
+    @include('admin.perusahaan.tambah')
 @endsection
 
 @push('scripts')

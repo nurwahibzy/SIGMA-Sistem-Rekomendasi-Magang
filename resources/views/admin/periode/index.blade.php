@@ -3,8 +3,11 @@
 @section('content')
 
     <div class="card">
-        <div class="card-header">
-            <h5 class="card-title">Lowongan Magang</h5>
+    <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Periode</h5>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahPeriode">
+                <i class="bi bi-plus"></i> Tambah Periode
+            </button>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -29,7 +32,7 @@
                                 <td>{{ $item->lowongan_magang->perusahaan->nama ?? '-' }}</td>
                                 <td>{{ $item->lowongan_magang->nama . ' - ' . $item->nama ?? '-' }}</td>
                                 <td>{{ $item->tanggal_mulai->format('d M Y') }} - {{ $item->tanggal_selesai->format('d M Y') }}
-                                <td> <button class="btn btn-sm btn-info btn-detail" data-id="{{ $item->id_lowongan }}">
+                                <td class="text-center"> <button class="btn btn-sm btn-info btn-detail" data-id="{{ $item->id_periode }}">
                                         Detail
                                     </button></td>
                             </tr>
@@ -44,6 +47,7 @@
             </div>
         </div>
     </div>
+    @include('admin.periode.tambah')    
 @endsection
 
 @push('scripts')

@@ -28,7 +28,8 @@ class PerusahaanController extends Controller
     public function getAddPerusahaan()
     {
         $jenis = JenisPerusahaanModel::get(['id_jenis', 'jenis']);
-        return view('tes.editPerusahaan', ['jenis' => $jenis]);
+        // return view('tes.editPerusahaan', ['jenis' => $jenis]);
+        return response()->json($jenis);
     }
 
     public function getEditPerusahaan($id_perusahaan)

@@ -65,7 +65,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['authorize:ADM'])->prefix('admin')->group(function () {
         Route::get('/dashboard', [MagangControllerAdmin::class, 'getDashboard']);
         Route::get('/tes', [AkunControllerAdmin::class, 'tes']);
-        Route::post('/tes', [AkunControllerAdmin::class, 'postUserAdminExcel']);
+        Route::post('/tes', [AkunControllerAdmin::class, 'postUserAdminExcel']); 
 
         Route::prefix('profil')->group(function () {
             Route::get('/', [AkunControllerAdmin::class, 'getProfil']);
@@ -146,10 +146,10 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [MagangControllerAdmin::class, 'getkegiatan']);
             Route::get('/tambah', [MagangControllerAdmin::class, 'getAddkegiatan']);
             Route::post('/tambah', [MagangControllerAdmin::class, 'postkegiatan']);
-            Route::get('/detail/{id_kegiatan}', [MagangControllerAdmin::class, 'getDetailkegiatan']);
-            Route::get('/edit/{id_kegiatan}', [MagangControllerAdmin::class, 'getEditkegiatan']);
-            Route::post('/edit/{id_kegiatan}', [MagangControllerAdmin::class, 'putkegiatan']);
-            Route::delete('/edit/{id_kegiatan}', [MagangControllerAdmin::class, 'deletekegiatan']);
+            Route::get('/detail/{id_magang}', [MagangControllerAdmin::class, 'getDetailkegiatan']);
+            Route::get('/edit/{id_magang}', [MagangControllerAdmin::class, 'getEditkegiatan']);
+            Route::post('/edit/{id_magang}', [MagangControllerAdmin::class, 'putkegiatan']);
+            Route::delete('/edit/{id_magang}', [MagangControllerAdmin::class, 'deletekegiatan']);
         });
 
     });

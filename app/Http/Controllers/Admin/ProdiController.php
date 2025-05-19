@@ -35,7 +35,7 @@ class ProdiController extends Controller
                 $nama_prodi = $request->input('nama_prodi');
                 $nama_jurusan = 'Teknologi Informasi';
 
-                ProdiModel::insert([
+                ProdiModel::create([
                     'nama_prodi' => $nama_prodi,
                     'nama_jurusan' => $nama_jurusan
                 ]);
