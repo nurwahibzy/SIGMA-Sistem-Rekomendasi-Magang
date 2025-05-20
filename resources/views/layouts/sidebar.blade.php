@@ -134,11 +134,22 @@
                         </a>
                     </li>
 
-                    <li class="sidebar-item {{ request()->is('mahasiswa/penilaian*') ? 'active' : '' }}">
-                        <a href="{{ url('/mahasiswa/penilaian') }}" class="sidebar-link">
+                    <li class="sidebar-item has-sub {{ request()->is('mahasiswa/penilaian*') ? 'active' : '' }}">
+                        <!-- Tidak akan redirect saat diklik -->
+                        <a href="javascript:void(0);" class="sidebar-link">
                             <i class="bi bi-star-fill"></i>
                             <span>Feedback</span>
                         </a>
+
+                        <!-- Submenu tetap aktif -->
+                        <ul class="submenu">
+                            <li class="submenu-item {{ request()->is('mahasiswa/penilaian*') ? 'active' : '' }}">
+                                <a href="{{ url('/mahasiswa/penilaian/') }}">Perusahaan</a>
+                            </li>
+                            <li class="submenu-item {{ request()->is('mahasiswa/penilaian*') ? 'active' : '' }}">
+                                <a href="{{ url('/mahasiswa/penilaian/penilaianDosen') }}">Dosen</a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -153,7 +164,7 @@
                             <span>Dashboard</span>
                         </a>
                     </li>
-                    
+
                     <li class="sidebar-item {{ request()->is('mahasiswa/aktivitas*') ? 'active' : '' }}">
                         <a href="{{ url('/mahasiswa/aktivitas') }}" class="sidebar-link">
                             <i class="bi bi-people"></i>
