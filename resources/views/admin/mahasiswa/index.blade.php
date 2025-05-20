@@ -5,9 +5,8 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="card-title mb-0">Mahasiswa</h5>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahMahasiswa">
-                <i class="bi bi-plus"></i> Tambah Mahasiswa
-            </button>
+            <button onclick="modalAction('{{ url('/admin/mahasiswa/tambah') }}')" class="btn btn-primary">Tambah
+                Mahasiswa</button>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -53,10 +52,19 @@
 
             </div>
         </div>
+        <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
+            data-keyboard="false" data-width="75%" aria-hidden="true"></div>
     </div>
-    @include('admin.mahasiswa.tambah')
 @endsection
-
-@push('scripts')
+@push('css')
+@endpush
+@push('js')
     <script src="{{ asset('template/assets/static/js/components/dark.js') }}"></script>
+    <script>
+        function modalAction(url = '') {
+            $('#myModal').load(url, function () {
+                $('#myModal').modal('show');
+            });
+        }
+    </script>
 @endpush

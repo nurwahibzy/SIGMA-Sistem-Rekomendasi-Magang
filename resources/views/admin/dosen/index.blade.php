@@ -3,14 +3,13 @@
 @section('content')
 
     <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
+        <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="card-title mb-0">Dosen</h5>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahDosen">
-                <i class="bi bi-plus"></i> Tambah Dosen
-            </button>
+            <button onclick="modalAction('{{ url('/admin/dosen/tambah') }}')" class="btn btn-primary">Tambah
+                Dosen</button>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
+        <div class="table-responsive">
                 <table class="table" id="table1">
                     <colgroup>
                         <col style="width: 100px;">
@@ -52,10 +51,19 @@
 
             </div>
         </div>
+        <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
+            data-keyboard="false" data-width="75%" aria-hidden="true"></div>
     </div>
-    @include('admin.dosen.tambah')
 @endsection
-
-@push('scripts')
+@push('css')
+@endpush
+@push('js')
     <script src="{{ asset('template/assets/static/js/components/dark.js') }}"></script>
+    <script>
+        function modalAction(url = '') {
+            $('#myModal').load(url, function () {
+                $('#myModal').modal('show');
+            });
+        }
+    </script>
 @endpush

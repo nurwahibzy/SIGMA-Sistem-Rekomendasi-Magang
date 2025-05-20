@@ -3,8 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AkunModel;
+use App\Models\DosenModel;
 use App\Models\MahasiswaModel;
+use App\Models\ProdiModel;
+use Date;
+use DB;
+use Hash;
 use Illuminate\Http\Request;
+use Log;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Storage;
 
 class MahasiswaController extends Controller
 {
@@ -16,5 +25,207 @@ class MahasiswaController extends Controller
         return view('admin.mahasiswa.index', ['mahasiswa' => $mahasiswa]);
     }
 
+    public function getAddMahasiswa(){
+        $prodi = ProdiModel::get();
+        return view('admin.mahasiswa.tambah', ['prodi' => $prodi]);
+        // return response()->json($prodi);
+    }
+
+    public function getEditMahasiswa(){
+        
+    }
+
+    public function postMahasiswa(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            try {
+                DB::transaction(
+                    function () use ($request) {
+
+                        $id_level = 2;
+                        $id_user = $request->input('id_user');
+                        $password = Hash::make('password');
+                        $status = 'aktif';
+                        $foto_path = "$id_user.jpg";
+                        $id_prodi = $request->input('id_prodi');
+                        $nama = $request->input('nama');
+                        $alamat = $request->input('alamat');
+                        $telepon = $request->input('telepon');
+                        $tanggal_lahir = $request->input('tanggal_lahir');
+                        $email = $request->input('email');
+
+                        $akun = AkunModel::create([
+                            'id_level' => $id_level,
+                            'id_user' => $id_user,
+                            'password' => $password,
+                            'status' => $status,
+                            'foto_path' => $foto_path
+                        ]);
+
+                        MahasiswaModel::insert([
+                            'id_akun' => $akun->id_akun,
+                            'id_prodi' => $id_prodi,
+                            'nama' => $nama,
+                            'alamat' => $alamat,
+                            'telepon' => $telepon,
+                            'tanggal_lahir' => $tanggal_lahir,
+                            'email' => $email
+                        ]);
+                    }
+                );
+                return response()->json(['success' => true]);
+            } catch (\Throwable $e) {
+                Log::error("Gagal menambah user: " . $e->getMessage());
+                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
+            }
+        }
+    }
+
+    public function putMahasiswa(Request $request, $id_akun)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            try {
+                DB::transaction(
+                    function () use ($request, $id_akun) {
+
+                        $id_user = $request->input('id_user');
+                        $status = 'aktif';
+                        $foto_path = "$id_user.jpg";
+                        $id_prodi = $request->input('id_prodi');
+                        $nama = $request->input('nama');
+                        $alamat = $request->input('alamat');
+                        $telepon = $request->input('telepon');
+                        $tanggal_lahir = $request->input('tanggal_lahir');
+                        $email = $request->input('email');
+
+                        $data = AkunModel::where('id_akun', $id_akun)->first();
+                        if ($data->id_user != $id_user) {
+                            $this->renameFileOnly($data, $id_user);
+                        }
+
+                        if ($request->filled('password')) {
+                            $password = $request->input('password');
+                            $akun = AkunModel::where('id_akun', $id_akun)
+                                ->update([
+                                    'id_user' => $id_user,
+                                    'password' => Hash::make($password),
+                                    'status' => $status,
+                                    'foto_path' => $foto_path
+                                ]);
+                        } else {
+                            $akun = AkunModel::where('id_akun', $id_akun)
+                                ->update([
+                                    'id_user' => $id_user,
+                                    'status' => $status,
+                                    'foto_path' => $foto_path
+                                ]);
+                        }
+
+                        DosenModel::with('akun:id_akun')
+                            ->whereHas('akun', function ($query) use ($id_akun) {
+                                $query->where('id_akun', $id_akun);
+                            })
+                            ->update([
+                                'id_akun' => $id_akun,
+                                'id_prodi' => $id_prodi,
+                                'nama' => $nama,
+                                'alamat' => $alamat,
+                                'telepon' => $telepon,
+                                'tanggal_lahir' => $tanggal_lahir,
+                                'email' => $email
+                            ]);
+                    }
+                );
+                return response()->json(['success' => true]);
+            } catch (\Throwable $e) {
+                Log::error("Gagal update user: " . $e->getMessage());
+                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
+            }
+        }
+    }
+
+    private function renameFileOnly($data, $id_user)
+    {
+        $lama = $data->foto_path;
+        $extension = pathinfo($lama, PATHINFO_EXTENSION);
+        $file_path_baru = $id_user . '.' . $extension;
+
+        if (Storage::disk('public')->exists("profil/akun/$lama")) {
+            Storage::disk('public')->move("profil/akun/$lama", "profil/akun/$file_path_baru");
+        }
+    }
+
+    public function deleteMahasiswa(Request $request, $id_akun)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            try {
+                AkunModel::where('id_akun', $id_akun)
+                    ->delete();
+
+                return response()->json(['success' => true]);
+            } catch (\Throwable $e) {
+                Log::error("Gagal menghapus lowongan: " . $e->getMessage());
+                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
+            }
+        }
+    }
+
+    public function postMahasiswaExcel(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|mimes:xlsx,xls',
+            'id_prodi' => 'nullable|exists:prodi,id_prodi',
+        ]);
+
+        $file = $request->file('file_excel');
+        $reader = IOFactory::createReader('Xlsx'); 
+        $reader->setReadDataOnly(true);
+        $spreadsheet = $reader->load($file->getRealPath()); 
+        $sheet = $spreadsheet->getActiveSheet();
+        $data = $sheet->toArray(null, false, true, true); 
+
+        DB::transaction(function () use ($data, $request) {
+            foreach ($data as $index => $row) {
+                if ($index === 1) {
+                    continue;
+                }
+
+                $nim = trim($row['A']);
+                $nama = trim($row['B']);
+                $alamat = trim($row['C']);
+                $telepon = trim($row['D']);
+                $tanggal_lahir = trim($row['E']);
+                $email = trim($row['F']);
+
+                if (is_numeric($tanggal_lahir)) {
+                    $tanggal_lahir = Date::excelToDateTimeObject($tanggal_lahir)->format('Y-m-d');
+                }
+
+                $akun = AkunModel::create([
+                    'id_user' => $nim,
+                    'id_level' => 2,
+                    'password' => bcrypt('defaultPassword123'),
+                    'status' => 'aktif',
+                    'foto_path' => "$nim.jpg",
+                ]);
+
+                MahasiswaModel::create([
+                    'id_mahasiswa' => $nim,
+                    'id_akun' => $akun->id_akun,
+                    'id_prodi' => 1,
+                    'nama' => $nama,
+                    'alamat' => $alamat,
+                    'telepon' => $telepon,
+                    'tanggal_lahir' => $tanggal_lahir,
+                    'email' => $email,
+                ]);
+            }
+        });
+
+        // return redirect()->back()
+        //     ->with('success', 'Semua data dari Excel berhasil diimport.');
+
+        return response()->json($data);
+    }
     
 }
