@@ -25,6 +25,16 @@ class AdminController extends Controller
         return view('admin.admin.tambah');
     }
 
+    public function getDetailAdmin($id_akun){
+        $admin = AdminModel::with('akun')
+        ->whereHas('akun', function ($query) use ($id_akun) {
+            $query->where('id_akun', $id_akun);
+        })
+        ->first();
+
+        return view('admin.admin.detail', ['admin' => $admin]);
+    }
+
     public function getEditAdmin($id_admin){
 
     }

@@ -38,7 +38,7 @@
                                 <td>{{ $item->email }}</td>
                                 <td>{{ $item->akun->status }}</td>
                                 <td class="text-center"> <button class="btn btn-sm btn-info btn-detail"
-                                        data-id="{{ $item->akun->id_akun }}">
+                                        onclick="modalAction('{{ url('/admin/admin/detail/' . $item->akun->id_akun) }}')">
                                         Detail
                                     </button></td>
                             </tr>

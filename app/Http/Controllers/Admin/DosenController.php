@@ -25,6 +25,16 @@ class DosenController extends Controller
         return view('admin.dosen.tambah');
     }
 
+    public function getDetailDosen($id_akun){
+        $dosen = DosenModel::with('akun')
+        ->whereHas('akun', function ($query) use ($id_akun) {
+            $query->where('id_akun', $id_akun);
+        })
+        ->first();
+
+        return view('admin.dosen.detail', ['dosen' => $dosen]);
+    }
+
     public function getEditDosen(){
         
     }

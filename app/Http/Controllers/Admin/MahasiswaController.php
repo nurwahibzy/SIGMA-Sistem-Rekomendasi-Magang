@@ -31,6 +31,17 @@ class MahasiswaController extends Controller
         // return response()->json($prodi);
     }
 
+    public function getDetailMahasiswa($id_akun){
+        $mahasiswa = MahasiswaModel::with('akun')
+        ->whereHas('akun', function ($query) use ($id_akun) {
+            $query->where('id_akun', $id_akun);
+        })
+        ->first();
+
+        return view('admin.mahasiswa.detail', ['mahasiswa' => $mahasiswa]);
+        // return response()->json($mahasiswa);
+    }
+
     public function getEditMahasiswa(){
         
     }

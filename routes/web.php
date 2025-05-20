@@ -80,27 +80,30 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [AdminController::class, 'getAdmin']);
             Route::get('/tambah', [AdminController::class, 'getAddAdmin']);
             Route::post('/tambah', [AdminController::class, 'postAdmin']);
-            Route::get('/edit/{id_admin}', [AdminController::class, 'getEditAdmin']);
-            Route::post('/edit/{id_admin}', [AdminController::class, 'putAdmin']);
-            Route::delete('/edit/{id_admin}', [AdminController::class, 'deleteAdmin']);
+            Route::get('/detail/{id_akun}', [AdminController::class, 'getDetailAdmin']);
+            Route::get('/edit/{id_akun}', [AdminController::class, 'getEditAdmin']);
+            Route::post('/edit/{id_akun}', [AdminController::class, 'putAdmin']);
+            Route::delete('/edit/{id_akun}', [AdminController::class, 'deleteAdmin']);
         });
 
         Route::prefix('mahasiswa')->group(function () {
             Route::get('/', [MahasiswaController::class, 'getMahasiswa']);
             Route::get('/tambah', [MahasiswaController::class, 'getAddMahasiswa']);
             Route::post('/tambah', [MahasiswaController::class, 'postMahasiswa']);
-            Route::get('/edit/{id_mahasiswa}', [MahasiswaController::class, 'getEditMahasiswa']);
-            Route::post('/edit/{id_mahasiswa}', [MahasiswaController::class, 'putMahasiswa']);
-            Route::delete('/edit/{id_mahasiswa}', [MahasiswaController::class, 'deleteMahasiswa']);
+            Route::get('/detail/{id_akun}', [MahasiswaController::class, 'getDetailMahasiswa']);
+            Route::get('/edit/{id_akun}', [MahasiswaController::class, 'getEditMahasiswa']);
+            Route::post('/edit/{id_akun}', [MahasiswaController::class, 'putMahasiswa']);
+            Route::delete('/edit/{id_akun}', [MahasiswaController::class, 'deleteMahasiswa']);
         });
 
         Route::prefix('dosen')->group(function () {
             Route::get('/', [DosenController::class, 'getDosen']);
             Route::get('/tambah', [DosenController::class, 'getAddDosen']);
             Route::post('/tambah', [DosenController::class, 'postDosen']);
-            Route::get('/edit/{id_dosen}', [DosenController::class, 'getEditDosen']);
-            Route::post('/edit/{id_dosen}', [DosenController::class, 'putDosen']);
-            Route::delete('/edit/{id_dosen}', [DosenController::class, 'deleteDosen']);
+            Route::get('/detail/{id_akun}', [DosenController::class, 'getDetailDosen']);
+            Route::get('/edit/{id_akun}', [DosenController::class, 'getEditDosen']);
+            Route::post('/edit/{id_akun}', [DosenController::class, 'putDosen']);
+            Route::delete('/edit/{id_akun}', [DosenController::class, 'deleteDosen']);
         });
 
         Route::prefix('prodi')->group(function () {
