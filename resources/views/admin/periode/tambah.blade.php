@@ -1,104 +1,111 @@
-<div class="modal fade" id="modalTambahPeriode" tabindex="-1" aria-labelledby="modalTambahPeriodeLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <form method="POST" id="formTambahPeriode">
-            @csrf
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTambahPeriodeLabel">Tambah Program Studi</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="jurusan" class="form-label">Jurusan</label>
-                        <input type="text" name="nama_jurusan" id="jurusan" class="form-control" required>
-                        <span class="text-danger error-text nama_jurusan_err"></span>
+<form action="{{ url('/admin/periode/tambah') }}" method="POST" id="form-tambah">
+    @csrf
+    <div id="modal-master" class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah Lowongan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container mt-4">
+                    <div class="tab-content" id="detailTabContent">
+                        <div class="mb-3">
+                            <label for="id_lowongan" class="form-label">Lowongan</label>
+                            <select name="id_lowongan" id="id_lowongan" class="form-control" required>
+                                <option value="">Pilih Lowongan</option>
+                                @foreach ($lowongan as $item)
+                                    <option value="{{ $item->id_lowongan }}">
+                                        {{ $item->perusahaan->nama . ' - ' . $item->nama . ' - ' . $item->bidang->nama }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nama" class="form-label">Nama</label>
+                            <input type="text" class="form-control" id="nama" name="nama" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tanggal_mulai" class="form-label">Tanggal Mulai</label>
+                            <input type="date" class="form-control" id="tanggal_mulai" name="tanggal_mulai" required
+                                min="{{ $now }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="tanggal_selesai" class="form-label">Tanggal Selesai</label>
+                            <input type="date" class="form-control" id="tanggal_selesai" name="tanggal_selesai" required
+                                min="{{ $tomorrow }}">
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="prodi" class="form-label">Nama Prodi</label>
-                        <input type="text" name="nama_prodi" id="prodi" class="form-control" required>
-                        <span class="text-danger error-text nama_prodi_err"></span>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
             </div>
-        </form>
+            <div class="modal-footer">
+                <button type="button" data-bs-dismiss="modal" class="btn btn-warning">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+        </div>
     </div>
-</div>
-
-@push('scripts')
+</form>
 <script>
-$(document).ready(function() {
+    $(document).ready(function () {
+        $('#tanggal_mulai').on('change', function () {
+            const tanggalMulai = new Date($(this).val());
+            tanggalMulai.setDate(tanggalMulai.getDate() + 1);
 
-    $('#formTambahPeriode').validate({
-        rules: {
-            nama_jurusan: {
-                required: true,
-                minlength: 3,
-                maxlength: 50,
+            const minTanggalSelesai = tanggalMulai.toISOString().split('T')[0];
+            $('#tanggal_selesai').attr('min', minTanggalSelesai);
+        });
+
+        $("#form-tambah").validate({
+            rules: {
+                id_lowongan: { required: true },
+                nama: { required: true },
+                tanggal_mulai: { required: true, date: true },
+                tanggal_selesai: { required: true, date: true }
             },
-            nama_prodi: {
-                required: true,
-                minlength: 3,
-                maxlength: 50,
-            }
-        },
-        messages: {
-            nama_jurusan: {
-                required: "Jurusan wajib diisi",
-                minlength: "Minimal 3 karakter",
-                maxlength: "Maksimal 50 karakter"
+            messages: {
+                id_lowongan: "Pilih lowongan",
+                nama: "Nama periode wajib diisi",
+                tanggal_mulai: "Tanggal mulai wajib diisi",
+                tanggal_selesai: "Tanggal selesai wajib diisi"
             },
-            nama_prodi: {
-                required: "Nama Prodi wajib diisi",
-                minlength: "Minimal 3 karakter",
-                maxlength: "Maksimal 50 karakter"
-            }
-        },
-        errorElement: 'span',
-        errorClass: 'text-danger',
-        errorPlacement: function(error, element) {
-            let name = element.attr('name');
-            $('.' + name + '_err').html(error);
-        },
-        submitHandler: function(form) {
-            // Hapus error text dulu
-            $('.error-text').html('');
-
-            // Ambil data form
-            var formData = $(form).serialize();
-
-            $.ajax({
-                url: '{{ url("admin/periode/tambah") }}', // ganti sesuai route backend
-                method: 'POST',
-                data: formData,
-                success: function(response) {
-                    if(response.status === 'success') {
-                        $('#modalTambahPeriode').modal('hide');
-                        $('#formTambahPeriode')[0].reset();
-                        alert('Data berhasil disimpan!');
-
-                        if(typeof tableProdi !== 'undefined') {
-                            tableProdi.ajax.reload(null, false);
+            submitHandler: function (form) {
+                const formData = new FormData(form);
+                $.ajax({
+                    url: form.action,
+                    type: form.method,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('input[name="_token"]').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: 'Data berhasil disimpan.'
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: response.message || 'Terjadi kesalahan saat menyimpan.'
+                            });
                         }
-                    } else if(response.status === 'error' && response.errors) {
-                        // Tampilkan error validasi dari backend
-                        $.each(response.errors, function(key, val) {
-                            $('.' + key + '_err').html(val[0]);
+                    },
+                    error: function (xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: xhr.responseJSON?.message || 'Terjadi kesalahan saat menyimpan.'
                         });
-                    } else {
-                        alert('Terjadi kesalahan: ' + response.message);
                     }
-                },
-                error: function(xhr) {
-                    alert('Terjadi kesalahan pada server.');
-                }
-            });
-            return false; // cegah submit form normal
-        }
-    });
+                });
 
-});
+                return false;
+            }
+        });
+    });
 </script>
-@endpush

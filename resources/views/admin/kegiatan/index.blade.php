@@ -66,6 +66,7 @@
 @push('css')
 @endpush
 @push('js')
+<script src="{{ asset('template/assets/static/js/components/dark.js') }}"></script>
     <script>
         function modalAction(url = '') {
             $('#myModal').load(url, function () {

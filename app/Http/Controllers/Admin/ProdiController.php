@@ -19,14 +19,12 @@ class ProdiController extends Controller
 
     public function getAddProdi()
     {
-        // return view('tes.lowongan', ['data' => $data]);
         return view('admin.prodi.tambah');
     }
 
     public function getEditProdi($id_prodi)
     {
         $prodi = ProdiModel::where('id_prodi', $id_prodi)->first();
-        // return response()->json($prodi);
         return view('admin.prodi.edit', ['prodi' => $prodi]);
     }
 

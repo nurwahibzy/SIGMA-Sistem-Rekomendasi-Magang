@@ -24,19 +24,34 @@ class LowonganMagangController extends Controller
 
     public function getAddLowongan()
     {
-        $perusahaan = PerusahaanModel::get(['id_perusahaan', 'nama']);
-        $bidang = BidangModel::get(['id_bidang', 'nama']);
-        // return view('tes.lowongan', ['data' => $data]);
-        return view('admin.lowongan.tambah', ['perusahaan' => $perusahaan, 'bidang' => $bidang]);
+        $data = DB::transaction(function () {
+            $perusahaan = PerusahaanModel::get(['id_perusahaan', 'nama']);
+            $bidang = BidangModel::get(['id_bidang', 'nama']);
+
+            return [
+                'perusahaan' => $perusahaan,
+                'bidang' => $bidang,
+            ];
+        });
+
+        return view('admin.lowongan.tambah', $data);
     }
 
     public function getEditLowongan($id_lowongan)
     {
-        $perusahaan = PerusahaanModel::get(['id_perusahaan', 'nama']);
-        $bidang = BidangModel::get(['id_bidang', 'nama']);
-        $lowongan = LowonganMagangModel::where('id_lowongan', $id_lowongan)->first();
-        return view('admin.lowongan.edit', ['perusahaan' => $perusahaan, 'bidang' => $bidang, 'lowongan' => $lowongan]);
-        // return response()->json($lowongan);
+        $data = DB::transaction(function () use ($id_lowongan) {
+            $perusahaan = PerusahaanModel::get(['id_perusahaan', 'nama']);
+            $bidang = BidangModel::get(['id_bidang', 'nama']);
+            $lowongan = LowonganMagangModel::where('id_lowongan', $id_lowongan)->firstOrFail();
+
+            return [
+                'perusahaan' => $perusahaan,
+                'bidang' => $bidang,
+                'lowongan' => $lowongan,
+            ];
+        });
+
+        return view('admin.lowongan.edit', $data);
     }
 
     public function getDetailLowongan($id_lowongan)

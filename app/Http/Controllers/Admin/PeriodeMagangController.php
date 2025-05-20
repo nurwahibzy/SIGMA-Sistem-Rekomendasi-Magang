@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\LowonganMagangModel;
 use App\Models\PeriodeMagangModel;
+use Carbon\Carbon;
+use DB;
 use Illuminate\Http\Request;
 use Log;
 
@@ -22,33 +24,37 @@ class PeriodeMagangController extends Controller
     public function getAddPeriode()
     {
         $lowongan = LowonganMagangModel::with(
-            'perusahaan:id_perusahaan,nama',
-            'bidang:id_bidang,nama'
+            'perusahaan',
+            'bidang'
         )
-            ->get(['id_perusahaan', 'id_bidang', 'nama']);
-        return response()->json($lowongan);
+            ->get();
+        return view('admin.periode.tambah', ['lowongan' => $lowongan, 'now' => Carbon::now()->toDateString(), 'tomorrow' => Carbon::tomorrow()->toDateString()]);
     }
 
     public function getEditPeriode($id_periode)
     {
-        $lowongan = LowonganMagangModel::with(
-            'perusahaan:id_perusahaan,nama',
-            'bidang:id_bidang,nama'
-        )
-            ->get(['id_perusahaan', 'id_bidang', 'nama']);
-        $periode = PeriodeMagangModel::where('id_periode', $id_periode)->first();
-        return response()->json($periode);
+        $data = DB::transaction(function () use ($id_periode) {
+            $lowongan = LowonganMagangModel::with('perusahaan', 'bidang')->get();
+
+            $periode = PeriodeMagangModel::where('id_periode', $id_periode)->firstOrFail(); // agar error kalau tidak ada
+
+            return [
+                'periode' => $periode,
+                'lowongan' => $lowongan,
+                'now' => Carbon::now()->toDateString(),
+                'tomorrow' => Carbon::tomorrow()->toDateString(),
+            ];
+        });
+
+        return view('admin.periode.edit', $data);
     }
 
-    // public function getDetailPeriode($id_periode){
-    //     $lowongan = LowonganMagangModel::with(
-    //         'perusahaan:id_perusahaan,nama,telepon,deskripsi,foto_path,provinsi,daerah',
-    //         'bidang:id_bidang,nama'
-    //         )
-    //     ->where('id_lowongan', $id_lowongan)
-    //     ->first();
-    //     return response()->json($lowongan);
-    // }
+    public function getDetailPeriode($id_periode){
+ 
+        $periode = PeriodeMagangModel::with('lowongan_magang', 'lowongan_magang.perusahaan', 'lowongan_magang.bidang')
+        ->where('id_periode', $id_periode)->first();
+        return view('admin.periode.detail', ['periode' => $periode]);
+    }
 
     public function postPeriode(Request $request)
     {
@@ -59,8 +65,6 @@ class PeriodeMagangController extends Controller
                 $nama = $request->input('nama');
                 $tanggal_mulai = $request->input('tanggal_mulai');
                 $tanggal_selesai = $request->input('tanggal_selesai');
-
-                // $date = Carbon::parse(now())->toDateString();
 
                 PeriodeMagangModel::insert([
                     'id_lowongan' => $id_lowongan,
@@ -76,7 +80,7 @@ class PeriodeMagangController extends Controller
         }
     }
 
-    public function putLowongan(Request $request, $id_periode)
+    public function putPeriode(Request $request, $id_periode)
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {

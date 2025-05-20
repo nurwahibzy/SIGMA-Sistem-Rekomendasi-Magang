@@ -7,6 +7,7 @@ use App\Models\DosenModel;
 use App\Models\JenisPerusahaanModel;
 use App\Models\MagangModel;
 use Auth;
+use DB;
 use Illuminate\Http\Request;
 
 class MagangController extends Controller
@@ -25,30 +26,34 @@ class MagangController extends Controller
 
     public function getDetailkegiatan($id_magang)
     {
-        $magang = MagangModel::with(
-            'mahasiswa',
-            'mahasiswa.keahlian_mahasiswa',
-            'mahasiswa.pengalaman',
-            'mahasiswa.akun',
-            'periode_magang',
-            'periode_magang.lowongan_magang'
-        )
-            ->where('id_magang', $id_magang)
-            ->first();
+        $data = DB::transaction(function () use ($id_magang) {
+            $magang = MagangModel::with(
+                'mahasiswa',
+                'mahasiswa.keahlian_mahasiswa',
+                'mahasiswa.pengalaman',
+                'mahasiswa.akun',
+                'periode_magang',
+                'periode_magang.lowongan_magang'
+            )->where('id_magang', $id_magang)->firstOrFail();
 
-        $dosen = DosenModel::get();
-        $activeButton = [];
-        if ($magang->status == 'proses') {
-            $activeButton = [
-                'diterima',
-                'ditolak'
+            $dosen = DosenModel::get();
+
+            $activeButton = [];
+
+            if ($magang->status === 'proses') {
+                $activeButton = ['diterima', 'ditolak'];
+            } elseif ($magang->status === 'diterima') {
+                $activeButton = ['lulus'];
+            }
+
+            return [
+                'magang' => $magang,
+                'activeButton' => $activeButton,
+                'dosen' => $dosen
             ];
-        } else if ($magang->status == 'diterima') {
-            $activeButton = [
-                'lulus'
-            ];
-        }
-        return view('admin.kegiatan.detail', ['magang' => $magang, 'activeButton' => $activeButton, 'dosen' => $dosen]);
+        });
+
+        return view('admin.kegiatan.detail', $data);
         // return response()->json($dosen);
     }
 

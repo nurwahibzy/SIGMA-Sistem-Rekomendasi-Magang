@@ -34,17 +34,26 @@ class PerusahaanController extends Controller
 
     public function getEditPerusahaan($id_perusahaan)
     {
-        $perusahaan = PerusahaanModel::with('jenis_perusahaan:id_jenis,jenis')
-            ->where('id_perusahaan', $id_perusahaan)->first();
-        $jenis = JenisPerusahaanModel::get(['id_jenis', 'jenis']);
-        return view('admin.perusahaan.edit', ['perusahaan' => $perusahaan, 'jenis' => $jenis]);
+        $data = DB::transaction(function () use ($id_perusahaan) {
+            $perusahaan = PerusahaanModel::with('jenis_perusahaan:id_jenis,jenis')
+                ->where('id_perusahaan', $id_perusahaan)
+                ->first(); 
+
+            $jenis = JenisPerusahaanModel::get(['id_jenis', 'jenis']);
+
+            return [
+                'perusahaan' => $perusahaan,
+                'jenis' => $jenis
+            ];
+        });
+
+        return view('admin.perusahaan.edit', $data);
     }
 
     public function getDetailPerusahaan($id_perusahaan)
     {
         $perusahaan = PerusahaanModel::with('jenis_perusahaan:id_jenis,jenis')
             ->where('id_perusahaan', $id_perusahaan)->first();
-        // return response()->json($perusahaan);
         return view('admin.perusahaan.detail', ['perusahaan' => $perusahaan]);
     }
     public function postPerusahaan(Request $request)
