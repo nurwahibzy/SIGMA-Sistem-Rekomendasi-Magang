@@ -35,8 +35,8 @@ class PerusahaanController extends Controller
     public function getEditPerusahaan($id_perusahaan)
     {
         $perusahaan = PerusahaanModel::with('jenis_perusahaan:id_jenis,jenis')
-        ->where('id_perusahaan', $id_perusahaan)->first();
-        $jenis =  JenisPerusahaanModel::get(['id_jenis', 'jenis']);
+            ->where('id_perusahaan', $id_perusahaan)->first();
+        $jenis = JenisPerusahaanModel::get(['id_jenis', 'jenis']);
         return view('admin.perusahaan.edit', ['perusahaan' => $perusahaan, 'jenis' => $jenis]);
     }
 
@@ -79,7 +79,7 @@ class PerusahaanController extends Controller
                 $lokasi = $this->latitudeLongitude($provinsi, $daerah);
 
                 if ($lokasi) {
-                    PerusahaanModel::insert([
+                    PerusahaanModel::create([
                         'id_jenis' => $id_jenis,
                         'nama' => $nama,
                         'telepon' => $telepon,
@@ -117,8 +117,23 @@ class PerusahaanController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                DB::transaction(
+                $results = DB::transaction(
                     function () use ($request, $id_perusahaan) {
+                        $validator = Validator::make($request->all(), [
+                            'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+                            'id_jenis' => 'required|exists:jenis_perusahaan,id_jenis',
+                            'nama' => 'required|string|max:255',
+                            'telepon' => 'required|digits_between:8,15',
+                            'deskripsi' => 'required|string',
+                            'provinsi' => 'required|string|max:255',
+                            'daerah' => 'required|string|max:255',
+                        ]);
+
+                        if ($validator->fails()) {
+                            return response()->json(['errors' => $validator->errors()], 422);
+                        }
+
+
                         $id_jenis = $request->input('id_jenis');
                         $nama = $request->input('nama');
                         $telepon = $request->input('telepon');
@@ -146,21 +161,23 @@ class PerusahaanController extends Controller
 
                         if ($data->nama !== $nama) {
                             $this->renameFileOnly($data, $id_perusahaan, $id_jenis, $nama, $telepon, $deskripsi, $provinsi, $daerah, $latitude, $longitude);
-                        } else{
+                        } else {
                             PerusahaanModel::where('id_perusahaan', $id_perusahaan)
-                            ->update([
-                                'id_jenis' => $id_jenis,
-                                'telepon' => $telepon,
-                                'deskripsi' => $deskripsi,
-                                'provinsi' => $provinsi,
-                                'daerah' => $daerah,
-                                'latitude' => $latitude,
-                                'longitude' => $longitude
-                            ]);
+                                ->update([
+                                    'id_jenis' => $id_jenis,
+                                    'telepon' => $telepon,
+                                    'deskripsi' => $deskripsi,
+                                    'provinsi' => $provinsi,
+                                    'daerah' => $daerah,
+                                    'latitude' => $latitude,
+                                    'longitude' => $longitude
+                                ]);
                         }
+                        
+                        return true;
                     }
                 );
-                return response()->json(['success' => true]);
+                return response()->json(['success' => $results]);
             } catch (\Throwable $e) {
                 Log::error("Gagal update perusahaan: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);

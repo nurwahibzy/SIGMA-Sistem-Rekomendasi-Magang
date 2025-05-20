@@ -1,9 +1,9 @@
-<form action="{{ url('/admin/perusahaan/edit/' . $perusahaan->id_perusahaan) }}" method="POST" id="form-tambah">
+<form action="{{ url('/admin/perusahaan/edit/' . $perusahaan->id_perusahaan) }}" method="POST" id="form-edit">
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah Perusahaan</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Edit Perusahaan</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -23,7 +23,7 @@
                             <div class="mb-3">
                                 <label for="id_jenis" class="form-label">Jenis Perusahaan</label>
                                 <select name="id_jenis" id="id_jenis" class="form-control" required>
-                                    <option value="">-- Pilih Jenis --</option>
+                                    <option value="">Pilih Jenis</option>
                                     @foreach ($jenis as $item)
                                         <option value="{{ $item->id_jenis }}" {{ $perusahaan->id_jenis == $item->id_jenis ? 'selected' : '' }}>{{ $item->jenis }}</option>
                                     @endforeach
@@ -54,7 +54,7 @@
                             <div class="mb-3">
                                 <label for="nama_provinsi" class="form-label">Provinsi: {{ $perusahaan->provinsi }}</label>
                                 <select name="nama_provinsi" id="nama_provinsi" class="form-control">
-                                    <option value="">-- Perbarui Provinsi --</option>
+                                    <option value="">Perbarui Provinsi</option>
                                 </select>
                                 <input type="hidden" name="provinsi" id="provinsi" value="{{ $perusahaan->provinsi }}" >
                             </div>
@@ -62,7 +62,7 @@
                             <div class="mb-3">
                                 <label for="nama_daerah" class="form-label">Daerah: {{ $perusahaan->daerah }}</label>
                                 <select name="nama_daerah" id="nama_daerah" class="form-control">
-                                    <option value="">-- Perbarui Daerah --</option>
+                                    <option value="">Perbarui Daerah</option>
                                 </select>
                                 <input type="hidden" name="daerah" id="daerah" value="{{ $perusahaan->daerah }}">
                             </div>
@@ -95,7 +95,7 @@
         $('#nama_provinsi').on('change', function () {
             const provId = $(this).val();
             $('#provinsi').val(dataProvinsi[provId] || '');
-            $('#nama_daerah').empty().append('<option value="">-- Perbarui Daerah --</option>');
+            $('#nama_daerah').empty().append('<option value="">Perbarui Daerah</option>');
             $('#daerah').val('');
 
             if (provId) {
@@ -116,7 +116,7 @@
             $('#daerah').val(dataDaerah[daerahId] || '');
         });
 
-        $("#form-tambah").validate({
+        $("#form-edit").validate({
             rules: {
                 id_jenis: { required: true },
                 nama: { required: true },

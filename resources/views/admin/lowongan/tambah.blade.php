@@ -1,104 +1,120 @@
-<div class="modal fade" id="modalTambahLowongan" tabindex="-1" aria-labelledby="modalTambahLowonganLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <form method="POST" id="formTambahLowongan">
-            @csrf
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTambahLowonganLabel">Tambah Program Studi</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="jurusan" class="form-label">Jurusan</label>
-                        <input type="text" name="nama_jurusan" id="jurusan" class="form-control" required>
-                        <span class="text-danger error-text nama_jurusan_err"></span>
+<form action="{{ url('/admin/lowongan/tambah') }}" method="POST" id="form-tambah">
+    @csrf
+    <div id="modal-master" class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Lowongan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container mt-4">
+                    <div class="tab-content" id="detailTabContent">
+                        <div class="mb-3">
+                            <label for="id_perusahaan" class="form-label">Perusahaan</label>
+                            <div class="d-flex gap-2">
+                                <select name="id_perusahaan" id="id_perusahaan" class="form-control" required>
+                                    <option value="">Pilih Perusahaan </option>
+                                    @foreach ($perusahaan as $item)
+                                        <option value="{{ $item->id_perusahaan }}">{{ $item->nama }}</option>
+                                    @endforeach
+                                </select>
+                                <a href="{{ url('admin/perusahaan/') }}" class="btn btn-success">
+                                    <i class="bi bi-plus-lg"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_bidang" class="form-label">Bidang</label>
+                            <select name="id_bidang" id="id_bidang" class="form-control" required>
+                                <option value="">Pilih Bidang </option>
+                                @foreach ($bidang as $item)
+                                    <option value="{{ $item->id_bidang }}">{{ $item->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="nama" class="form-label">Nama</label>
+                            <input type="text" class="form-control" id="nama" name="nama" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="persyaratan" class="form-label">Persyaratan</label>
+                            <textarea class="form-control" id="persyaratan" name="persyaratan" rows="3"
+                                required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="deskripsi" class="form-label">Deskripsi</label>
+                            <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3" required></textarea>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="prodi" class="form-label">Nama Prodi</label>
-                        <input type="text" name="nama_prodi" id="prodi" class="form-control" required>
-                        <span class="text-danger error-text nama_prodi_err"></span>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
             </div>
-        </form>
+            <div class="modal-footer">
+                <button type="button" data-bs-dismiss="modal" class="btn btn-warning">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+        </div>
     </div>
-</div>
-
-@push('scripts')
+</form>
 <script>
-$(document).ready(function() {
-
-    $('#formTambahLowongan').validate({
-        rules: {
-            nama_jurusan: {
-                required: true,
-                minlength: 3,
-                maxlength: 50,
+    $(document).ready(function () {
+        $("#form-tambah").validate({
+            rules: {
+                id_perusahaan: { required: true },
+                id_bidang: { required: true },
+                nama: { required: true },
+                persyaratan: { required: true },
+                deskripsi: { required: true }
             },
-            nama_prodi: {
-                required: true,
-                minlength: 3,
-                maxlength: 50,
-            }
-        },
-        messages: {
-            nama_jurusan: {
-                required: "Jurusan wajib diisi",
-                minlength: "Minimal 3 karakter",
-                maxlength: "Maksimal 50 karakter"
+            messages: {
+                id_perusahaan: "Pilih perusahaan",
+                id_bidang: "Pilih Bidang Magang",
+                nama: "Nama Magang wajib diisi",
+                persyaratan: "Persyaratan Magang wajib diisi",
+                deskripsi: "Deskripsi Magang wajib diisi",
             },
-            nama_prodi: {
-                required: "Nama Prodi wajib diisi",
-                minlength: "Minimal 3 karakter",
-                maxlength: "Maksimal 50 karakter"
-            }
-        },
-        errorElement: 'span',
-        errorClass: 'text-danger',
-        errorPlacement: function(error, element) {
-            let name = element.attr('name');
-            $('.' + name + '_err').html(error);
-        },
-        submitHandler: function(form) {
-            // Hapus error text dulu
-            $('.error-text').html('');
+            submitHandler: function (form) {
+                const formData = new FormData(form);
 
-            // Ambil data form
-            var formData = $(form).serialize();
-
-            $.ajax({
-                url: '{{ url("admin/lowongan/tambah") }}', // ganti sesuai route backend
-                method: 'POST',
-                data: formData,
-                success: function(response) {
-                    if(response.status === 'success') {
-                        $('#modalTambahLowongan').modal('hide');
-                        $('#formTambahLowongan')[0].reset();
-                        alert('Data berhasil disimpan!');
-
-                        if(typeof tableProdi !== 'undefined') {
-                            tableProdi.ajax.reload(null, false);
+                $.ajax({
+                    url: form.action,
+                    type: form.method,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('input[name="_token"]').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: 'Data berhasil diSimpan.'
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: response.message || 'Terjadi kesalahan saat menyimpan.'
+                            });
                         }
-                    } else if(response.status === 'error' && response.errors) {
-                        // Tampilkan error validasi dari backend
-                        $.each(response.errors, function(key, val) {
-                            $('.' + key + '_err').html(val[0]);
+                    },
+                    error: function (xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: xhr.responseJSON?.message || 'Terjadi kesalahan saat menyimpan.'
                         });
-                    } else {
-                        alert('Terjadi kesalahan: ' + response.message);
                     }
-                },
-                error: function(xhr) {
-                    alert('Terjadi kesalahan pada server.');
-                }
-            });
-            return false; // cegah submit form normal
-        }
-    });
+                });
 
-});
+                return false;
+            }
+        });
+    });
 </script>
-@endpush

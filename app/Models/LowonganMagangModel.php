@@ -13,7 +13,7 @@ class LowonganMagangModel extends Model
 
     protected $table = 'lowongan_magang';
     protected $primaryKey = 'id_lowongan';
-    protected $fillable = ['id_perusahaan', 'id_bidang', 'nama', 'persyaratan', 'foto_path'];
+    protected $fillable = ['id_perusahaan', 'id_bidang', 'nama', 'persyaratan', 'foto_path', 'deskripsi'];
     public function perusahaan(): BelongsTo
     {
         return $this->belongsTo(PerusahaanModel::class, 'id_perusahaan', 'id_perusahaan');

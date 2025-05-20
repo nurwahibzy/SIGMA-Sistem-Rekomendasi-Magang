@@ -23,7 +23,7 @@
                             <div class="mb-3">
                                 <label for="id_jenis" class="form-label">Jenis Perusahaan</label>
                                 <select name="id_jenis" id="id_jenis" class="form-control" required>
-                                    <option value="">-- Pilih Jenis --</option>
+                                    <option value="">Pilih Jenis</option>
                                     @foreach ($jenis as $item)
                                         <option value="{{ $item->id_jenis }}">{{ $item->jenis }}</option>
                                     @endforeach
@@ -50,7 +50,7 @@
                             <div class="mb-3">
                                 <label for="nama_provinsi" class="form-label">Provinsi</label>
                                 <select name="nama_provinsi" id="nama_provinsi" class="form-control" required>
-                                    <option value="">-- Pilih Provinsi --</option>
+                                    <option value="">Pilih Provinsi</option>
                                 </select>
                                 <input type="hidden" name="provinsi" id="provinsi">
                             </div>
@@ -58,7 +58,7 @@
                             <div class="mb-3">
                                 <label for="nama_daerah" class="form-label">Daerah</label>
                                 <select name="nama_daerah" id="nama_daerah" class="form-control" required>
-                                    <option value="">-- Pilih Daerah --</option>
+                                    <option value="">Pilih Daerah</option>
                                 </select>
                                 <input type="hidden" name="daerah" id="daerah">
                             </div>
@@ -91,7 +91,7 @@ $(document).ready(function () {
     $('#nama_provinsi').on('change', function () {
         const provId = $(this).val();
         $('#provinsi').val(dataProvinsi[provId] || '');
-        $('#nama_daerah').empty().append('<option value="">-- Pilih Daerah --</option>');
+        $('#nama_daerah').empty().append('<option value="">Pilih Daerah</option>');
         $('#daerah').val('');
 
         if (provId) {

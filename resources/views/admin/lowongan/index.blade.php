@@ -3,11 +3,10 @@
 @section('content')
 
     <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
+        <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="card-title mb-0">Lowongan</h5>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahLowongan">
-                <i class="bi bi-plus"></i> Tambah Lowongan
-            </button>
+            <button onclick="modalAction('{{ url('/admin/lowongan/tambah') }}')" class="btn btn-primary">Tambah
+                Lowongan</button>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -32,7 +31,8 @@
                                 <td>{{ $item->perusahaan->nama ?? '-' }}</td>
                                 <td>{{ $item->nama ?? '-' }}</td>
                                 <td>{{ $item->persyaratan ?? '-' }}</td>
-                                <td class="text-center"> <button class="btn btn-sm btn-info btn-detail" data-id="{{ $item->id_lowongan }}">
+                                <td class="text-center"> <button class="btn btn-sm btn-info btn-detail"
+                                        onclick="modalAction('{{ url('/admin/lowongan/detail/' . $item->id_lowongan) }}')">
                                         Detail
                                     </button></td>
                             </tr>
@@ -43,13 +43,23 @@
                         @endforelse
                     </tbody>
                 </table>
-
             </div>
         </div>
+        </div>
     </div>
-    @include('admin.lowongan.tambah')
+    <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
+        data-keyboard="false" data-width="75%" aria-hidden="true"></div>
+    </div>
 @endsection
-
-@push('scripts')
+@push('css')
+@endpush
+@push('js')
     <script src="{{ asset('template/assets/static/js/components/dark.js') }}"></script>
+    <script>
+        function modalAction(url = '') {
+            $('#myModal').load(url, function () {
+                $('#myModal').modal('show');
+            });
+        }
+    </script>
 @endpush
