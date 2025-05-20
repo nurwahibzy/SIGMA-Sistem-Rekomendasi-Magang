@@ -1,104 +1,83 @@
-<div class="modal fade" id="modalTambahProdi" tabindex="-1" aria-labelledby="modalTambahProdiLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <form method="POST" id="formTambahProdi">
-            @csrf
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTambahProdiLabel">Tambah Program Studi</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="jurusan" class="form-label">Jurusan</label>
-                        <input type="text" name="nama_jurusan" id="jurusan" class="form-control" required>
-                        <span class="text-danger error-text nama_jurusan_err"></span>
+<form action="{{ url('/admin/prodi/tambah') }}" method="POST" id="form-tambah">
+    @csrf
+    <div id="modal-master" class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Prodi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container mt-4">
+                    <div class="tab-content" id="detailTabContent">
+                        <div class="mb-3">
+                            <label for="nama_jurusan" class="form-label">Jurusan</label>
+                            <input type="text" class="form-control" id="nama_jurusan" name="nama_jurusan" readonly value="Teknologi Informasi">
+                        </div>
+                        <div class="mb-3">
+                            <label for="nama_prodi" class="form-label">Program Studi</label>
+                            <input type="text" class="form-control" id="nama_prodi" name="nama_prodi" required>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="prodi" class="form-label">Nama Prodi</label>
-                        <input type="text" name="nama_prodi" id="prodi" class="form-control" required>
-                        <span class="text-danger error-text nama_prodi_err"></span>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
             </div>
-        </form>
+            <div class="modal-footer">
+                <button type="button" data-bs-dismiss="modal" class="btn btn-warning">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+        </div>
     </div>
-</div>
-
-@push('scripts')
+</form>
 <script>
-$(document).ready(function() {
-
-    $('#formTambahProdi').validate({
-        rules: {
-            nama_jurusan: {
-                required: true,
-                minlength: 3,
-                maxlength: 50,
+    $(document).ready(function () {
+        $("#form-tambah").validate({
+            rules: {
+                nama_jurusan: { required: true },
+                nama_prodi: { required: true },
             },
-            nama_prodi: {
-                required: true,
-                minlength: 3,
-                maxlength: 50,
-            }
-        },
-        messages: {
-            nama_jurusan: {
-                required: "Jurusan wajib diisi",
-                minlength: "Minimal 3 karakter",
-                maxlength: "Maksimal 50 karakter"
+            messages: {
+                nama_jurusan: "Jurusan wajib diisi",
+                nama_prodi: "Program studi wajib diisi",
             },
-            nama_prodi: {
-                required: "Nama Prodi wajib diisi",
-                minlength: "Minimal 3 karakter",
-                maxlength: "Maksimal 50 karakter"
-            }
-        },
-        errorElement: 'span',
-        errorClass: 'text-danger',
-        errorPlacement: function(error, element) {
-            let name = element.attr('name');
-            $('.' + name + '_err').html(error);
-        },
-        submitHandler: function(form) {
-            // Hapus error text dulu
-            $('.error-text').html('');
+            submitHandler: function (form) {
+                const formData = new FormData(form);
 
-            // Ambil data form
-            var formData = $(form).serialize();
-
-            $.ajax({
-                url: '{{ url("admin/prodi/tambah") }}', // ganti sesuai route backend
-                method: 'POST',
-                data: formData,
-                success: function(response) {
-                    if(response.status === 'success') {
-                        $('#modalTambahProdi').modal('hide');
-                        $('#formTambahProdi')[0].reset();
-                        alert('Data berhasil disimpan!');
-
-                        if(typeof tableProdi !== 'undefined') {
-                            tableProdi.ajax.reload(null, false);
+                $.ajax({
+                    url: form.action,
+                    type: form.method,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('input[name="_token"]').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: 'Data berhasil diSimpan.'
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: response.message || 'Terjadi kesalahan saat menyimpan.'
+                            });
                         }
-                    } else if(response.status === 'error' && response.errors) {
-                        // Tampilkan error validasi dari backend
-                        $.each(response.errors, function(key, val) {
-                            $('.' + key + '_err').html(val[0]);
+                    },
+                    error: function (xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: xhr.responseJSON?.message || 'Terjadi kesalahan saat menyimpan.'
                         });
-                    } else {
-                        alert('Terjadi kesalahan: ' + response.message);
                     }
-                },
-                error: function(xhr) {
-                    alert('Terjadi kesalahan pada server.');
-                }
-            });
-            return false; // cegah submit form normal
-        }
-    });
+                });
 
-});
+                return false;
+            }
+        });
+    });
 </script>
-@endpush

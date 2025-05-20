@@ -20,12 +20,14 @@ class ProdiController extends Controller
     public function getAddProdi()
     {
         // return view('tes.lowongan', ['data' => $data]);
+        return view('admin.prodi.tambah');
     }
 
     public function getEditProdi($id_prodi)
     {
         $prodi = ProdiModel::where('id_prodi', $id_prodi)->first();
-        return response()->json($prodi);
+        // return response()->json($prodi);
+        return view('admin.prodi.edit', ['prodi' => $prodi]);
     }
 
     public function postProdi(Request $request)
@@ -33,7 +35,7 @@ class ProdiController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             try {
                 $nama_prodi = $request->input('nama_prodi');
-                $nama_jurusan = 'Teknologi Informasi';
+                $nama_jurusan = $request->input('nama_jurusan');
 
                 ProdiModel::create([
                     'nama_prodi' => $nama_prodi,
