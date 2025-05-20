@@ -8,16 +8,15 @@ use Location\Distance\Vincenty;
 
 class JarakController extends Controller
 {
-    public function hitungJarak()
+    public static function hitungJarak($Perusahaan, $Mahasiswa)
     {
-        $coordinate1 = new Coordinate(-8.1017, 112.1686); // Blitar
-        $coordinate2 = new Coordinate(-7.9819, 112.6265); // Malang
+        $koordinatPerusahaan = new Coordinate($Perusahaan->latitude, $Perusahaan->longitude); 
+        $koordinatMahasiwa = new Coordinate($Mahasiswa->preferensi_lokasi_mahasiswa->latitude, $Mahasiswa->preferensi_lokasi_mahasiswa->longitude); 
 
         $calculator = new Vincenty();
-        $distance = $calculator->getDistance($coordinate1, $coordinate2); // meter
+        $distance = $calculator->getDistance($koordinatPerusahaan, $koordinatMahasiwa);// meter
+        $distance = $calculator->getDistance($koordinatPerusahaan, $koordinatMahasiwa);// meter
 
-        return response()->json([
-            'jarak_km' => round($distance / 1000, 2)
-        ]);
+        return round($distance / 1000, 2);
     }
 }
