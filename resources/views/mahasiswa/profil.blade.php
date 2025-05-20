@@ -79,9 +79,9 @@
                 </p>
 
                 <div class="card p-4">
-                    <div class="mb-3">
+                    <div class="form-group">
                         <label for="jenis_perusahaan" class="form-label">Jenis Perusahaan</label>
-                        <select class="form-select" id="jenis_perusahaan" name="jenis_perusahaan[]" multiple>
+                        <select class="choices form-select multiple-remove" multiple="multiple" id="jenis_perusahaan" name="jenis_perusahaan[]">
                             @foreach($jenis as $item)
                                 <option value="{{ $item->id }}" {{ in_array($item->id, old('jenis_perusahaan', $preferensi_perusahaan->pluck('jenis_perusahaan_id')->toArray() ?? [])) ? 'selected' : '' }}>
                                     {{ $item->nama }}
@@ -160,10 +160,6 @@
 @endsection
 
 @section('scripts')
-    <!-- Styles dan Scripts Choices.js -->
-    <link rel="stylesheet" href="{{ asset('template/assets/extensions/choices.js/public/assets/styles/choices.min.css') }}">
-    <script src="{{ asset('template/assets/extensions/choices.js/public/assets/scripts/choices.min.js') }}"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const selectElement = document.getElementById('jenis_perusahaan');

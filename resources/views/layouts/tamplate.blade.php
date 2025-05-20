@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ asset('template/assets/compiled/css/app.css') }}" />
     <link rel="stylesheet" href="{{ asset('template/assets/compiled/css/app-dark.css') }}" />
     <link rel="stylesheet" href="{{ asset('template/assets/compiled/css/iconly.css') }}" />
+    <link rel="stylesheet" href="{{ asset('template/assets/extensions/choices.js/public/assets/styles/choices.min.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- DataTables CSS -->
@@ -56,6 +57,11 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 
     <script src="{{ asset('template/assets/compiled/js/app.js') }}"></script>
+    <script src="{{ asset('template/assets/extensions/choices.js/public/assets/scripts/choices.min.js') }}"></script>
+    <script src="{{ asset('template/assets/extensions/choices.js/public/assets/scripts/choices.js') }}"></script>
+    <script src="{{ asset('template/assets/static/js/pages/form-element-select.js') }}"></script>
+
+    <script src="{{ asset('template/assets/static/js/components/dark.js') }}"></script>
 
     @stack('scripts')
     @stack('js')
