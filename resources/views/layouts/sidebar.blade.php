@@ -142,6 +142,33 @@
                     </li>
                 </ul>
             </div>
+        @elseif(Auth::check() && Auth::user()->level->kode == 'DSN')
+            <div class="sidebar-menu">
+                <ul class="menu">
+                    <li class="sidebar-title">Menu</li>
+
+                    <li class="sidebar-item {{ request()->is('admin/mahasiswa*') ? 'active' : '' }}">
+                        <a href="{{ url('/mahasiswa/dashboard') }}" class="sidebar-link">
+                            <i class="bi bi-grid-fill"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-item {{ request()->is('mahasiswa/aktivitas*') ? 'active' : '' }}">
+                        <a href="{{ url('/mahasiswa/aktivitas') }}" class="sidebar-link">
+                            <i class="bi bi-people"></i>
+                            <span>Mahasiswa Bimbingan</span>
+                        </a>
+                    </li>
+
+                    <li class="sidebar-item {{ request()->is('mahasiswa/aktivitas*') ? 'active' : '' }}">
+                        <a href="{{ url('/mahasiswa/aktivitas') }}" class="sidebar-link">
+                            <i class="bi bi-journal-check"></i>
+                            <span>Monitoring dan Evaluasi</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         @endif
     </div>
 </div>
