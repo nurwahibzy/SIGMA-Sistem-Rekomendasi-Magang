@@ -30,6 +30,7 @@ use App\Http\Controllers\Mahasiswa\PenilaianController;
 use App\Http\Controllers\Mahasiswa\PeriodeMagangController as PeriodeMagangControllerMahasiswa;
 use App\Http\Controllers\Mahasiswa\PreferensiLokasiMahasiswaController;
 use App\Http\Controllers\Mahasiswa\PreferensiPerusahaanMahasiswaController;
+use App\Http\Controllers\Mahasiswa\RekomendasiController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -159,6 +160,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['authorize:MHS'])->prefix('mahasiswa')->group(function () {
         Route::get('/dashboard', [PeriodeMagangControllerMahasiswa::class, 'getDashboard']);
+        Route::get('/rekomendasi/{id_mahasiswa}', [RekomendasiController::class, 'getRekomendasi']);
         Route::prefix('profil')->group(function () {
             Route::get('/', [AkunControllerMahasiswa::class, 'getProfil'])->name('mahasiswa.profil');
 
