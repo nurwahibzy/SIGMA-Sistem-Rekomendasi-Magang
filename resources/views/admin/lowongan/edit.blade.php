@@ -1,11 +1,13 @@
 <form action="{{ url('/admin/lowongan/edit/' . $lowongan->id_lowongan) }}" method="POST" id="form-edit">
     @csrf
-    <div id="modal-master" class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit Lowongan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+   <div id="modal-master" class="modal-dialog modal-lg" role="document">
+    <div class="modal-content shadow-sm rounded">
+
+        <div class="modal-header bg-primary text-white rounded-top">
+            <h5 class="modal-title">Edit Lowongan</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
             <div class="modal-body">
                 <div class="container mt-4">
                     <div class="mb-3">
@@ -41,7 +43,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" data-bs-dismiss="modal" class="btn btn-warning">Batal</button>
+                <button type="button" class="btn btn-warning" onclick="modalAction('{{ url('/admin/lowongan/detail/' . $lowongan->id_lowongan) }}')">Batal</button>
                 <button type="submit" class="btn btn-primary">Simpan</button>
             </div>
         </div>

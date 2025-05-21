@@ -1,11 +1,13 @@
 <form action="{{ url('/admin/dosen/tambah') }}" method="POST" id="form-tambah">
     @csrf
-    <div id="modal-master" class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Tambah User</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+   <div id="modal-master" class="modal-dialog modal-lg" role="document">
+    <div class="modal-content shadow-sm rounded">
+
+        <!-- Header Modal -->
+        <div class="modal-header bg-primary text-white rounded-top">
+            <h5 class="modal-title">Tambah Dosen</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
             <div class="modal-body">
                 <div class="container mt-4">
                     <div class="tab-content" id="detailTabContent">
@@ -55,7 +57,7 @@
     $(document).ready(function () {
         $("#form-tambah").validate({
             rules: {
-                id_user: { required: true },
+                nip: { required: true },
                 nama: { required: true },
                 alamat: { required: true },
                 telepon: { required: true },
@@ -63,7 +65,7 @@
                 email: { required: true, email: true }
             },
             messages: {
-                id_user: "ID User wajib diisi",
+                nip: "ID User wajib diisi",
                 nama: "Nama wajib diisi",
                 alamat: "Alamat wajib diisi",
                 telepon: "Nomor telepon wajib diisi",

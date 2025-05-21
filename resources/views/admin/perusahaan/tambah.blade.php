@@ -1,11 +1,13 @@
 <form action="{{ url('/admin/perusahaan/tambah') }}" method="POST" id="form-tambah">
     @csrf
-    <div id="modal-master" class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah Perusahaan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+   <div id="modal-master" class="modal-dialog modal-lg" role="document">
+    <div class="modal-content shadow-sm rounded">
+
+        <div class="modal-header bg-primary text-white rounded-top">
+            <h5 class="modal-title">Tambah Perusahaan</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
             <div class="modal-body">
                 <div class="container mt-4">
                     <ul class="nav nav-tabs mb-3" id="detailTab" role="tablist">

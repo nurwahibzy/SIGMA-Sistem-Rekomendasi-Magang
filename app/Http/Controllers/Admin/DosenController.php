@@ -8,6 +8,7 @@ use App\Models\DosenModel;
 use DB;
 use Hash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash as FacadesHash;
 use Log;
 use Storage;
 
@@ -35,7 +36,14 @@ class DosenController extends Controller
         return view('admin.dosen.detail', ['dosen' => $dosen]);
     }
 
-    public function getEditDosen(){
+    public function getEditDosen($id_akun){
+         $dosen = DosenModel::with('akun')
+        ->whereHas('akun', function ($query) use ($id_akun) {
+            $query->where('id_akun', $id_akun);
+        })
+        ->firstOrFail();
+
+    return view('admin.dosen.edit', compact('dosen'));
         
     }
 
@@ -48,7 +56,7 @@ class DosenController extends Controller
 
                         $id_level = 3;
                         $id_user = $request->input('id_user');
-                        $password = Hash::make('password');
+                        $password = FacadesHash::make('password');
                         $status = 'aktif';
                         $foto_path = "$id_user.jpg";
                         $nama = $request->input('nama');
@@ -78,7 +86,7 @@ class DosenController extends Controller
                 return response()->json(['success' => true]);
             } catch (\Throwable $e) {
                 Log::error("Gagal update foto: " . $e->getMessage());
-                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
+                return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
             }
         }
     }
