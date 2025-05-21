@@ -16,26 +16,29 @@ class AdminController extends Controller
     public function getAdmin()
     {
         $admin = AdminModel::with('akun')
-        ->get();
+            ->get();
 
         return view('admin.admin.index', ['admin' => $admin]);
     }
 
-    public function getAddAdmin(){
+    public function getAddAdmin()
+    {
         return view('admin.admin.tambah');
     }
 
-    public function getDetailAdmin($id_akun){
+    public function getDetailAdmin($id_akun)
+    {
         $admin = AdminModel::with('akun')
-        ->whereHas('akun', function ($query) use ($id_akun) {
-            $query->where('id_akun', $id_akun);
-        })
-        ->first();
+            ->whereHas('akun', function ($query) use ($id_akun) {
+                $query->where('id_akun', $id_akun);
+            })
+            ->first();
 
         return view('admin.admin.detail', ['admin' => $admin]);
     }
 
-    public function getEditAdmin($id_admin){
+    public function getEditAdmin($id_admin)
+    {
 
     }
 
@@ -159,9 +162,22 @@ class AdminController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                AkunModel::where('id_akun', $id_akun)
-                    ->delete();
+                DB::transaction(
+                    function () use ($request, $id_akun) {
 
+                        $akun = AkunModel::where('id_akun', $id_akun)
+                            ->first(['foto_path']);
+
+                        $foto_path = $akun->foto_path;
+
+                        if (Storage::disk('public')->exists("profil/akun/$foto_path")) {
+                            Storage::disk('public')->delete("profil/akun/$foto_path");
+                        }
+
+                        AkunModel::where('id_akun', $id_akun)
+                            ->delete();
+                    }
+                );
                 return response()->json(['success' => true]);
             } catch (\Throwable $e) {
                 Log::error("Gagal menghapus lowongan: " . $e->getMessage());

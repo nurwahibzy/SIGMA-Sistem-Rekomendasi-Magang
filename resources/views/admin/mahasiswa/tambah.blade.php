@@ -9,6 +9,10 @@
             <div class="modal-body">
                 <div class="container mt-4">
                     <div class="tab-content" id="detailTabContent">
+                    <div class="mb-3">
+                                <label for="file" class="form-label">Fot</label>
+                                <input type="file" class="form-control" id="file" name="file" accept=".jpg,.jpeg,.png" required>
+                            </div>
                         <div class="mb-3">
                             <label for="id_prodi" class="form-label">Program Studi</label>
                             <select name="id_prodi" id="id_prodi" class="form-control" required>

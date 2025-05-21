@@ -26,14 +26,12 @@
                                 value="{{ $periode->nama }}">
                         </div>
                         <div class="mb-3">
-                            <label for="tanggal_mulai" class="form-label">Tanggal Mulai:
-                                {{ $periode->tanggal_mulai->format('d/m/Y') }}</label>
+                            <label for="tanggal_mulai" class="form-label">Tanggal Mulai</label>
                             <input type="date" class="form-control" id="tanggal_mulai" name="tanggal_mulai" required
                                 min="{{ $now }}" value="{{ $periode->tanggal_mulai->format('Y-m-d') }}">
                         </div>
                         <div class="mb-3">
-                            <label for="tanggal_selesai" class="form-label">Tanggal Selesai:
-                                {{ $periode->tanggal_selesai->format('d/m/Y') }}</label>
+                            <label for="tanggal_selesai" class="form-label">Tanggal Selesai</label>
                             <input type="date" class="form-control" id="tanggal_selesai" name="tanggal_selesai" required
                                 min="{{ $tomorrow }}" value="{{ $periode->tanggal_selesai->format('Y-m-d') }}">
                         </div>

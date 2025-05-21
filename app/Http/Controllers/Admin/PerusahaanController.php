@@ -37,7 +37,7 @@ class PerusahaanController extends Controller
         $data = DB::transaction(function () use ($id_perusahaan) {
             $perusahaan = PerusahaanModel::with('jenis_perusahaan:id_jenis,jenis')
                 ->where('id_perusahaan', $id_perusahaan)
-                ->first(); 
+                ->first();
 
             $jenis = JenisPerusahaanModel::get(['id_jenis', 'jenis']);
 
@@ -166,9 +166,7 @@ class PerusahaanController extends Controller
 
                         if ($request->hasFile('file')) {
                             $this->handleFileUpload($request, $data, $id_perusahaan, $id_jenis, $nama, $telepon, $deskripsi, $provinsi, $daerah, $latitude, $longitude);
-                        }
-
-                        if ($data->nama !== $nama) {
+                        } else if ($data->nama !== $nama) {
                             $this->renameFileOnly($data, $id_perusahaan, $id_jenis, $nama, $telepon, $deskripsi, $provinsi, $daerah, $latitude, $longitude);
                         } else {
                             PerusahaanModel::where('id_perusahaan', $id_perusahaan)
@@ -182,7 +180,7 @@ class PerusahaanController extends Controller
                                     'longitude' => $longitude
                                 ]);
                         }
-                        
+
                         return true;
                     }
                 );

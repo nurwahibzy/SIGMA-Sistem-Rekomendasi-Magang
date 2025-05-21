@@ -14,36 +14,46 @@ use Illuminate\Http\Request;
 use Log;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Storage;
+use Str;
 
 class MahasiswaController extends Controller
 {
     public function getMahasiswa()
     {
         $mahasiswa = MahasiswaModel::with('akun')
-        ->get();
+            ->get();
 
         return view('admin.mahasiswa.index', ['mahasiswa' => $mahasiswa]);
     }
 
-    public function getAddMahasiswa(){
+    public function getAddMahasiswa()
+    {
         $prodi = ProdiModel::get();
         return view('admin.mahasiswa.tambah', ['prodi' => $prodi]);
         // return response()->json($prodi);
     }
 
-    public function getDetailMahasiswa($id_akun){
+    public function getDetailMahasiswa($id_akun)
+    {
         $mahasiswa = MahasiswaModel::with('akun')
-        ->whereHas('akun', function ($query) use ($id_akun) {
-            $query->where('id_akun', $id_akun);
-        })
-        ->first();
+            ->whereHas('akun', function ($query) use ($id_akun) {
+                $query->where('id_akun', $id_akun);
+            })
+            ->first();
 
         return view('admin.mahasiswa.detail', ['mahasiswa' => $mahasiswa]);
         // return response()->json($mahasiswa);
     }
 
-    public function getEditMahasiswa(){
-        
+    public function getEditMahasiswa($id_akun)
+    {
+        $mahasiswa = MahasiswaModel::with('akun')
+            ->whereHas('akun', function ($query) use ($id_akun) {
+                $query->where('id_akun', $id_akun);
+            })
+            ->first();
+        $prodi = ProdiModel::get();
+        return view('admin.mahasiswa.edit', ['mahasiswa' => $mahasiswa, 'prodi' => $prodi]);
     }
 
     public function postMahasiswa(Request $request)
@@ -64,6 +74,10 @@ class MahasiswaController extends Controller
                         $telepon = $request->input('telepon');
                         $tanggal_lahir = $request->input('tanggal_lahir');
                         $email = $request->input('email');
+
+                        if ($request->hasFile('file')) {
+                            $foto_path = $this->handleFileUpload($request, $id_user, $foto_path);
+                        }
 
                         $akun = AkunModel::create([
                             'id_level' => $id_level,
@@ -101,7 +115,6 @@ class MahasiswaController extends Controller
 
                         $id_user = $request->input('id_user');
                         $status = 'aktif';
-                        $foto_path = "$id_user.jpg";
                         $id_prodi = $request->input('id_prodi');
                         $nama = $request->input('nama');
                         $alamat = $request->input('alamat');
@@ -110,13 +123,18 @@ class MahasiswaController extends Controller
                         $email = $request->input('email');
 
                         $data = AkunModel::where('id_akun', $id_akun)->first();
-                        if ($data->id_user != $id_user) {
-                            $this->renameFileOnly($data, $id_user);
+
+                        $foto_path = $data->foto_path;
+
+                        if ($request->hasFile('file')) {
+                            $foto_path = $this->handleFileUpload($request, $id_user, $foto_path);
+                        } else if ($data->id_user != $id_user) {
+                            $foto_path = $this->renameFileOnly($foto_path, $id_user);
                         }
 
                         if ($request->filled('password')) {
                             $password = $request->input('password');
-                            $akun = AkunModel::where('id_akun', $id_akun)
+                            AkunModel::where('id_akun', $id_akun)
                                 ->update([
                                     'id_user' => $id_user,
                                     'password' => Hash::make($password),
@@ -124,7 +142,7 @@ class MahasiswaController extends Controller
                                     'foto_path' => $foto_path
                                 ]);
                         } else {
-                            $akun = AkunModel::where('id_akun', $id_akun)
+                            AkunModel::where('id_akun', $id_akun)
                                 ->update([
                                     'id_user' => $id_user,
                                     'status' => $status,
@@ -132,7 +150,7 @@ class MahasiswaController extends Controller
                                 ]);
                         }
 
-                        DosenModel::with('akun:id_akun')
+                        MahasiswaModel::with('akun:id_akun')
                             ->whereHas('akun', function ($query) use ($id_akun) {
                                 $query->where('id_akun', $id_akun);
                             })
@@ -155,24 +173,47 @@ class MahasiswaController extends Controller
         }
     }
 
-    private function renameFileOnly($data, $id_user)
+    private function handleFileUpload(Request $request, $id_user, $foto_path)
     {
-        $lama = $data->foto_path;
-        $extension = pathinfo($lama, PATHINFO_EXTENSION);
+        $file = $request->file('file');
+        $filename = $id_user . "." . $file->getClientOriginalExtension();
+        Storage::disk('public')->delete("profil/akun/{$foto_path}");
+        $file->storeAs('public/profil/akun', $filename);
+        return $filename;
+    }
+
+    private function renameFileOnly($foto_path, $id_user)
+    {
+        $extension = pathinfo($foto_path, PATHINFO_EXTENSION);
         $file_path_baru = $id_user . '.' . $extension;
 
-        if (Storage::disk('public')->exists("profil/akun/$lama")) {
-            Storage::disk('public')->move("profil/akun/$lama", "profil/akun/$file_path_baru");
+        if (Storage::disk('public')->exists("profil/akun/$foto_path")) {
+            Storage::disk('public')->move("profil/akun/$foto_path", "profil/akun/$file_path_baru");
         }
+
+        return $file_path_baru;
     }
 
     public function deleteMahasiswa(Request $request, $id_akun)
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                AkunModel::where('id_akun', $id_akun)
-                    ->delete();
+                DB::transaction(
+                    function () use ($request, $id_akun) {
 
+                        $akun = AkunModel::where('id_akun', $id_akun)
+                            ->first(['foto_path']);
+
+                        $foto_path = $akun->foto_path;
+
+                        if (Storage::disk('public')->exists("profil/akun/$foto_path")) {
+                            Storage::disk('public')->delete("profil/akun/$foto_path");
+                        }
+
+                        AkunModel::where('id_akun', $id_akun)
+                            ->delete();
+                    }
+                );
                 return response()->json(['success' => true]);
             } catch (\Throwable $e) {
                 Log::error("Gagal menghapus lowongan: " . $e->getMessage());
@@ -189,11 +230,11 @@ class MahasiswaController extends Controller
         ]);
 
         $file = $request->file('file_excel');
-        $reader = IOFactory::createReader('Xlsx'); 
+        $reader = IOFactory::createReader('Xlsx');
         $reader->setReadDataOnly(true);
-        $spreadsheet = $reader->load($file->getRealPath()); 
+        $spreadsheet = $reader->load($file->getRealPath());
         $sheet = $spreadsheet->getActiveSheet();
-        $data = $sheet->toArray(null, false, true, true); 
+        $data = $sheet->toArray(null, false, true, true);
 
         DB::transaction(function () use ($data, $request) {
             foreach ($data as $index => $row) {
@@ -238,5 +279,5 @@ class MahasiswaController extends Controller
 
         return response()->json($data);
     }
-    
+
 }

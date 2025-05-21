@@ -8,7 +8,6 @@ use App\Models\DosenModel;
 use DB;
 use Hash;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash as FacadesHash;
 use Log;
 use Storage;
 
@@ -36,14 +35,7 @@ class DosenController extends Controller
         return view('admin.dosen.detail', ['dosen' => $dosen]);
     }
 
-    public function getEditDosen($id_akun){
-         $dosen = DosenModel::with('akun')
-        ->whereHas('akun', function ($query) use ($id_akun) {
-            $query->where('id_akun', $id_akun);
-        })
-        ->firstOrFail();
-
-    return view('admin.dosen.edit', compact('dosen'));
+    public function getEditDosen(){
         
     }
 
@@ -56,7 +48,7 @@ class DosenController extends Controller
 
                         $id_level = 3;
                         $id_user = $request->input('id_user');
-                        $password = FacadesHash::make('password');
+                        $password = Hash::make('password');
                         $status = 'aktif';
                         $foto_path = "$id_user.jpg";
                         $nama = $request->input('nama');
@@ -86,7 +78,7 @@ class DosenController extends Controller
                 return response()->json(['success' => true]);
             } catch (\Throwable $e) {
                 Log::error("Gagal update foto: " . $e->getMessage());
-                return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
             }
         }
     }
@@ -167,9 +159,22 @@ class DosenController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                AkunModel::where('id_akun', $id_akun)
-                    ->delete();
+                DB::transaction(
+                    function () use ($request, $id_akun) {
 
+                        $akun = AkunModel::where('id_akun', $id_akun)
+                            ->first(['foto_path']);
+
+                        $foto_path = $akun->foto_path;
+
+                        if (Storage::disk('public')->exists("profil/akun/$foto_path")) {
+                            Storage::disk('public')->delete("profil/akun/$foto_path");
+                        }
+
+                        AkunModel::where('id_akun', $id_akun)
+                            ->delete();
+                    }
+                );
                 return response()->json(['success' => true]);
             } catch (\Throwable $e) {
                 Log::error("Gagal menghapus lowongan: " . $e->getMessage());
