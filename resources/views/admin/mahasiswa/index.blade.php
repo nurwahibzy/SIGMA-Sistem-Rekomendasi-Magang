@@ -5,7 +5,7 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="card-title mb-0">Mahasiswa</h5>
-            <button onclick="modalAction('{{ url('/admin/mahasiswa/tambah') }}')" class="btn btn-primary">Tambah
+            <button onclick="modalAction('{{ url('/admin/mahasiswa/tambah') }}')" class="btn btn-primary"><i class="bi bi-plus"></i>Tambah
                 Mahasiswa</button>
         </div>
         <div class="card-body">
