@@ -103,7 +103,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/tambah', [DosenController::class, 'postDosen']);
             Route::get('/detail/{id_akun}', [DosenController::class, 'getDetailDosen']);
             Route::get('/edit/{id_akun}', [DosenController::class, 'getEditDosen']);
-            Route::put('/edit/{id_akun}', [DosenController::class, 'putDosen']);
+            Route::post('/edit/{id_akun}', [DosenController::class, 'putDosen']);
             Route::delete('/edit/{id_akun}', [DosenController::class, 'deleteDosen']);
         });
 

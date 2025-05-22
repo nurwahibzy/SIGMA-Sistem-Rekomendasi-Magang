@@ -89,18 +89,22 @@
     $(document).ready(function () {
         $("#form-tambah").validate({
             rules: {
-                id_user: { required: true },
+                id_user: { required: true, digits: true },
+                status: { required: true },
+                id_prodi: { required: true },
                 nama: { required: true },
                 alamat: { required: true },
-                telepon: { required: true },
+                telepon: { required: true, digits: true },
                 tanggal_lahir: { required: true, date: true },
                 email: { required: true, email: true }
             },
             messages: {
-                id_user: "ID User wajib diisi",
+                id_user: "ID User wajib diisi dan numerik",
+                status: "Status wajib diisi",
+                id_prodi: "Prodi wajib diisi",
                 nama: "Nama wajib diisi",
                 alamat: "Alamat wajib diisi",
-                telepon: "Nomor telepon wajib diisi",
+                telepon: "Nomor telepon wajib diisi dan numerik",
                 tanggal_lahir: "Tanggal lahir wajib diisi",
                 email: "Email wajib diisi dan harus valid"
             },

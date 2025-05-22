@@ -72,7 +72,7 @@ class PerusahaanController extends Controller
                 ]);
 
                 if ($validator->fails()) {
-                    return response()->json(['errors' => $validator->errors()], 422);
+                    return false;
                 }
 
                 $id_jenis = $request->input('id_jenis');
@@ -82,6 +82,8 @@ class PerusahaanController extends Controller
                 $provinsi = $request->input('provinsi');
                 $daerah = $request->input('daerah');
                 $file = $request->file('file');
+                $provinsi = ucwords(strtolower($provinsi));
+                $daerah = ucwords(strtolower($daerah));
                 $slugifiedName = Str::slug($nama, '_');
                 $filename = $slugifiedName . "." . $file->getClientOriginalExtension();
 
@@ -139,7 +141,7 @@ class PerusahaanController extends Controller
                         ]);
 
                         if ($validator->fails()) {
-                            return response()->json(['errors' => $validator->errors()], 422);
+                            return false;
                         }
 
 
@@ -149,6 +151,8 @@ class PerusahaanController extends Controller
                         $deskripsi = $request->input('deskripsi');
                         $provinsi = $request->input('provinsi');
                         $daerah = $request->input('daerah');
+                        $provinsi = ucwords(strtolower($provinsi));
+                        $daerah = ucwords(strtolower($daerah));
 
                         $data = PerusahaanModel::where('id_perusahaan', $id_perusahaan)
                             ->first();

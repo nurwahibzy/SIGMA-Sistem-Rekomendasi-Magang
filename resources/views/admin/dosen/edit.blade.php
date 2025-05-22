@@ -1,80 +1,104 @@
-<form action="{{ url('/admin/dosen/edit/' . $dosen->akun->id_akun) }}" method="POST" id="form-edit-dosen">
+<form action="{{ url('/admin/dosen/edit/' . $dosen->akun->id_akun) }}" method="POST" id="form-tambah">
     @csrf
-    @method('PUT')
-
-<div id="modal-master" class="modal-dialog modal-lg" role="document">
-    <div class="modal-content shadow-sm rounded">
-
-        <!-- Header Modal -->
-        <div class="modal-header bg-primary text-white rounded-top">
-            <h5 class="modal-title">Edit Dosen</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-
+    <div id="modal-master" class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
             <div class="modal-body">
                 <div class="container mt-4">
+                    <div class="tab-content" id="detailTabContent">
 
-                    <div class="mb-3">
-                        <label for="id_user" class="form-label">NIP</label>
-                        <input type="text" name="id_user" id="id_user" class="form-control" 
-                        value="{{ old('email', $dosen->id_user ?? $dosen->akun->id_user) }}" required />
+                        <div class="mb-3">
+                            <label for="file" class="form-label">Foto</label>
+                            <input type="file" class="form-control" id="file" name="file" accept=".jpg,.jpeg,.png">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select name="status" id="status" class="form-control" required>
+                                <option value="">Pilih Status</option>
+                                <option value="aktif" {{ $dosen->akun->status == 'aktif' ? 'selected' : ''  }}>aktif
+                                </option>
+                                <option value="nonaktif" {{ $dosen->akun->status == 'nonaktif' ? 'selected' : ''  }}>
+                                    nonaktif</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_user" class="form-label">NIP</label>
+                            <input type="text" class="form-control" id="id_user" name="id_user" required
+                                value="{{ $dosen->akun->id_user }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="nama" class="form-label">Nama</label>
+                            <input type="text" class="form-control" id="nama" name="nama" required
+                                value="{{ $dosen->nama }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="alamat" class="form-label">Alamat</label>
+                            <textarea class="form-control" id="alamat" name="alamat" rows="3"
+                                required>{{ $dosen->alamat }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="telepon" class="form-label">Telepon</label>
+                            <input type="text" class="form-control" id="telepon" name="telepon" required
+                                value="{{ $dosen->telepon }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
+                            <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" required
+                                value="{{ $dosen->tanggal_lahir }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required
+                                value="{{ $dosen->email }}">
+                        </div>
+
                     </div>
-
-                    <div class="mb-3">
-                        <label for="nama" class="form-label">Nama Dosen</label>
-                        <input type="text" name="nama" id="nama" class="form-control" value="{{ old('nama', $dosen->nama) }}" required />
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="telepon" class="form-label">No. Telepon / HP</label>
-                        <input type="text" name="telepon" id="telepon" class="form-control" value="{{ old('telepon', $dosen->telepon ?? '') }}" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
-                        <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-control"
-                               value="{{ old('tanggal_lahir', $dosen->tanggal_lahir ? date('Y-m-d', strtotime($dosen->tanggal_lahir)) : '') }}" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="alamat" class="form-label">Alamat</label>
-                        <textarea name="alamat" id="alamat" class="form-control" rows="3">{{ old('alamat', $dosen->alamat ?? '') }}</textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" name="email" id="email" class="form-control"
-                               value="{{ old('email', $dosen->email ?? $dosen->akun->email) }}" required />
-                    </div>
-
                 </div>
             </div>
-
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" onclick="modalAction('{{ url('/admin/dosen/detail/' . $dosen->akun->id_akun) }}')">Batal</button>
+                <button type="button" data-bs-dismiss="modal" class="btn btn-warning">Batal</button>
                 <button type="submit" class="btn btn-primary">Simpan</button>
             </div>
         </div>
     </div>
 </form>
 
-<!-- Script untuk validasi dan AJAX -->
 <script>
     $(document).ready(function () {
-        $("#form-edit-dosen").validate({
+        $("#form-tambah").validate({
             rules: {
+                id_user: { required: true, digits: true },
+                status: { required: true },
                 nama: { required: true },
-                nip: { required: true },
-                email: { email: true }
+                alamat: { required: true },
+                telepon: { required: true, digits: true },
+                tanggal_lahir: { required: true, date: true },
+                email: { required: true, email: true }
             },
             messages: {
+                id_user: "ID User wajib diisi",
+                status: "Status wajib diisi dan numerik",
                 nama: "Nama wajib diisi",
-                nip: "NIP wajib diisi",
-                email: "Masukkan email valid"
+                alamat: "Alamat wajib diisi",
+                telepon: "Nomor telepon wajib diisi dan numerik",
+                tanggal_lahir: "Tanggal lahir wajib diisi",
+                email: "Email wajib diisi dan harus valid"
             },
             submitHandler: function (form) {
                 const formData = new FormData(form);
-
                 $.ajax({
                     url: form.action,
                     type: form.method,
@@ -89,7 +113,7 @@
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Berhasil',
-                                text: response.message || 'Data berhasil disimpan.'
+                                text: 'Data berhasil disimpan.'
                             }).then(() => {
                                 location.reload();
                             });
@@ -102,21 +126,11 @@
                         }
                     },
                     error: function (xhr) {
-                        let errors = xhr.responseJSON?.errors;
-                        if (errors) {
-                            let errorList = Object.values(errors).flat().join('<br>');
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Validasi Gagal',
-                                html: errorList
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal',
-                                text: xhr.responseJSON?.message || 'Terjadi kesalahan saat menyimpan.'
-                            });
-                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: xhr.responseJSON?.message || 'Terjadi kesalahan saat menyimpan.'
+                        });
                     }
                 });
 

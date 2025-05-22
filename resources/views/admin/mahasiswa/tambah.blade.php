@@ -10,8 +10,8 @@
                 <div class="container mt-4">
                     <div class="tab-content" id="detailTabContent">
                     <div class="mb-3">
-                                <label for="file" class="form-label">Fot</label>
-                                <input type="file" class="form-control" id="file" name="file" accept=".jpg,.jpeg,.png" required>
+                                <label for="file" class="form-label">Foto</label>
+                                <input type="file" class="form-control" id="file" name="file" accept=".jpg,.jpeg,.png">
                             </div>
                         <div class="mb-3">
                             <label for="id_prodi" class="form-label">Program Studi</label>
@@ -24,7 +24,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="id_user" class="form-label">NIP</label>
+                            <label for="id_user" class="form-label">NIM</label>
                             <input type="text" class="form-control" id="id_user" name="id_user" required>
                         </div>
 
@@ -68,18 +68,20 @@
     $(document).ready(function () {
         $("#form-tambah").validate({
             rules: {
-                id_user: { required: true },
+                id_user: { required: true, digits: true },
+                id_prodi: { required: true },
                 nama: { required: true },
                 alamat: { required: true },
-                telepon: { required: true },
+                telepon: { required: true, digits: true },
                 tanggal_lahir: { required: true, date: true },
                 email: { required: true, email: true }
             },
             messages: {
-                id_user: "ID User wajib diisi",
+                id_user: "ID User wajib diisi dan numerik",
+                id_prodi: "Prodi wajib diisi",
                 nama: "Nama wajib diisi",
                 alamat: "Alamat wajib diisi",
-                telepon: "Nomor telepon wajib diisi",
+                telepon: "Nomor telepon wajib diisi dan numerik",
                 tanggal_lahir: "Tanggal lahir wajib diisi",
                 email: "Email wajib diisi dan harus valid"
             },

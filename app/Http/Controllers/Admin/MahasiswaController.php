@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\AkunModel;
 use App\Models\DosenModel;
 use App\Models\MahasiswaModel;
+use App\Models\PreferensiLokasiMahasiswaModel;
+use App\Models\PreferensiPerusahaanMahasiswaModel;
 use App\Models\ProdiModel;
 use Date;
 use DB;
@@ -15,6 +17,7 @@ use Log;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Storage;
 use Str;
+use Validator;
 
 class MahasiswaController extends Controller
 {
@@ -60,8 +63,22 @@ class MahasiswaController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                DB::transaction(
+                $results = DB::transaction(
                     function () use ($request) {
+                        $validator = Validator::make($request->all(), [
+                            'id_user' => 'required|digits_between:1,20',
+                            'id_prodi' => 'required|exists:prodi,id_prodi',
+                            'nama' => 'required|string|max:255',
+                            'alamat' => 'required|string',
+                            'telepon' => 'required|digits_between:1,15',
+                            'tanggal_lahir' => 'required|date',
+                            'email' => 'required|email|max:255',
+                            'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+                        ]);
+
+                        if ($validator->fails()) {
+                            return false;
+                        }
 
                         $id_level = 2;
                         $id_user = $request->input('id_user');
@@ -74,6 +91,10 @@ class MahasiswaController extends Controller
                         $telepon = $request->input('telepon');
                         $tanggal_lahir = $request->input('tanggal_lahir');
                         $email = $request->input('email');
+                        $provinsi = 'Jawa Timur';
+                        $daerah = 'Kota Malang';
+                        $latitude = '-7.9771308';
+                        $longitude = '112.6340265';
 
                         if ($request->hasFile('file')) {
                             $foto_path = $this->handleFileUpload($request, $id_user, $foto_path);
@@ -87,7 +108,7 @@ class MahasiswaController extends Controller
                             'foto_path' => $foto_path
                         ]);
 
-                        MahasiswaModel::insert([
+                        $mahasiswa = MahasiswaModel::create([
                             'id_akun' => $akun->id_akun,
                             'id_prodi' => $id_prodi,
                             'nama' => $nama,
@@ -96,9 +117,18 @@ class MahasiswaController extends Controller
                             'tanggal_lahir' => $tanggal_lahir,
                             'email' => $email
                         ]);
+
+                        PreferensiLokasiMahasiswaModel::create([
+                            'id_mahasiswa' => $mahasiswa->id_mahasiswa,
+                            'provinsi' => $provinsi,
+                            'daerah' => $daerah,
+                            'latitude' => $latitude,
+                            'longitude' => $longitude
+                        ]);
+                        return true;
                     }
                 );
-                return response()->json(['success' => true]);
+                return response()->json(['success' => $results]);
             } catch (\Throwable $e) {
                 Log::error("Gagal menambah user: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
@@ -110,11 +140,27 @@ class MahasiswaController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                DB::transaction(
+                $results = DB::transaction(
                     function () use ($request, $id_akun) {
+                        $validator = Validator::make($request->all(), [
+                            'id_user' => 'required|digits_between:1,20',
+                            'status' => 'required|in:aktif,nonaktif',
+                            'id_prodi' => 'required|exists:prodi,id_prodi',
+                            'nama' => 'required|string|max:255',
+                            'alamat' => 'required|string',
+                            'telepon' => 'required|digits_between:1,15',
+                            'tanggal_lahir' => 'required|date',
+                            'email' => 'required|email|max:255',
+                            'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+                            'password' => 'nullable|string|min:6'
+                        ]);
+
+                        if ($validator->fails()) {
+                            return false;
+                        }
 
                         $id_user = $request->input('id_user');
-                        $status = 'aktif';
+                        $status = $request->input('status');
                         $id_prodi = $request->input('id_prodi');
                         $nama = $request->input('nama');
                         $alamat = $request->input('alamat');
@@ -163,9 +209,11 @@ class MahasiswaController extends Controller
                                 'tanggal_lahir' => $tanggal_lahir,
                                 'email' => $email
                             ]);
+
+                        return true;
                     }
                 );
-                return response()->json(['success' => true]);
+                return response()->json(['success' => $results]);
             } catch (\Throwable $e) {
                 Log::error("Gagal update user: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
