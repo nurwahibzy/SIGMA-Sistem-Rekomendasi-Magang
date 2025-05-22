@@ -68,11 +68,11 @@ class MahasiswaController extends Controller
                         $validator = Validator::make($request->all(), [
                             'id_user' => 'required|digits_between:1,20',
                             'id_prodi' => 'required|exists:prodi,id_prodi',
-                            'nama' => 'required|string|max:255',
+                            'nama' => 'required|string|max:100',
                             'alamat' => 'required|string',
-                            'telepon' => 'required|digits_between:1,15',
+                            'telepon' => 'required|digits_between:1,30',
                             'tanggal_lahir' => 'required|date',
-                            'email' => 'required|email|max:255',
+                            'email' => 'required|email|max:100',
                             'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
                         ]);
 
@@ -146,13 +146,13 @@ class MahasiswaController extends Controller
                             'id_user' => 'required|digits_between:1,20',
                             'status' => 'required|in:aktif,nonaktif',
                             'id_prodi' => 'required|exists:prodi,id_prodi',
-                            'nama' => 'required|string|max:255',
+                            'nama' => 'required|string|max:100',
                             'alamat' => 'required|string',
-                            'telepon' => 'required|digits_between:1,15',
+                            'telepon' => 'required|digits_between:1,30',
                             'tanggal_lahir' => 'required|date',
-                            'email' => 'required|email|max:255',
+                            'email' => 'required|email|max:100',
                             'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
-                            'password' => 'nullable|string|min:6'
+                            'password' => 'nullable|string|min:6|max:255'
                         ]);
 
                         if ($validator->fails()) {

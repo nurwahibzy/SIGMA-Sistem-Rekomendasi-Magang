@@ -9,6 +9,7 @@ use App\Models\MagangModel;
 use Auth;
 use DB;
 use Illuminate\Http\Request;
+use Validator;
 
 class MagangController extends Controller
 {
@@ -60,6 +61,15 @@ class MagangController extends Controller
     public function putKegiatan(Request $request, $id_magang)
     {
         if ($request->ajax() || $request->wantsJson()) {
+            $validator = Validator::make($request->all(), [
+                'id_dosen' => 'required',
+                'status' => 'required|in:proses,diterima,ditolak,lulus',
+            ]);
+
+            if ($validator->fails()) {
+                return false;
+            }
+
             $id_dosen = $request->input('id_dosen');
             $status = $request->input('status');
 

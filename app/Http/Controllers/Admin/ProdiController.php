@@ -7,6 +7,7 @@ use App\Models\ProdiModel;
 use DB;
 use Illuminate\Http\Request;
 use Log;
+use Validator;
 
 class ProdiController extends Controller
 {
@@ -32,6 +33,14 @@ class ProdiController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
+                $validator = Validator::make($request->all(), [
+                    'nama_prodi' => 'required|string|max:100',
+                ]);
+
+                if ($validator->fails()) {
+                    return false;
+                }
+
                 $nama_prodi = $request->input('nama_prodi');
                 $nama_jurusan = $request->input('nama_jurusan');
 
@@ -51,6 +60,13 @@ class ProdiController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
+                $validator = Validator::make($request->all(), [
+                    'nama_prodi' => 'required|string|max:100',
+                ]);
+
+                if ($validator->fails()) {
+                    return false;
+                }
                 $nama_prodi = $request->input('nama_prodi');
 
 

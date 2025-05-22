@@ -63,7 +63,7 @@ class LowonganMagangController extends Controller
             ->where('id_lowongan', $id_lowongan)
             ->first();
 
-            return view('admin.lowongan.detail', ['lowongan' => $lowongan]);
+        return view('admin.lowongan.detail', ['lowongan' => $lowongan]);
         // return response()->json($lowongan);
         // return response()->json($lowongan);
     }
@@ -74,12 +74,12 @@ class LowonganMagangController extends Controller
             try {
                 $validator = Validator::make($request->all(), [
                     'id_perusahaan' => 'required|exists:perusahaan,id_perusahaan',
-                    'id_bidang'     => 'required|exists:bidang,id_bidang',
-                    'nama'          => 'required|string|max:255',
-                    'persyaratan'   => 'required|string',
-                    'deskripsi'     => 'required|string',
+                    'id_bidang' => 'required|exists:bidang,id_bidang',
+                    'nama' => 'required|string|max:100',
+                    'persyaratan' => 'required|string',
+                    'deskripsi' => 'required|string',
                 ]);
-                
+
                 if ($validator->fails()) {
                     return response()->json(['errors' => $validator->errors()], 422);
                 }
@@ -112,12 +112,12 @@ class LowonganMagangController extends Controller
             try {
                 $validator = Validator::make($request->all(), [
                     'id_perusahaan' => 'required|exists:perusahaan,id_perusahaan',
-                    'id_bidang'     => 'required|exists:bidang,id_bidang',
-                    'nama'          => 'required|string|max:255',
-                    'persyaratan'   => 'required|string',
-                    'deskripsi'     => 'required|string',
+                    'id_bidang' => 'required|exists:bidang,id_bidang',
+                    'nama' => 'required|string|max:100',
+                    'persyaratan' => 'required|string',
+                    'deskripsi' => 'required|string',
                 ]);
-                
+
                 if ($validator->fails()) {
                     return response()->json(['errors' => $validator->errors()], 422);
                 }

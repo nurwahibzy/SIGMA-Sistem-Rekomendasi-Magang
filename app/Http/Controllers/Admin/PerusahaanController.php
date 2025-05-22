@@ -62,13 +62,13 @@ class PerusahaanController extends Controller
             try {
 
                 $validator = Validator::make($request->all(), [
-                    'file' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+                    'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
                     'id_jenis' => 'required|exists:jenis_perusahaan,id_jenis',
-                    'nama' => 'required|string|max:255',
-                    'telepon' => 'required|digits_between:8,15',
+                    'nama' => 'required|string|max:100',
+                    'telepon' => 'required|digits_between:1,30',
                     'deskripsi' => 'required|string',
-                    'provinsi' => 'required|string|max:255',
-                    'daerah' => 'required|string|max:255',
+                    'provinsi' => 'required|string|max:30',
+                    'daerah' => 'required|string|max:30',
                 ]);
 
                 if ($validator->fails()) {
@@ -133,11 +133,11 @@ class PerusahaanController extends Controller
                         $validator = Validator::make($request->all(), [
                             'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
                             'id_jenis' => 'required|exists:jenis_perusahaan,id_jenis',
-                            'nama' => 'required|string|max:255',
-                            'telepon' => 'required|digits_between:8,15',
+                            'nama' => 'required|string|max:100',
+                            'telepon' => 'required|digits_between:1,30',
                             'deskripsi' => 'required|string',
-                            'provinsi' => 'required|string|max:255',
-                            'daerah' => 'required|string|max:255',
+                            'provinsi' => 'required|string|max:30',
+                            'daerah' => 'required|string|max:30',
                         ]);
 
                         if ($validator->fails()) {

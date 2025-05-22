@@ -9,16 +9,18 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use Log;
+use Validator;
 
 class PeriodeMagangController extends Controller
 {
     public function getPeriode()
     {
         $periode = PeriodeMagangModel::with(
-            'lowongan_magang', 'lowongan_magang.perusahaan'
+            'lowongan_magang',
+            'lowongan_magang.perusahaan'
         )
             ->get();
-            return view('admin.periode.index', ['periode' => $periode]);
+        return view('admin.periode.index', ['periode' => $periode]);
     }
 
     public function getAddPeriode()
@@ -49,10 +51,11 @@ class PeriodeMagangController extends Controller
         return view('admin.periode.edit', $data);
     }
 
-    public function getDetailPeriode($id_periode){
- 
+    public function getDetailPeriode($id_periode)
+    {
+
         $periode = PeriodeMagangModel::with('lowongan_magang', 'lowongan_magang.perusahaan', 'lowongan_magang.bidang')
-        ->where('id_periode', $id_periode)->first();
+            ->where('id_periode', $id_periode)->first();
         return view('admin.periode.detail', ['periode' => $periode]);
     }
 
@@ -60,6 +63,16 @@ class PeriodeMagangController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
+                $validator = Validator::make($request->all(), [
+                    'id_lowongan' => 'required|exists:lowongan_magang,id_lowongan',
+                    'nama' => 'required|string|max:100',
+                    'tanggal_mulai' => 'required|date',
+                    'tanggal_selesai' => 'required|date',
+                ]);
+
+                if ($validator->fails()) {
+                    return false;
+                }
 
                 $id_lowongan = $request->input('id_lowongan');
                 $nama = $request->input('nama');
@@ -84,6 +97,17 @@ class PeriodeMagangController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
+                $validator = Validator::make($request->all(), [
+                    'id_lowongan' => 'required|exists:lowongan_magang,id_lowongan',
+                    'nama' => 'required|string|max:100',
+                    'tanggal_mulai' => 'required|date',
+                    'tanggal_selesai' => 'required|date',
+                ]);
+
+                if ($validator->fails()) {
+                    return false;
+                }
+                
                 $id_lowongan = $request->input('id_lowongan');
                 $nama = $request->input('nama');
                 $tanggal_mulai = $request->input('tanggal_mulai');
