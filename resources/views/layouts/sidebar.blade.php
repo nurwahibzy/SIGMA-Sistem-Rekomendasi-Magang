@@ -165,8 +165,8 @@
                         </a>
                     </li>
 
-                    <li class="sidebar-item {{ request()->is('dosen/aktivitas*') ? 'active' : '' }}">
-                        <a href="{{ url('/dosen/aktivitas') }}" class="sidebar-link">
+                    <li class="sidebar-item {{ request()->is('dosen/riwayat*') ? 'active' : '' }}">
+                        <a href="{{ url('/dosen/riwayat') }}" class="sidebar-link">
                             <i class="bi bi-people"></i>
                             <span>Mahasiswa Bimbingan</span>
                         </a>

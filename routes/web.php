@@ -263,6 +263,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('riwayat')->group(function () {
             Route::get('/', [MagangControllerDosen::class, 'getRiwayat']);
+            Route::get('/detail/{id_magang}', [MagangControllerDosen::class, 'getDetailRiwayat']);
         });
     });
 });

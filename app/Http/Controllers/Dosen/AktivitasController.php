@@ -26,8 +26,6 @@ class AktivitasController extends Controller
         $magang = MagangModel::where('id_dosen', $id_dosen)
         ->where('status', 'diterima')
         ->get();
-
-        return view('dosen.mahasiswa.index', compact('magang'));
     }
 
     // public function getAktivitas($id_magang){
