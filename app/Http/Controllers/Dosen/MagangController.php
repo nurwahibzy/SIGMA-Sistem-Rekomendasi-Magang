@@ -24,7 +24,8 @@ class MagangController extends Controller
 
         $id_dosen = $this->idDosen();
         $peserta = MagangModel::where('id_dosen', $id_dosen)->get();
-        return response()->json($peserta);
+        return view('dosen.index', compact('peserta'));
+
     }
 
     public function getRiwayat(){

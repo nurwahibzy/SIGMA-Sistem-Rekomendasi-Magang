@@ -27,7 +27,7 @@ class AktivitasController extends Controller
         ->where('status', 'diterima')
         ->get();
 
-        return response()->json($magang);
+        return view('dosen.mahasiswa.index', compact('magang'));
     }
 
     // public function getAktivitas($id_magang){
