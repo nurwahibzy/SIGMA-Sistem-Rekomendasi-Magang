@@ -1,6 +1,6 @@
 @extends('layouts.tamplate')
 @section('content')
-<div class="row">
+            <div class="row">
                 <div class="col-6 col-lg-3 col-md-6">
                     <div class="card">
                         <div class="card-body px-4 py-4-5">

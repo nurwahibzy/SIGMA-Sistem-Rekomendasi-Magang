@@ -249,8 +249,16 @@ class MahasiswaController extends Controller
                 DB::transaction(
                     function () use ($request, $id_akun) {
 
-                        $akun = AkunModel::where('id_akun', $id_akun)
-                            ->first(['foto_path']);
+                        $akun = AkunModel::with('mahasiswa', 'mahasiswa.dokumen')
+                            ->where('id_akun', $id_akun)->first();
+
+                            foreach ($akun->mahasiswa->dokumen as $dokumen) {
+                                $file_path = $dokumen->file_path;
+
+                                if (Storage::disk('public')->exists("dokumen/$file_path")) {
+                                    Storage::disk('public')->delete("dokumen/$file_path");
+                                }
+                            }
 
                         $foto_path = $akun->foto_path;
 

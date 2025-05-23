@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AkunModel;
 use App\Models\ProdiModel;
 use DB;
 use Illuminate\Http\Request;
 use Log;
+use Storage;
 use Validator;
+use function PHPUnit\Framework\isEmpty;
 
 class ProdiController extends Controller
 {
@@ -87,9 +90,41 @@ class ProdiController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                ProdiModel::where('id_prodi', $id_prodi)
-                    ->delete();
+                DB::transaction(
+                    function () use ($request, $id_prodi) {
+                        $prodi = ProdiModel::with('mahasiswa', 'mahasiswa.akun', 'mahasiswa.dokumen')
+                            ->where('id_prodi', $id_prodi)
+                            ->first();
 
+                        foreach ($prodi->mahasiswa as $item) {
+                            if (!empty($item->dokumen)) {
+                                foreach ($item->dokumen as $dokumen) {
+                                    $file_path = $dokumen->file_path;
+
+                                    if (Storage::disk('public')->exists("dokumen/$file_path")) {
+                                        Storage::disk('public')->delete("dokumen/$file_path");
+                                    }
+                                }
+                            }
+
+                            if (!empty($item->akun)) {
+
+                                $foto_path = $item->akun->foto_path;
+
+                                if (Storage::disk('public')->exists("profil/akun/$foto_path")) {
+                                    Storage::disk('public')->delete("profil/akun/$foto_path");
+                                }
+
+                                $id_akun = $item->akun->id_akun;
+
+                                AkunModel::where('id_akun', $id_akun)->delete();
+                            }
+                        }
+                        ProdiModel::where('id_prodi', $id_prodi)
+                            ->delete();
+
+                    }
+                );
                 return response()->json(['success' => true]);
             } catch (\Throwable $e) {
                 Log::error("Gagal menghapus lowongan: " . $e->getMessage());
