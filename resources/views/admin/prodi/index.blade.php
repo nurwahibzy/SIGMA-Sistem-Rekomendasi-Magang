@@ -7,6 +7,7 @@
             <button onclick="modalAction('{{ url('/admin/prodi/tambah') }}')" class="btn btn-primary"><i class="bi bi-plus"></i>Tambah Prodi</button>
         </div>
         <div class="card-body">
+        @if (count($prodi))
             <div class="table-responsive">
                 <table class="table" id="table1">
                     <thead>
@@ -17,8 +18,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($prodi as $item)
-                            <tr>
+                            @foreach ($prodi as $item)
+                                <tr>
                                 <td>{{ $item->nama_jurusan ?? '-' }}</td>
                                 <td>{{ $item->nama_prodi ?? '-' }}</td>
                                 <td class="text-center">
@@ -29,15 +30,16 @@
                                             data-id="{{ $item->id_prodi }}">Hapus</button>
                                     </div>
                                 </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="3" class="text-center">Tidak ada program studi tersedia</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
+                                </tr>
+                            @endforeach
+                        </tbody>
                 </table>
             </div>
+            @else
+                <div class="text-center">
+                    <p class="mt-4">Tidak ada prodi tersedia</p>
+                </div>
+            @endif
         </div>
     </div>
 

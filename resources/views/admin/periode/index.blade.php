@@ -9,6 +9,7 @@
                 Periode</button>
         </div>
         <div class="card-body">
+        @if (count($periode))
         <div class="table-responsive">
                 <table class="table" id="table1">
                     <colgroup>
@@ -26,8 +27,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($periode as $item)  
-                            <tr>
+                            @foreach ($periode as $item)
+                                <tr>
                                 <td>{{ $item->lowongan_magang->perusahaan->nama ?? '-' }}</td>
                                 <td>{{ $item->lowongan_magang->nama . ' - ' . $item->nama ?? '-' }}</td>
                                 <td>{{ $item->tanggal_mulai->format('d M Y') }} - {{ $item->tanggal_selesai->format('d M Y') }}
@@ -35,16 +36,16 @@
                                         onclick="modalAction('{{ url('/admin/periode/detail/' . $item->id_periode) }}')">
                                         Detail
                                     </button></td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="text-center">Tidak ada periode tersedia</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
+                                </tr>
+                            @endforeach
+                        </tbody>
                 </table>
-
             </div>
+            @else
+                <div class="text-center">
+                    <p class="mt-4">Tidak ada periode tersedia</p>
+                </div>
+            @endif
         </div>
     </div>
     <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"

@@ -8,42 +8,52 @@
             </div>
             <div class="modal-body">
                 <div class="container mt-4">
+                    <ul class="nav nav-tabs mb-3" id="detailTab" role="tablist">
+                        <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#akun">Akun</a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#data">Data</a></li>
+                    </ul>
+
                     <div class="tab-content" id="detailTabContent">
-                        <div class="mb-3">
-                            <label for="file" class="form-label">Foto</label>
-                            <input type="file" class="form-control" id="file" name="file" accept=".jpg,.jpeg,.png">
-                        </div>
+                        <div class="tab-pane fade show active" id="akun" role="tabpanel">
+                            <div class="mb-3">
+                                <label for="file" class="form-label">Foto</label>
+                                <input type="file" class="form-control" id="file" name="file" accept=".jpg,.jpeg,.png">
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="id_user" class="form-label">NIP</label>
-                            <input type="text" class="form-control" id="id_user" name="id_user" required>
-                        </div>
+                            <div class="mb-3">
+                                <label for="id_user" class="form-label">NIP</label>
+                                <input type="text" class="form-control" id="id_user" name="id_user" required>
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="nama" class="form-label">Nama</label>
-                            <input type="text" class="form-control" id="nama" name="nama" required>
-                        </div>
+                            <div class="mb-3">
+                                <label for="telepon" class="form-label">Telepon</label>
+                                <input type="text" class="form-control" id="telepon" name="telepon" required>
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="alamat" class="form-label">Alamat</label>
-                            <textarea class="form-control" id="alamat" name="alamat" rows="3" required></textarea>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
                         </div>
+                        <div class="tab-pane fade" id="data" role="tabpanel">
+                            <div class="mb-3">
+                                <label for="nama" class="form-label">Nama</label>
+                                <input type="text" class="form-control" id="nama" name="nama" required>
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="telepon" class="form-label">Telepon</label>
-                            <input type="text" class="form-control" id="telepon" name="telepon" required>
+                            <div class="mb-3">
+                                <label for="alamat" class="form-label">Alamat</label>
+                                <textarea class="form-control" id="alamat" name="alamat" rows="3" required></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
+                                <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" required
+                                    max="{{ now()->format('Y-m-d') }}">
+                                <!-- <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" required max="{{ now()->subYears(20)->format('Y-m-d') }}""> -->
+                            </div>
                         </div>
-
-                        <div class="mb-3">
-                            <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
-                            <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                        </div>
-
                     </div>
                 </div>
             </div>
