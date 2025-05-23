@@ -73,7 +73,7 @@ Route::middleware(['auth'])->group(function () {
 
             Route::prefix('edit')->group(function () {
                 Route::get('/', [AkunControllerAdmin::class, 'getEditProfil']);
-                Route::put('/', [AkunControllerAdmin::class, 'putAkun']);
+                Route::post('/', [AkunControllerAdmin::class, 'putAkun']);
             });
         });
 
