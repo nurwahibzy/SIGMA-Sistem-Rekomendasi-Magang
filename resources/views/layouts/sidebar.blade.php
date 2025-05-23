@@ -48,20 +48,20 @@
 
                     <li class="sidebar-item {{ request()->is('admin/admin*') ? 'active' : '' }}">
                         <a href="{{ url('admin/admin') }}" class="sidebar-link">
-                            <i class="bi bi-people"></i>
+                            <i class="bi bi-people-fill"></i>
                             <div class="icon dripicons dripicons-user"></div>
                             <span>Admin</span>
                         </a>
                     </li>
                     <li class="sidebar-item {{ request()->is('admin/mahasiswa*') ? 'active' : '' }}">
                         <a href="{{ url('admin/mahasiswa') }}" class="sidebar-link">
-                            <i class="bi bi-people"></i>
+                            <i class="bi bi-people-fill"></i>
                             <span>Mahasiswa</span>
                         </a>
                     </li>
                     <li class="sidebar-item {{ request()->is('admin/dosen*') ? 'active' : '' }}">
                         <a href="{{ url('admin/dosen') }}" class="sidebar-link">
-                            <i class="bi bi-people"></i>
+                            <i class="bi bi-people-fill"></i>
                             <span>Dosen</span>
                         </a>
                     </li>
@@ -70,7 +70,7 @@
 
                     <li class="sidebar-item {{ request()->is('admin/perusahaan*') ? 'active' : '' }}">
                         <a href="{{ url('admin/perusahaan') }}" class="sidebar-link">
-                            <i class="bi bi-building"></i>
+                            <i class="bi bi-building-fill"></i>
                             <span>Perusahaan</span>
                         </a>
                     </li>
@@ -79,19 +79,19 @@
 
                     <li class="sidebar-item {{ request()->is('admin/lowongan*') ? 'active' : '' }}">
                         <a href="{{ url('admin/lowongan') }}" class="sidebar-link">
-                            <i class="bi bi-briefcase"></i>
+                            <i class="bi bi-briefcase-fill"></i>
                             <span>Lowongan</span>
                         </a>
                     </li>
                     <li class="sidebar-item {{ request()->is('admin/periode*') ? 'active' : '' }}">
                         <a href="{{ url('admin/periode') }}" class="sidebar-link">
-                            <i class="bi bi-briefcase"></i>
+                            <i class="bi bi-briefcase-fill"></i>
                             <span>Periode</span>
                         </a>
                     </li>
                     <li class="sidebar-item {{ request()->is('admin/kegiatan*') ? 'active' : '' }}">
                         <a href="{{ url('admin/kegiatan') }}" class="sidebar-link">
-                            <i class="bi bi-briefcase"></i>
+                            <i class="bi bi-briefcase-fill"></i>
                             <span>Kegiatan</span>
                         </a>
                     </li>
@@ -100,7 +100,7 @@
 
                     <li class="sidebar-item {{ request()->is('admin/prod*') ? 'active' : '' }}">
                         <a href="{{ url('admin/prodi') }}" class="sidebar-link">
-                            <i class="bi bi-book"></i>
+                            <i class="bi bi-book-fill"></i>
                             <span>Prodi</span>
                         </a>
                     </li>
@@ -111,7 +111,7 @@
                 <ul class="menu">
                     <li class="sidebar-title">Menu</li>
 
-                    <li class="sidebar-item {{ request()->is('admin/mahasiswa*') ? 'active' : '' }}">
+                    <li class="sidebar-item {{ request()->is('mahasiswa/dashboard*') ? 'active' : '' }}">
                         <a href="{{ url('/mahasiswa/dashboard') }}" class="sidebar-link">
                             <i class="bi bi-grid-fill"></i>
                             <span>Dashboard</span>
@@ -121,7 +121,7 @@
 
                     <li class="sidebar-item {{ request()->is('mahasiswa/aktivitas*') ? 'active' : '' }}">
                         <a href="{{ url('/mahasiswa/aktivitas') }}" class="sidebar-link">
-                            <i class="bi bi-journal-check"></i>
+                            <i class="bi bi-envelope-paper-fill"></i>
                             <span>Log Aktivitas</span>
                         </a>
                     </li>
@@ -129,7 +129,7 @@
 
                     <li class="sidebar-item {{ request()->is('mahasiswa/riwayat*') ? 'active' : '' }}">
                         <a href="{{ url('/mahasiswa/riwayat') }}" class="sidebar-link">
-                            <i class="bi bi-clock-history"></i>
+                            <i class="bi bi-clock-fill"></i>
                             <span>Riwayat</span>
                         </a>
                     </li>
@@ -158,7 +158,7 @@
                 <ul class="menu">
                     <li class="sidebar-title">Menu</li>
 
-                    <li class="sidebar-item {{ request()->is('admin/mahasiswa*') ? 'active' : '' }}">
+                    <li class="sidebar-item {{ request()->is('dosen/dashboard*') ? 'active' : '' }}">
                         <a href="{{ url('/dosen/dashboard') }}" class="sidebar-link">
                             <i class="bi bi-grid-fill"></i>
                             <span>Dashboard</span>
@@ -167,15 +167,15 @@
 
                     <li class="sidebar-item {{ request()->is('dosen/riwayat*') ? 'active' : '' }}">
                         <a href="{{ url('/dosen/riwayat') }}" class="sidebar-link">
-                            <i class="bi bi-people"></i>
+                            <i class="bi bi-people-fill"></i>
                             <span>Mahasiswa Bimbingan</span>
                         </a>
                     </li>
 
-                    <li class="sidebar-item {{ request()->is('dosen/aktivitas*') ? 'active' : '' }}">
-                        <a href="{{ url('/dosen/aktivitas') }}" class="sidebar-link">
-                            <i class="bi bi-journal-check"></i>
-                            <span>Monitoring dan Evaluasi</span>
+                    <li class="sidebar-item {{ request()->is('mahasiswa/aktivitas*') ? 'active' : '' }}">
+                        <a href="{{ url('/mahasiswa/aktivitas') }}" class="sidebar-link">
+                            <i class="bi bi-laptop-fill"></i>
+                            <span>Monitoring Mahasiswa</span>
                         </a>
                     </li>
                 </ul>
