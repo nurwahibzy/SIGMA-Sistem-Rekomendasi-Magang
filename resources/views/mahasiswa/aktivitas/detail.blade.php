@@ -26,9 +26,9 @@
 @endphp
 
 @if($isPastActivity)
-<div class="alert alert-info mb-3">
-    <i class="bi bi-info-circle"></i> Aktivitas tanggal sebelumnya tidak dapat diubah atau dihapus.
-</div>
+    <div class="alert alert-info mb-3">
+        <i class="bi bi-info-circle"></i> Aktivitas tanggal sebelumnya tidak dapat diubah atau dihapus.
+    </div>
 @endif
 
 <div class="d-flex justify-content-end">

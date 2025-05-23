@@ -46,7 +46,7 @@
 
                     const status = item.status || 'Proses'; // Ganti jika field status ada
                     let badgeClass = 'bg-secondary';
-                    if (status === 'lulus') badgeClass = 'bg-success';
+                    if (status === 'diterima') badgeClass = 'bg-success';
                     else if (status === 'ditolak') badgeClass = 'bg-danger';
 
                     html += `
