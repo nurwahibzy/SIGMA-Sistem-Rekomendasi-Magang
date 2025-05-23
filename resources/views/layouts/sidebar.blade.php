@@ -172,8 +172,8 @@
                         </a>
                     </li>
 
-                    <li class="sidebar-item {{ request()->is('mahasiswa/aktivitas*') ? 'active' : '' }}">
-                        <a href="{{ url('/mahasiswa/aktivitas') }}" class="sidebar-link">
+                    <li class="sidebar-item {{ request()->is('dosen/aktivitas*') ? 'active' : '' }}">
+                        <a href="{{ url('/dosen/aktivitas') }}" class="sidebar-link">
                             <i class="bi bi-journal-check"></i>
                             <span>Monitoring dan Evaluasi</span>
                         </a>
