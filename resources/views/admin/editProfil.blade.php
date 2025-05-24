@@ -14,14 +14,14 @@
                             class="text-start mt-3">
                             @csrf
                             <div class="text-center mb-3">
-                                <!-- Klik gambar untuk pilih file -->
                                 <label for="file" style="cursor: pointer;">
-                                    <img id="preview" src="{{ asset('storage/profil/akun/' . Auth::user()->foto_path ) ?? asset('template/assets/images/mhs.jpeg') }}"
-                                        alt="Profile Picture" class="rounded-circle mx-auto d-block mb-3" width="100"
-                                        height="100" style="border: 5px solid blue;">
-                                </label>
 
-                                <!-- File input (disembunyikan) -->
+                                        <img id="preview" src="{{ Storage::exists('public/profil/akun/' . Auth::user()->foto_path)
+                    ? asset('storage/profil/akun/' . Auth::user()->foto_path)
+                    : asset('template/assets/images/mhs.jpeg') }}" alt="Foto Profil" alt="Profile Picture"
+                            class="rounded-circle mx-auto d-block mb-3" width="100" height="100"
+                            style="border: 5px solid blue;" />
+                                </label>
                                 <input type="file" id="file" name="file" accept="image/*" onchange="previewImage(event)"
                                     style="display: none;">
                             </div>

@@ -31,13 +31,22 @@ class MahasiswaController extends Controller
             $query->where('status', 'aktif');
         })
         ->count();
+        // $aktif = DosenModel::withCount([
+        //     'magang' => function ($query) {
+        //         $query->where('status', 'diterima');
+        //     }
+        // ])
+        //     ->orderByDesc('magang_count')
+        //     ->first();
+
         $nonaktif = MahasiswaModel::with('akun')
-        ->whereHas('akun', function($query){
-            $query->where('status', 'nonaktif');
-        })
-        ->count();
+            ->whereHas('akun', function ($query) {
+                $query->where('status', 'nonaktif');
+            })
+            ->count();
 
         return view('admin.mahasiswa.index', ['mahasiswa' => $mahasiswa, 'amountMahasiswa' => $amountMahasiswa, 'aktif' => $aktif, 'nonaktif' => $nonaktif]);
+        // return response()->json($aktif);
     }
 
     public function getAddMahasiswa()
@@ -263,13 +272,13 @@ class MahasiswaController extends Controller
                         $akun = AkunModel::with('mahasiswa', 'mahasiswa.dokumen')
                             ->where('id_akun', $id_akun)->first();
 
-                            foreach ($akun->mahasiswa->dokumen as $dokumen) {
-                                $file_path = $dokumen->file_path;
+                        foreach ($akun->mahasiswa->dokumen as $dokumen) {
+                            $file_path = $dokumen->file_path;
 
-                                if (Storage::disk('public')->exists("dokumen/$file_path")) {
-                                    Storage::disk('public')->delete("dokumen/$file_path");
-                                }
+                            if (Storage::disk('public')->exists("dokumen/$file_path")) {
+                                Storage::disk('public')->delete("dokumen/$file_path");
                             }
+                        }
 
                         $foto_path = $akun->foto_path;
 

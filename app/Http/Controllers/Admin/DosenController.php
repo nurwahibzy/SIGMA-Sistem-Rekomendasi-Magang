@@ -19,7 +19,32 @@ class DosenController extends Controller
         $dosen = DosenModel::with('akun')
             ->get();
 
-        return view('admin.dosen.index', ['dosen' => $dosen]);
+        $amountDosen = DosenModel::count();
+        $aktif = DosenModel::with('akun')
+            ->whereHas('akun', function ($query) {
+                $query->where('status', 'aktif');
+            })
+            ->count();
+        $topDosen = DosenModel::with('akun')
+        ->withCount([
+            'magang' => function ($query) {
+                $query->where('status', 'diterima');
+            }
+        ])
+            ->orderByDesc('magang_count')
+            ->first();
+
+        $nonaktif = DosenModel::with('akun')
+            ->whereHas('akun', function ($query) {
+                $query->where('status', 'nonaktif');
+            })
+            ->count();
+
+        // return view('admin.mahasiswa.index', ['mahasiswa' => $mahasiswa, 'amountMahasiswa' => $amountMahasiswa, 'aktif' => $aktif, 'nonaktif' => $nonaktif]);
+        // return response()->json($aktif);
+
+        return view('admin.dosen.index', ['dosen' => $dosen, 'amountDosen' => $amountDosen, 'aktif' => $aktif, 'nonaktif' => $nonaktif, 'topDosen' => $topDosen]);
+        // return response()->json($topDosen);
     }
 
     public function getAddDosen()
