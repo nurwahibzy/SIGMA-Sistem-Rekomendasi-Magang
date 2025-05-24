@@ -25,8 +25,19 @@ class MahasiswaController extends Controller
     {
         $mahasiswa = MahasiswaModel::with('akun')
             ->get();
+        $amountMahasiswa = MahasiswaModel::count();
+        $aktif = MahasiswaModel::with('akun')
+        ->whereHas('akun', function($query){
+            $query->where('status', 'aktif');
+        })
+        ->count();
+        $nonaktif = MahasiswaModel::with('akun')
+        ->whereHas('akun', function($query){
+            $query->where('status', 'nonaktif');
+        })
+        ->count();
 
-        return view('admin.mahasiswa.index', ['mahasiswa' => $mahasiswa]);
+        return view('admin.mahasiswa.index', ['mahasiswa' => $mahasiswa, 'amountMahasiswa' => $amountMahasiswa, 'aktif' => $aktif, 'nonaktif' => $nonaktif]);
     }
 
     public function getAddMahasiswa()

@@ -24,7 +24,7 @@
 
                             <div class="mb-3">
                                 <label for="status" class="form-label">Status</label>
-                                <select name="status" id="status" class="form-control" required>
+                                <select name="status" id="status" class="form-select" required>
                                     <option value="">Pilih Status</option>
                                     <option value="aktif" {{ $admin->akun->status == 'aktif' ? 'selected' : ''  }}>aktif
                                     </option>

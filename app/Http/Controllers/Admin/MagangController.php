@@ -62,7 +62,6 @@ class MagangController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             $validator = Validator::make($request->all(), [
-                'id_dosen' => 'required',
                 'status' => 'required|in:proses,diterima,ditolak,lulus',
             ]);
 

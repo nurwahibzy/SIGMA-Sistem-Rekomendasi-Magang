@@ -25,17 +25,12 @@
                                     value="{{ Auth::user()->admin->nama ?? '-' }}" disabled>
                             </div>
                             <div class="mb-2">
-                                <label class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password" value="******" disabled>
-                                <small class="text-muted">Kosongkan jika tidak ingin mengubah.</small>
-                            </div>
-                            <div class="mb-2">
                                 <label class="form-label">Alamat</label>
                                 <input type="text" class="form-control" id="alamat"
                                     value="{{ Auth::user()->admin->alamat ?? '-' }}" disabled>
                             </div>
                             <div class="mb-2">
-                                <label class="form-label">No Telepon</label>
+                                <label class="form-label">Telepon</label>
                                 <input type="text" class="form-control" id="no_telepon"
                                     value="{{ Auth::user()->admin->telepon ?? '-' }}" disabled>
                             </div>
