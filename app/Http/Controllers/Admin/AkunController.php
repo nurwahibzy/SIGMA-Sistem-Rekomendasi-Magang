@@ -108,8 +108,10 @@ class AkunController extends Controller
                             'telepon' => 'required|digits_between:1,30',
                             'tanggal_lahir' => 'required|date',
                             'email' => 'required|email|max:100',
+                            'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
                             'password' => 'nullable|string|min:6|max:255'
                         ]);
+
 
                         if ($validator->fails()) {
                             return false;
@@ -127,7 +129,9 @@ class AkunController extends Controller
 
                         $foto_path = $data->foto_path;
 
-                        if ($data->id_user != $id_user) {
+                        if ($request->hasFile('file')) {
+                            $foto_path = $this->handleFileUpload($request, $id_user, $foto_path);
+                        } else if ($data->id_user != $id_user) {
                             $foto_path = $this->renameFileOnly($foto_path, $id_user);
                         }
 
@@ -168,6 +172,15 @@ class AkunController extends Controller
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
             }
         }
+    }
+
+    private function handleFileUpload(Request $request, $id_user, $foto_path)
+    {
+        $file = $request->file('file');
+        $filename = $id_user . "." . $file->getClientOriginalExtension();
+        Storage::disk('public')->delete("profil/akun/{$foto_path}");
+        $file->storeAs('public/profil/akun', $filename);
+        return $filename;
     }
 
     private function renameFileOnly($foto_path, $id_user)

@@ -9,7 +9,7 @@
             <div class="col-md-4">
                 <div class="position-sticky" style="top: 90px;">
                     <div class="card p-4 text-center">
-                        <img src="{{ asset('template/assets/images/mhs.jpeg') }}" alt="Profile Picture"
+                        <img src="{{ asset('storage/profil/akun/' . Auth::user()->foto_path ) ?? asset('template/assets/images/mhs.jpeg') }}" alt="Profile Picture"
                             class="rounded-circle mx-auto d-block mb-3" width="100" height="100"
                             style="border: 5px solid blue;">
                         <form id="form-left-panel" class="text-start mt-3">

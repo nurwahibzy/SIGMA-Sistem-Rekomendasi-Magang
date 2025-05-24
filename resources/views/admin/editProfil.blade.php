@@ -9,11 +9,22 @@
             <div class="col-md-4">
                 <div class="position-sticky" style="top: 90px;">
                     <div class="card p-4 text-center">
-                        <img src="{{ asset('template/assets/images/mhs.jpeg') }}" alt="Profile Picture"
-                            class="rounded-circle mx-auto d-block mb-3" width="100" height="100"
-                            style="border: 5px solid blue;">
-                        <form id="form-tambah" action="{{ url('/admin/profil/edit/') }}" method="POST" class="text-start mt-3">
+
+                        <form id="form-tambah" action="{{ url('/admin/profil/edit/') }}" method="POST"
+                            class="text-start mt-3">
                             @csrf
+                            <div class="text-center mb-3">
+                                <!-- Klik gambar untuk pilih file -->
+                                <label for="file" style="cursor: pointer;">
+                                    <img id="preview" src="{{ asset('storage/profil/akun/' . Auth::user()->foto_path ) ?? asset('template/assets/images/mhs.jpeg') }}"
+                                        alt="Profile Picture" class="rounded-circle mx-auto d-block mb-3" width="100"
+                                        height="100" style="border: 5px solid blue;">
+                                </label>
+
+                                <!-- File input (disembunyikan) -->
+                                <input type="file" id="file" name="file" accept="image/*" onchange="previewImage(event)"
+                                    style="display: none;">
+                            </div>
                             <div class="mb-2">
                                 <label for="id_user" class="form-label">NIP</label>
                                 <input type="text" class="form-control" id="id_user" name="id_user" required
@@ -63,6 +74,16 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            const preview = document.getElementById('preview');
+            preview.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
+<script>
     $(document).ready(function () {
         $("#form-tambah").validate({
             rules: {
@@ -99,7 +120,7 @@
                                 title: 'Berhasil',
                                 text: 'Data berhasil disimpan.'
                             }).then(() => {
-                                location.reload();
+                                window.location.href = '{{ url('admin/profil') }}';
                             });
                         } else {
                             Swal.fire({
