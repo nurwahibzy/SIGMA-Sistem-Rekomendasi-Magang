@@ -5,8 +5,8 @@
     </div>
     <section class="section">
         <div class="row">
-            @include('mahasiswa.panel-kiri')
-            @include('mahasiswa.panel-kanan')
+            @include('mahasiswa.akun.edit-panel-kiri')
+            @include('mahasiswa.akun.edit-panel-kanan')
         </div>
     </section>
 @endsection

@@ -38,10 +38,11 @@
                 <a class="nav-link" data-bs-toggle="tab" href="#dokumen" role="tab">Dokumen</a>
             </li>
         </ul>
-
-        <a href="{{ url('mahasiswa/profil/edit') }}" class="btn-edit-section btn btn-outline-danger">
-            <i class="bi bi-pencil-square"></i> Edit
+        
+        <a href="{{ url('mahasiswa/profil/') }}" class="btn-edit-section btn btn-outline-danger">
+            <i class="bi bi-box-arrow-left"></i> Kembali
         </a>
+
     </div>
 
 
@@ -53,7 +54,7 @@
                     <h5 class="fw-bold mb-0">Keahlian</h5>
                 </div>
 
-                <p class="text-muted mb-3">Keahlian yang dimiliki beserta skala prioritasnya</p>
+                <p class="text-muted mb-3">Keahlian yang kamu miliki beserta skala prioritasnya</p>
 
                 @if (count($keahlian))
                     @foreach ($keahlian as $item)

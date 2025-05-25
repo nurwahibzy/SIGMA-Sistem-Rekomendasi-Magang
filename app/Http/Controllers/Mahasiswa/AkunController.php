@@ -47,32 +47,47 @@ class AkunController extends Controller
             [
                 'pengalaman' => $akun->mahasiswa->pengalaman,
                 'bidang' => $bidang,
-                'keahlian' => $akun->mahasiswa->keahlian_mahasiswa,
+                'keahlian' => $akun->mahasiswa->keahlian_mahasiswa->sortBy('prioritas'),
                 'kompetensi' => $akun->mahasiswa->kompetensi,
                 'jenis' => $jenis,
                 'preferensi_perusahaan' => $akun->mahasiswa->preferensi_perusahaan_mahasiswa,
+                'preferensi_lokasi' => $akun->mahasiswa->preferensi_lokasi_mahasiswa
             ]
         );
+        // return response()->json($akun);
     }
 
     public function getEditProfil()
     {
         $akun = $this->allDataProfil();
-        return view('tes.dashboard', ['akun' => $akun]);
-        // return response()->json($akun);
+        $akun = $this->allDataProfil();
+        $bidang = BidangModel::get();
+        $jenis = JenisPerusahaanModel::get();
+        return view(
+            'mahasiswa.akun.edit-profil',
+            [
+                'pengalaman' => $akun->mahasiswa->pengalaman,
+                'bidang' => $bidang,
+                'keahlian' => $akun->mahasiswa->keahlian_mahasiswa->sortBy('prioritas'),
+                'kompetensi' => $akun->mahasiswa->kompetensi,
+                'jenis' => $jenis,
+                'preferensi_perusahaan' => $akun->mahasiswa->preferensi_perusahaan_mahasiswa,
+                'preferensi_lokasi' => $akun->mahasiswa->preferensi_lokasi_mahasiswa
+            ]
+        );
     }
-    public function updateProfil(Request $request)
-    {
-        $user = Auth::user();
+    // public function updateProfil(Request $request)
+    // {
+    //     $user = Auth::user();
 
-        $mahasiswa = $user->mahasiswa;
-        $mahasiswa->nama = $request->input('nama');
-        $mahasiswa->alamat = $request->input('alamat');
-        $mahasiswa->telepon = $request->input('telepon');
-        $mahasiswa->save();
+    //     $mahasiswa = $user->mahasiswa;
+    //     $mahasiswa->nama = $request->input('nama');
+    //     $mahasiswa->alamat = $request->input('alamat');
+    //     $mahasiswa->telepon = $request->input('telepon');
+    //     $mahasiswa->save();
 
-        return response()->json(['status' => 'success', 'message' => 'Profil berhasil diperbarui!']);
-    }
+    //     return response()->json(['status' => 'success', 'message' => 'Profil berhasil diperbarui!']);
+    // }
 
 
     private function allDataProfil()
@@ -85,7 +100,7 @@ class AkunController extends Controller
             'mahasiswa.preferensi_lokasi_mahasiswa:id_preferensi_lokasi,id_mahasiswa,provinsi,daerah',
             'mahasiswa.preferensi_perusahaan_mahasiswa:id_preferensi_perusahaan,id_mahasiswa,id_jenis',
             'mahasiswa.preferensi_perusahaan_mahasiswa.jenis_perusahaan:id_jenis,jenis',
-            'mahasiswa.keahlian_mahasiswa:id_keahlian_mahasiswa,id_mahasiswa,id_bidang,keahlian',
+            'mahasiswa.keahlian_mahasiswa:id_keahlian_mahasiswa,id_mahasiswa,id_bidang,prioritas,keahlian',
             'mahasiswa.keahlian_mahasiswa.bidang:id_bidang,nama',
         )
             ->where('id_akun', Auth::user()->id_akun)
@@ -98,40 +113,41 @@ class AkunController extends Controller
     public function putAkun(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
-            try {
-                DB::transaction(function () use ($request) {
-                    $id_mahasiswa = $this->idMahasiswa();
-                    $nama = $request->input('nama');
-                    $alamat = $request->input('alamat');
-                    $telepon = $request->input('telepon');
-                    $tanggal_lahir = $request->input('tanggal_lahir');
-                    $email = $request->input('email');
+            // try {
+            //     DB::transaction(function () use ($request) {
+            //         $id_mahasiswa = $this->idMahasiswa();
+            //         $nama = $request->input('nama');
+            //         $alamat = $request->input('alamat');
+            //         $telepon = $request->input('telepon');
+            //         $tanggal_lahir = $request->input('tanggal_lahir');
+            //         $email = $request->input('email');
 
-                    if ($request->filled('password')) {
-                        $password = $request->input('password');
-                        AkunModel::with('mahasiswa:id_akun,id_mahasiswa')
-                            ->whereHas('mahasiswa', function ($query) use ($id_mahasiswa) {
-                                $query->where('id_mahasiswa', $id_mahasiswa);
-                            })
-                            ->update([
-                                'password' => Hash::make($password)
-                            ]);
-                    }
+            //         if ($request->filled('password')) {
+            //             $password = $request->input('password');
+            //             AkunModel::with('mahasiswa:id_akun,id_mahasiswa')
+            //                 ->whereHas('mahasiswa', function ($query) use ($id_mahasiswa) {
+            //                     $query->where('id_mahasiswa', $id_mahasiswa);
+            //                 })
+            //                 ->update([
+            //                     'password' => Hash::make($password)
+            //                 ]);
+            //         }
 
-                    MahasiswaModel::where('id_mahasiswa', $id_mahasiswa)
-                        ->update([
-                            'nama' => $nama,
-                            'alamat' => $alamat,
-                            'telepon' => $telepon,
-                            'tanggal_lahir' => $tanggal_lahir,
-                            'email' => $email
-                        ]);
-                });
-                return response()->json(['success' => true]);
-            } catch (\Exception $e) {
-                Log::error("Gagal update profil: " . $e->getMessage());
-                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
-            }
+            //         MahasiswaModel::where('id_mahasiswa', $id_mahasiswa)
+            //             ->update([
+            //                 'nama' => $nama,
+            //                 'alamat' => $alamat,
+            //                 'telepon' => $telepon,
+            //                 'tanggal_lahir' => $tanggal_lahir,
+            //                 'email' => $email
+            //             ]);
+            //     });
+            //     return response()->json(['success' => true]);
+            // } catch (\Exception $e) {
+            //     Log::error("Gagal update profil: " . $e->getMessage());
+            //     return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
+            // }
+            return response()->json($request->all());
         }
     }
 
