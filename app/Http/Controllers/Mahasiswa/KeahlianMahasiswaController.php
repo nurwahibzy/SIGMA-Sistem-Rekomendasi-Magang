@@ -46,7 +46,7 @@ class KeahlianMahasiswaController extends Controller
                 return $data;
             });
             if ($data) {
-                return view('tes.addKeahlian', ['data' => $data]);
+                return view('mahasiswa.keahlian.tambah', ['data' => $data]);
             }
         } catch (\Exception $e) {
             Log::error("Gagal mendapatkan data keahlian: " . $e->getMessage());
@@ -72,7 +72,7 @@ class KeahlianMahasiswaController extends Controller
                 return $data;
             });
             if ($data) {
-                return view('tes.editKeahlian', ['data' => $data]);
+                return view('mahasiswa.keahlian.edit', ['data' => $data]);
             }
         } catch (\Exception $e) {
             Log::error("Gagal mendapatkan data keahlian: " . $e->getMessage());

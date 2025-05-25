@@ -106,7 +106,7 @@
                                 title: 'Berhasil',
                                 text: 'Data berhasil disimpan.'
                             }).then(() => {
-                                window.location.href = '{{ url('admin/profil') }}';
+                                location.reload()
                             });
                         } else {
                             Swal.fire({

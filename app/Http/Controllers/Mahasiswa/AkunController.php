@@ -24,6 +24,7 @@ use Geocoder\StatefulGeocoder;
 use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
 use Illuminate\Support\Facades\Storage;
 use Log;
+use Validator;
 
 
 class AkunController extends Controller
@@ -110,9 +111,9 @@ class AkunController extends Controller
 
     // crud akun
 
-    public function putAkun(Request $request)
-    {
-        if ($request->ajax() || $request->wantsJson()) {
+    // public function putAkun(Request $request)
+    // {
+    //     if ($request->ajax() || $request->wantsJson()) {
             // try {
             //     DB::transaction(function () use ($request) {
             //         $id_mahasiswa = $this->idMahasiswa();
@@ -147,9 +148,96 @@ class AkunController extends Controller
             //     Log::error("Gagal update profil: " . $e->getMessage());
             //     return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
             // }
-            return response()->json($request->all());
+    //         return response()->json($request->all());
+    //     }
+    // }
+
+    public function putAkun(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            try {
+                $results = DB::transaction(
+                    function () use ($request) {
+                        $validator = Validator::make($request->all(), [
+                            'id_user' => 'required|digits_between:1,20',
+                            'nama' => 'required|string|max:100',
+                            'alamat' => 'required|string',
+                            'telepon' => 'required|digits_between:1,30',
+                            'tanggal_lahir' => 'required|date',
+                            'email' => 'required|email|max:100',
+                            'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+                            'password' => 'nullable|string|min:6|max:255'
+                        ]);
+
+                        if ($validator->fails()) {
+                            return false;
+                        }
+
+                        $id_akun = Auth::user()->id_akun;
+                        $id_user = $request->input('id_user');
+                        $nama = $request->input('nama');
+                        $alamat = $request->input('alamat');
+                        $telepon = $request->input('telepon');
+                        $tanggal_lahir = $request->input('tanggal_lahir');
+                        $email = $request->input('email');
+
+                        $data = AkunModel::where('id_akun', $id_akun)->first();
+
+                        $foto_path = $data->foto_path;
+
+                        if ($request->hasFile('file')) {
+                            $foto_path = $this->handleFileUpload($request, $id_user, $foto_path);
+                        } 
+
+                        if ($request->filled('password')) {
+                            $password = $request->input('password');
+                            AkunModel::where('id_akun', $id_akun)
+                                ->update([
+                                    'id_user' => $id_user,
+                                    'password' => Hash::make($password),
+                                    'foto_path' => $foto_path
+                                ]);
+                        } else {
+                            AkunModel::where('id_akun', $id_akun)
+                                ->update([
+                                    'id_user' => $id_user,
+                                    'foto_path' => $foto_path
+                                ]);
+                        }
+
+                        MahasiswaModel::with('akun:id_akun')
+                            ->whereHas('akun', function ($query) use ($id_akun) {
+                                $query->where('id_akun', $id_akun);
+                            })
+                            ->update([
+                                'id_akun' => $id_akun,
+                                'nama' => $nama,
+                                'alamat' => $alamat,
+                                'telepon' => $telepon,
+                                'tanggal_lahir' => $tanggal_lahir,
+                                'email' => $email
+                            ]);
+
+                        return true;
+                    }
+                );
+                return response()->json(['success' => $results]);
+            } catch (\Throwable $e) {
+                Log::error("Gagal update user: " . $e->getMessage());
+                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
+            }
         }
     }
+
+    private function handleFileUpload(Request $request, $id_user, $foto_path)
+    {
+        $file = $request->file('file');
+        $filename = $id_user . "." . $file->getClientOriginalExtension();
+        Storage::disk('public')->delete("profil/akun/{$foto_path}");
+        $file->storeAs('public/profil/akun', $filename);
+        return $filename;
+    }
+
 
     public function getFoto()
     {

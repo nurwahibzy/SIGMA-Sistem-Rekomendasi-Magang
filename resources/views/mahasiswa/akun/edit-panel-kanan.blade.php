@@ -38,7 +38,7 @@
                 <a class="nav-link" data-bs-toggle="tab" href="#dokumen" role="tab">Dokumen</a>
             </li>
         </ul>
-        
+
         <a href="{{ url('mahasiswa/profil/') }}" class="btn-edit-section btn btn-outline-danger">
             <i class="bi bi-box-arrow-left"></i> Kembali
         </a>
@@ -48,37 +48,7 @@
 
     <div class="tab-content" id="detailTabContent">
         <div class="tab-pane fade show active" id="keahlian" role="tabpanel">
-            <!-- KEAHLIAN SECTION -->
-            <div class="section-wrapper mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h5 class="fw-bold mb-0">Keahlian</h5>
-                </div>
-
-                <p class="text-muted mb-3">Keahlian yang kamu miliki beserta skala prioritasnya</p>
-
-                @if (count($keahlian))
-                    @foreach ($keahlian as $item)
-                        <div class="card mb-4">
-                            <div class="card-body">
-                                <div class="d-flex mb-3">
-                                    <div class="bg-primary bg-opacity-10 px-3 py-1 rounded d-inline-block me-2">
-                                        {{  $item->prioritas }}
-                                    </div>
-                                    <div class="bg-primary bg-opacity-10 px-3 py-1 rounded d-inline-block">
-                                        {{ $item->bidang->nama }}
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <div class="bg-primary bg-opacity-10 px-3 py-1 rounded d-inline-block">
-                                        {{ $item->keahlian }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                @endif
-            </div>
+            @include('mahasiswa.keahlian.index')
         </div>
         <div class="tab-pane fade" id="perusahaan" role="tabpanel">
             <!-- PREFERENSI PERUSAHAAN SECTION -->

@@ -172,10 +172,10 @@ Route::middleware(['auth'])->group(function () {
                 Route::post('/', [AkunControllerMahasiswa::class, 'putAkun']);
 
                 Route::prefix('keahlian')->group(callback: function () {
-                    Route::get('/', [KeahlianMahasiswaController::class, 'getAddKeahlian']);
-                    Route::get('{id_keahlian}', [KeahlianMahasiswaController::class, 'getKeahlian']);
+                    Route::get('/tambah', [KeahlianMahasiswaController::class, 'getAddKeahlian']);
                     Route::post('/', [KeahlianMahasiswaController::class, 'postKeahlian']);
-                    Route::put('{id_keahlian}', [KeahlianMahasiswaController::class, 'putKeahlian']);
+                    Route::get('/edit/{id_keahlian}', [KeahlianMahasiswaController::class, 'getKeahlian']);
+                    Route::put('/edit/{id_keahlian}', [KeahlianMahasiswaController::class, 'putKeahlian']);
                     Route::delete('{id_keahlian}/{prioritas}', [KeahlianMahasiswaController::class, 'deleteKeahlian']);
                 });
 

@@ -49,7 +49,7 @@ class AkunController extends Controller
     {
         // $akun = $this->allDataProfil();
         // return response()->json($akun);
-        return view('admin.editProfil');
+        return view('admin.edit-profil');
     }
 
     // public function putAkun(Request $request)
@@ -131,9 +131,10 @@ class AkunController extends Controller
 
                         if ($request->hasFile('file')) {
                             $foto_path = $this->handleFileUpload($request, $id_user, $foto_path);
-                        } else if ($data->id_user != $id_user) {
-                            $foto_path = $this->renameFileOnly($foto_path, $id_user);
                         }
+                        //  else if ($data->id_user != $id_user) {
+                        //     $foto_path = $this->renameFileOnly($foto_path, $id_user);
+                        // }
 
                         if ($request->filled('password')) {
                             $password = $request->input('password');
@@ -183,17 +184,17 @@ class AkunController extends Controller
         return $filename;
     }
 
-    private function renameFileOnly($foto_path, $id_user)
-    {
-        $extension = pathinfo($foto_path, PATHINFO_EXTENSION);
-        $file_path_baru = $id_user . '.' . $extension;
+    // private function renameFileOnly($foto_path, $id_user)
+    // {
+    //     $extension = pathinfo($foto_path, PATHINFO_EXTENSION);
+    //     $file_path_baru = $id_user . '.' . $extension;
 
-        if (Storage::disk('public')->exists("profil/akun/$foto_path")) {
-            Storage::disk('public')->move("profil/akun/$foto_path", "profil/akun/$file_path_baru");
-        }
+    //     if (Storage::disk('public')->exists("profil/akun/$foto_path")) {
+    //         Storage::disk('public')->move("profil/akun/$foto_path", "profil/akun/$file_path_baru");
+    //     }
 
-        return $file_path_baru;
-    }
+    //     return $file_path_baru;
+    // }
 
     public function getFoto()
     {
