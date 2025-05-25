@@ -42,6 +42,8 @@ class KeahlianMahasiswaController extends Controller
                     'bidang' => $bidang,
                     'prioritas' => count($bidangDipilih) + 1
                 ];
+                
+                $data = json_decode(json_encode($data));
 
                 return $data;
             });
@@ -69,11 +71,14 @@ class KeahlianMahasiswaController extends Controller
                     'pilihan_terakhir' => $pilihanTerakhir
                 ];
 
+                $data = json_decode(json_encode($data));
+
                 return $data;
             });
             if ($data) {
                 return view('mahasiswa.keahlian.edit', ['data' => $data]);
             }
+            // return response()->json($data);
         } catch (\Exception $e) {
             Log::error("Gagal mendapatkan data keahlian: " . $e->getMessage());
             abort(500, "Terjadi kesalahan.");
@@ -96,7 +101,7 @@ class KeahlianMahasiswaController extends Controller
                         $this->insertKeahlian($id_mahasiswa, $request);
                     }
                 });
-                return response()->json(['success' => $request->all()]);
+                return response()->json(['success' => true]);
             } catch (\Exception $e) {
                 Log::error("Gagal menambahkan keahlian: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
