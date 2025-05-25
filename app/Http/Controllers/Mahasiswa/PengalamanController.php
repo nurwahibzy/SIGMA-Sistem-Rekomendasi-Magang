@@ -23,7 +23,7 @@ class PengalamanController extends Controller
     }
     public function getAddPengalaman()
     {
-        return view('tes.pengalaman');
+        return view('mahasiswa.pengalaman.tambah');
     }
 
     public function getPengalaman($id_pengalaman)
@@ -33,7 +33,7 @@ class PengalamanController extends Controller
             $pengalaman = PengalamanModel::where('id_mahasiswa', $id_mahasiswa)
                 ->where('id_pengalaman', $id_pengalaman)
                 ->first(['id_pengalaman', 'deskripsi']);
-            return view('tes.editPengalaman', ['pengalaman' => $pengalaman]);
+            return view('mahasiswa.pengalaman.edit', ['pengalaman' => $pengalaman]);
         } catch (\Exception $e) {
             Log::error("Gagal mendapatkan data Pengalaman: " . $e->getMessage());
             abort(500, "Terjadi kesalahan.");
@@ -42,7 +42,7 @@ class PengalamanController extends Controller
 
     public function postpengalaman(Request $request)
     {
-        if ($request->ajax() || $request->wantsJson()) {
+        // if ($request->ajax() || $request->wantsJson()) {
             try {
                 DB::transaction(function () use ($request, ) {
                     $id_mahasiswa = $this->idMahasiswa();
@@ -56,12 +56,12 @@ class PengalamanController extends Controller
                 Log::error("Gagal menambahkan Pengalaman: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
             }
-        }
+        // }
     }
 
     public function putpengalaman(Request $request, $id_pengalaman)
     {
-        if ($request->ajax() || $request->wantsJson()) {
+        // if ($request->ajax() || $request->wantsJson()) {
             try {
                 $deskripsi = $request->input('deskripsi');
                 $id_mahasiswa = $this->idMahasiswa();
@@ -75,7 +75,7 @@ class PengalamanController extends Controller
                 Log::error("Gagal update Pengalaman: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
             }
-        }
+        // }
     }
 
     public function deletepengalaman(Request $request, $id_pengalaman)

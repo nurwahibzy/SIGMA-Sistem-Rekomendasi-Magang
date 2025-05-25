@@ -1,44 +1,35 @@
-<!-- KEAHLIAN SECTION -->
+<!-- PENGALAMAN SECTION -->
 <div class="section-wrapper mb-4">
     <div class="d-flex justify-content-between align-items-center mb-2">
-        <h5 class="fw-bold mb-0">Keahlian</h5>
+        <h5 class="fw-bold mb-0">Pengalaman</h5>
         <button type="button" class="btn-edit-section btn btn-outline-success"
-            onclick="modalAction('{{ url('/mahasiswa/profil/edit/keahlian/tambah') }}')">
+            onclick="modalAction('{{ url('/mahasiswa/profil/edit/pengalaman/tambah') }}')">
             <i class="bi bi-plus"></i> Tambah
         </button>
     </div>
 
-    <p class="text-muted mb-3">Keahlian yang kamu miliki beserta skala prioritasnya</p>
+    <p class="text-muted mb-3">Pengalaman yang pernah dijalani.</p>
 
-    @if (count($keahlian))
-        @foreach ($keahlian as $item)
+    @if (count($pengalaman))
+        @foreach ($pengalaman as $item)
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div>
-                            <div class="bg-primary bg-opacity-10 px-3 py-1 rounded d-inline-block me-2">
-                                {{  $item->prioritas }}
-                            </div>
-                            <div class="bg-primary bg-opacity-10 px-3 py-1 rounded d-inline-block">
-                                {{ $item->bidang->nama }}
-                            </div>
-                        </div>
-                        <div>
+                        
                             <button type="button" class="btn-edit-section btn btn-outline-primary me-2"
-                            onclick="modalAction('{{ url('/mahasiswa/profil/edit/keahlian/edit/' . $item->id_keahlian_mahasiswa) }}')">
+                            onclick="modalAction('{{ url('/mahasiswa/profil/edit/pengalaman/edit/' . $item->id_pengalaman) }}')">
                                 <i class="bi bi-pencil-square"></i>
                             </button>
 
-                            <button type="button" class="btn-delete-keahlian btn btn-outline-danger"
-                                data-url="{{ url('/mahasiswa/profil/edit/keahlian/' . $item->id_keahlian_mahasiswa . '/' . $item->prioritas) }}">
+                            <button type="button" class="btn-delete-pengalaman btn btn-outline-danger"
+                                data-url="{{ url('/mahasiswa/profil/edit/pengalaman/' . $item->id_pengalaman) }}">
                                 <i class="bi bi-trash"></i>
                             </button>
 
-                        </div>
                     </div>
                     <div>
                         <div class="bg-primary bg-opacity-10 px-3 py-1 rounded d-inline-block">
-                            {{ $item->keahlian }}
+                            {{ $item->deskripsi }}
                         </div>
                     </div>
                 </div>
@@ -49,7 +40,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
-        $('.btn-delete-keahlian').on('click', function () {
+        $('.btn-delete-pengalaman').on('click', function () {
             const url = $(this).data('url');
 
             Swal.fire({

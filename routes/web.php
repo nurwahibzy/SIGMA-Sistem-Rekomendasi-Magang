@@ -180,10 +180,10 @@ Route::middleware(['auth'])->group(function () {
                 });
 
                 Route::prefix('pengalaman')->group(function () {
-                    Route::get('/', [PengalamanController::class, 'getAddPengalaman']);
-                    Route::get('{id_pengalaman}', [PengalamanController::class, 'getpengalaman']);
-                    Route::post('/', [PengalamanController::class, 'postpengalaman']);
-                    Route::put('{id_pengalaman}', [PengalamanController::class, 'putpengalaman']);
+                    Route::get('/tambah', [PengalamanController::class, 'getAddPengalaman']);
+                    Route::post('/tambah', [PengalamanController::class, 'postpengalaman']);
+                    Route::get('/edit/{id_pengalaman}', [PengalamanController::class, 'getpengalaman']);
+                    Route::post('/edit/{id_pengalaman}', [PengalamanController::class, 'putpengalaman']);
                     Route::delete('{id_pengalaman}', [PengalamanController::class, 'deletepengalaman']);
                 });
 

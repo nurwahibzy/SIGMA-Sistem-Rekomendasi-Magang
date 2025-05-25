@@ -1,39 +1,17 @@
-<form action="{{ url('/mahasiswa/profil/edit/keahlian/tambah/' ) }}" method="POST" id="form-tambah">
+<form action="{{ url('/mahasiswa/profil/edit/pengalaman/tambah/' ) }}" method="POST" id="form-tambah">
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Tambah Keahlian</h5>
+                <h5 class="modal-title">Tambah Pengalaman</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="container mt-4">
                     <div class="tab-content" id="detailTabContent">
                         <div class="mb-3">
-                            <label for="id_bidang" class="form-label">Bidang</label>
-                            <select name="id_bidang" id="id_bidang" class="form-select" required>
-                                <option value="">Pilih Bidang</option>
-                                @foreach ($data->bidang as $bidang)
-                                    <option value="{{ $bidang->id_bidang }}">
-                                        {{ $bidang->nama }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="prioritas" class="form-label">Prioritas</label>
-                            <select name="prioritas" id="prioritas" class="form-select" required>
-                                <option value="">Pilih Prioritas</option>
-                                @for ($i = 1; $i <= $data->prioritas; $i++)
-                                    <option value="{{ $i }}">
-                                        {{ $i }}
-                                    </option>
-                                @endfor
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="keahlian" class="form-label">Keahlian</label>
-                            <textarea class="form-control" id="keahlian" name="keahlian" rows="3" required></textarea>
+                            <label for="deskripsi" class="form-label">Pengalaman</label>
+                            <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3" required></textarea>
                         </div>
                     </div>
                 </div>
@@ -49,14 +27,10 @@
     $(document).ready(function () {
         $("#form-tambah").validate({
             rules: {
-                id_bidang: { required: true },
-                prioritas: { required: true },
-                keahlian: { required: true },
+                deskripsi: { required: true },
             },
             messages: {
-                id_bidang: "Pilih bidang",
-                prioritas: "Pilih prioritas",
-                keahlian: "keahlian wajib diisi",
+                deskripsi: "Pengalaman wajib diisi",
             },
             submitHandler: function (form) {
                 const formData = new FormData(form);

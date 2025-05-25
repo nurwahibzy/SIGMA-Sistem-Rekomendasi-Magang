@@ -78,33 +78,7 @@
             @include('mahasiswa.preferensi-lokasi.index')
         </div>
         <div class="tab-pane fade" id="pengalaman" role="tabpanel">
-            <!-- PENGALAMAN SECTION -->
-            <div class="section-wrapper mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h5 class="fw-bold mb-0">Pengalaman</h5>
-                </div>
-
-                <p class="text-muted mb-3">
-                    Pengalaman yang pernah dijalani.
-                </p>
-                @if (!empty($pengalaman))
-                    <fieldset class="form-section" id="section-pengalaman" disabled>
-                        <div id="pengalaman-container">
-                            @foreach ($pengalaman as $item)
-                                <div class="card mb-4">
-                                    <div class="card-body">
-                                        <div>
-                                            <div class="bg-primary bg-opacity-10 px-3 py-1 rounded d-inline-block">
-                                                {{ $item->deskripsi }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </fieldset>
-                @endif
-            </div>
+            @include('mahasiswa.pengalaman.index')
         </div>
         <div class="tab-pane fade" id="dokumen" role="tabpanel">
             <!-- CV SECTION -->
