@@ -237,8 +237,7 @@ Route::middleware(['auth'])->group(function () {
 
             Route::prefix('edit')->group(function () {
                 Route::get('/', [AkunControllerDosen::class, 'getEditProfil']);
-
-                Route::post('/akun', [AkunControllerDosen::class, 'putAkun']);
+                Route::post('/', [AkunControllerDosen::class, 'putAkun']);
 
                 Route::prefix('keahlian')->group(function () {
                     Route::get('/', [KeahlianDosenController::class, 'getAddKeahlian']);
