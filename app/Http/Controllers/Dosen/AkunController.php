@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\AkunModel;
 use App\Models\DosenModel;
 use App\Models\MagangModel;
+use Illuminate\Support\Facades\Validator;
+
 use Auth;
 use DB;
 use Hash;
@@ -42,47 +44,97 @@ class AkunController extends Controller
 
     public function getEditProfil(){
         $akun = $this->allDataProfil();
-        return view('dosen.editProfil');
+        return view('dosen.edit-profil');
     }
 
     public function putAkun(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                DB::transaction(function () use ($request) {
-                    $id_dosen = $this->idDosen();
-                    $nama = $request->input('nama');
-                    $alamat = $request->input('alamat');
-                    $telepon = $request->input('telepon');
-                    $tanggal_lahir = $request->input('tanggal_lahir');
-                    $email = $request->input('email');
+                $results = DB::transaction(
+                    function () use ($request) {
 
-                    if ($request->filled('password')) {
-                        $password = $request->input('password');
-                        AkunModel::with('dosen:id_akun,id_dosen')
-                            ->whereHas('dosen', function ($query) use ($id_dosen) {
-                                $query->where('id_dosen', $id_dosen);
+                        $validator = Validator::make($request->all(), [
+                            'id_user' => 'required|digits_between:1,20',
+                            'nama' => 'required|string|max:100',
+                            'alamat' => 'required|string',
+                            'telepon' => 'required|digits_between:1,30',
+                            'tanggal_lahir' => 'required|date',
+                            'email' => 'required|email|max:100',
+                            'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+                            'password' => 'nullable|string|min:6|max:255'
+                        ]);
+
+
+                        if ($validator->fails()) {
+                            return false;
+                        }
+
+                        $id_akun = Auth::user()->id_akun;
+                        $id_user = $request->input('id_user');
+                        $nama = $request->input('nama');
+                        $alamat = $request->input('alamat');
+                        $telepon = $request->input('telepon');
+                        $tanggal_lahir = $request->input('tanggal_lahir');
+                        $email = $request->input('email');
+
+                        $data = AkunModel::where('id_akun', $id_akun)->first();
+
+                        $foto_path = $data->foto_path;
+
+                        if ($request->hasFile('file')) {
+                            $foto_path = $this->handleFileUpload($request, $id_user, $foto_path);
+                        }
+                        //  else if ($data->id_user != $id_user) {
+                        //     $foto_path = $this->renameFileOnly($foto_path, $id_user);
+                        // }
+
+                        if ($request->filled('password')) {
+                            $password = $request->input('password');
+                            AkunModel::where('id_akun', $id_akun)
+                                ->update([
+                                    'id_user' => $id_user,
+                                    'password' => Hash::make($password),
+                                    'foto_path' => $foto_path
+                                ]);
+                        } else {
+                            AkunModel::where('id_akun', $id_akun)
+                                ->update([
+                                    'id_user' => $id_user,
+                                    'foto_path' => $foto_path
+                                ]);
+                        }
+
+                        DosenModel::with('akun:id_akun')
+                            ->whereHas('akun', function ($query) use ($id_akun) {
+                                $query->where('id_akun', $id_akun);
                             })
                             ->update([
-                                'password' => Hash::make($password)
+                                'id_akun' => $id_akun,
+                                'nama' => $nama,
+                                'alamat' => $alamat,
+                                'telepon' => $telepon,
+                                'tanggal_lahir' => $tanggal_lahir,
+                                'email' => $email
                             ]);
+                        return true;
                     }
-
-                    DosenModel::where('id_dosen', $id_dosen)
-                        ->update([
-                            'nama' => $nama,
-                            'alamat' => $alamat,
-                            'telepon' => $telepon,
-                            'tanggal_lahir' => $tanggal_lahir,
-                            'email' => $email
-                        ]);
-                });
-                return response()->json(['success' => true]);
-            } catch (\Exception $e) {
-                Log::error("Gagal update profil: " . $e->getMessage());
+                );
+                return response()->json(['success' => $request->all()]);
+            } catch (\Throwable $e) {
+                Log::error("Gagal update user: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
             }
         }
+    }
+
+    private function handleFileUpload(Request $request, $id_user, $foto_path)
+    {
+        $file = $request->file('file');
+        $filename = $id_user . "." . $file->getClientOriginalExtension();
+        Storage::disk('public')->delete("profil/akun/{$foto_path}");
+        $file->storeAs('public/profil/akun', $filename);
+        return $filename;
     }
 
     public function getFoto()

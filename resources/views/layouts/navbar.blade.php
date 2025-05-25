@@ -136,7 +136,9 @@
                                 </div>
                                 <div class="user-img d-flex align-items-center">
                                     <div class="avatar avatar-md">
-                                        <img src="{{ asset('template/assets/compiled/jpg/1.jpg') }}">
+                                    <img src="{{ Storage::exists('public/profil/akun/' . Auth::user()->foto_path)
+                    ? asset('storage/profil/akun/' . Auth::user()->foto_path)
+                    : asset('template/assets/images/mhs.jpeg') }}" alt="Foto Profil"  />
                                     </div>
                                 </div>
                             </div>

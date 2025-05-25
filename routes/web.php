@@ -242,6 +242,7 @@ Route::middleware(['auth'])->group(function () {
 
                 Route::prefix('keahlian')->group(function () {
                     Route::get('/', [KeahlianDosenController::class, 'getAddKeahlian']);
+                    Route::get('list', [KeahlianDosenController::class, 'getKeahlianList']);
                     Route::get('{id_keahlian}', [KeahlianDosenController::class, 'getKeahlian']);
                     Route::post('/', [KeahlianDosenController::class, 'postKeahlian']);
                     Route::put('{id_keahlian}', [KeahlianDosenController::class, 'putKeahlian']);

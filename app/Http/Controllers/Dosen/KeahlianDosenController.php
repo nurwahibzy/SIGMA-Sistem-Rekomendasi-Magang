@@ -23,6 +23,21 @@ class KeahlianDosenController extends Controller
         return $id_dosen;
     }
 
+    public function getKeahlianList()
+    {
+        try {
+            $id_dosen = $this->idDosen();
+            $keahlian = KeahlianDosenModel::with('bidang:id_bidang,nama')
+                ->where('id_dosen', $id_dosen)
+                ->get(['id_keahlian_dosen', 'id_bidang', 'keahlian']);
+            
+            return response()->json($keahlian);
+        } catch (\Exception $e) {
+            Log::error("Gagal mendapatkan daftar keahlian: " . $e->getMessage());
+            return response()->json([], 500);
+        }
+    }
+
     public function getAddKeahlian()
     {
         try {
