@@ -75,36 +75,7 @@
             </div>
         </div>
         <div class="tab-pane fade" id="lokasi" role="tabpanel">
-            <!-- PREFERENSI LOKASI SECTION -->
-            <div class="section-wrapper mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h5 class="fw-bold mb-0">Preferensi Lokasi</h5>
-                </div>
-
-                <p class="text-muted mb-3">
-                    Preferensi lokasi magang.
-                </p>
-                @if (!empty($preferensi_lokasi))
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6 mb-3 mb-md-0">
-                                    <p class="mb-1 text-muted">Provinsi</p>
-                                    <div class="bg-primary bg-opacity-10 text-body px-3 py-1 rounded d-inline-block">
-                                        {{ $preferensi_lokasi->provinsi}}
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <p class="mb-1 text-muted">Daerah</p>
-                                    <div class="bg-primary bg-opacity-10 text-body px-3 py-1 rounded d-inline-block">
-                                        {{ $preferensi_lokasi->daerah}}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-            </div>
+            @include('mahasiswa.preferensi-lokasi.index')
         </div>
         <div class="tab-pane fade" id="pengalaman" role="tabpanel">
             <!-- PENGALAMAN SECTION -->
