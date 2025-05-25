@@ -2,11 +2,11 @@
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-        <div class="modal-header bg-primary text-white rounded-top">
-                            <h5 class="modal-title">Edit Mahasiswa</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
+            <div class="modal-header bg-primary text-white rounded-top">
+                <h5 class="modal-title">Edit Mahasiswa</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
             <div class="modal-body">
                 <div class="container mt-4">
                     <ul class="nav nav-tabs mb-3" id="detailTab" role="tablist">
@@ -45,7 +45,7 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="id_user" class="form-label">NIP</label>
+                                <label for="id_user" class="form-label">NIM</label>
                                 <input type="text" class="form-control" id="id_user" name="id_user" required
                                     value="{{ $mahasiswa->akun->id_user }}">
                             </div>
@@ -67,7 +67,7 @@
                             </div>
                         </div>
                         <div class="tab-pane fade" id="data" role="tabpanel">
-                        <div class="mb-3">
+                            <div class="mb-3">
                                 <label for="nama" class="form-label">Nama</label>
                                 <input type="text" class="form-control" id="nama" name="nama" required
                                     value="{{ $mahasiswa->nama }}">

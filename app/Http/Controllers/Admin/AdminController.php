@@ -81,7 +81,7 @@ class AdminController extends Controller
                             return false;
                         }
 
-                        $id_level = 3;
+                        $id_level = 1;
                         $id_user = $request->input('id_user');
                         $password = 'password';
                         $status = 'aktif';
