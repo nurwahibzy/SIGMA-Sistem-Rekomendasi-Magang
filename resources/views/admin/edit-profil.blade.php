@@ -1,143 +1,152 @@
 @extends('layouts.tamplate')
 @section('content')
     <div class="page-heading">
-        <h3>My Profile</h3>
+        <h3>Edit Profile</h3>
     </div>
+
     <section class="section">
         <div class="row">
-
+            <!-- Kolom Foto -->
             <div class="col-md-4">
-                <div class="position-sticky" style="top: 90px;">
-                    <div class="card p-4 text-center">
+                <div class="card text-center p-4">
+                    <label for="file" style="cursor: pointer;">
+                        <img id="preview" src="{{ Storage::exists('public/profil/akun/' . Auth::user()->foto_path)
+                            ? asset('storage/profil/akun/' . Auth::user()->foto_path)
+                            : asset('template/assets/images/mhs.jpeg') }}"
+                            alt="Foto Profil"
+                            class="rounded-circle mx-auto mb-3"
+                            width="100" height="100"
+                            style="border: 5px solid blue;">
+                    </label>
+                    <input type="file" id="file" name="file" accept="image/*" onchange="previewImage(event)" style="display: none;">
+                    <h5 class="mb-0">{{ Auth::user()->admin->first_name ?? '-' }} {{ Auth::user()->admin->last_name ?? '' }}</h5>
+                    <small class="text-muted">{{ Auth::user()->admin->email ?? '-' }}</small>
+                </div>
+            </div>
 
-                        <form id="form-tambah" action="{{ url('/admin/profil/edit/') }}" method="POST"
-                            class="text-start mt-3">
-                            @csrf
-                            <div class="text-center mb-3">
-                                <label for="file" style="cursor: pointer;">
+            <!-- Kolom Form -->
+            <div class="col-md-8">
+                <div class="card p-4">
+                    <form id="form-tambah" action="{{ url('/admin/profil/edit/') }}" method="POST" enctype="multipart/form-data" class="row g-3">
+                        @csrf
+                        <input type="hidden" name="id_user" value="{{ Auth::user()->id_user }}">
 
-                                        <img id="preview" src="{{ Storage::exists('public/profil/akun/' . Auth::user()->foto_path)
-                    ? asset('storage/profil/akun/' . Auth::user()->foto_path)
-                    : asset('template/assets/images/mhs.jpeg') }}" alt="Foto Profil" alt="Profile Picture"
-                            class="rounded-circle mx-auto d-block mb-3" width="100" height="100"
-                            style="border: 5px solid blue;" />
-                                </label>
-                                <input type="file" id="file" name="file" accept="image/*" onchange="previewImage(event)"
-                                    style="display: none;">
-                            </div>
-                            <input type="text" class="form-control" id="id_user" name="id_user" required
-                        value="{{ Auth::user()->id_user ?? '-' }}" hidden>
-                            <div class="mb-2">
-                                <label for="nama" class="form-label">Nama</label>
-                                <input type="text" class="form-control" id="nama" name="nama" required
-                                    value="{{ Auth::user()->admin->nama ?? '-' }}">
-                            </div>
-                            <div class="mb-2">
-                                <label class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password" name="password" value="">
-                                <small class="text-muted">Kosongkan jika tidak ingin mengubah.</small>
-                            </div>
-                            <div class="mb-2">
-                                <label for="alamat" class="form-label">Alamat</label>
-                                <textarea class="form-control" id="alamat" name="alamat" rows="3"
-                                    required>{{ Auth::user()->admin->alamat ?? '-' }}</textarea>
-                            </div>
-                            <div class="mb-2">
-                                <label for="telepon" class="form-label">Telepon</label>
-                                <input type="text" class="form-control" id="telepon" name="telepon" required
-                                    value="{{ Auth::user()->admin->telepon ?? '-' }}">
-                            </div>
-                            <div class="mb-2">
-                                <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
-                                <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" required
-                                    value="{{ Auth::user()->admin->tanggal_lahir ?? '-' }}">
-                            </div>
-                            <div class="mb-2">
+                        <div class="col-md-6">
+                            <label class="form-label">Role</label>
+                            <input type="text" class="form-control" value="{{ Auth::user()->level->role ?? '-' }}" disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">ID</label>
+                            <input type="text" class="form-control" value="{{ Auth::user()->id_user }}" disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Nama</label>
+                            <input type="text" class="form-control" name="nama" value="{{ Auth::user()->admin->nama ?? '-' }}" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">Tanggal Lahir</label>
+                            <input type="date" class="form-control" name="tanggal_lahir" value="{{ Auth::user()->admin->tanggal_lahir }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" value="{{ Auth::user()->admin->email }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Telepon</label>
+                            <input type="text" class="form-control" name="telepon" value="{{ Auth::user()->admin->telepon }}" required>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-control" name="password" value="">
+                            <small class="text-muted">Kosongkan jika tidak ingin mengubah password.</small>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Alamat</label>
+                            <textarea class="form-control" name="alamat" rows="2" required>{{ Auth::user()->admin->alamat }}</textarea>
+                        </div>
 
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" required
-                                    value="{{ Auth::user()->admin->email }}">
-                            </div>
-                            <button type="submit" id="btn-edit-profile" class="btn btn-outline-primary mt-2 w-100">
-                                <i class="bi bi-pencil-square"></i> Simpan
+                        <div class="col-12 text-end">
+                            <button type="submit" class="btn btn-outline-primary">
+                                <i class="bi bi-save"></i> Simpan
                             </button>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </section>
 @endsection
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    function previewImage(event) {
-        const reader = new FileReader();
-        reader.onload = function () {
-            const preview = document.getElementById('preview');
-            preview.src = reader.result;
-        };
-        reader.readAsDataURL(event.target.files[0]);
-    }
-</script>
-<script>
-    $(document).ready(function () {
-        $("#form-tambah").validate({
-            rules: {
-                id_user: { required: true, digits: true },
-                nama: { required: true },
-                alamat: { required: true },
-                telepon: { required: true, digits: true },
-                tanggal_lahir: { required: true, date: true },
-                email: { required: true, email: true }
-            },
-            messages: {
-                id_user: "ID User wajib diisi",
-                nama: "Nama wajib diisi",
-                alamat: "Alamat wajib diisi",
-                telepon: "Nomor telepon wajib diisi dan numerik",
-                tanggal_lahir: "Tanggal lahir wajib diisi",
-                email: "Email wajib diisi dan harus valid"
-            },
-            submitHandler: function (form) {
-                const formData = new FormData(form);
-                $.ajax({
-                    url: form.action,
-                    type: form.method,
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    headers: {
-                        'X-CSRF-TOKEN': $('input[name="_token"]').val()
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil',
-                                text: 'Data berhasil disimpan.'
-                            }).then(() => {
-                                window.location.href = '{{ url('admin/profil') }}';
-                            });
-                        } else {
+@push('scripts')
+    <script>
+        // Preview gambar saat dipilih
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                const preview = document.getElementById('preview');
+                preview.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        $(document).ready(function () {
+            $("#form-tambah").validate({
+                rules: {
+                    nama: { required: true },
+                    alamat: { required: true },
+                    telepon: { required: true, digits: true },
+                    tanggal_lahir: { required: true, date: true },
+                    email: { required: true, email: true }
+                },
+                messages: {
+                    nama: "Nama wajib diisi",
+                    alamat: "Alamat wajib diisi",
+                    telepon: "Nomor telepon wajib diisi dan numerik",
+                    tanggal_lahir: "Tanggal lahir wajib diisi",
+                    email: "Email wajib diisi dan harus valid"
+                },
+                submitHandler: function (form) {
+                    const formData = new FormData(form);
+
+                    $.ajax({
+                        url: form.action,
+                        type: form.method,
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        headers: {
+                            'X-CSRF-TOKEN': $('input[name="_token"]').val()
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil',
+                                    text: 'Profil berhasil diperbarui.'
+                                }).then(() => {
+                                    window.location.href = '{{ url('admin/profil') }}';
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: response.message || 'Terjadi kesalahan saat menyimpan.'
+                                });
+                            }
+                        },
+                        error: function (xhr) {
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Gagal',
-                                text: response.message || 'Terjadi kesalahan saat menyimpan.'
+                                text: xhr.responseJSON?.message || 'Terjadi kesalahan pada server.'
                             });
                         }
-                    },
-                    error: function (xhr) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal',
-                            text: xhr.responseJSON?.message || 'Terjadi kesalahan saat menyimpan.'
-                        });
-                    }
-                });
+                    });
 
-                return false;
-            }
+                    return false; // Mencegah submit default
+                }
+            });
         });
-    });
-</script>
+    </script>
+@endpush
