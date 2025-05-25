@@ -22,15 +22,17 @@ class LoginController extends Controller
         // if ($request->ajax() || $request->wantsJson()) {
         $credentials = $request->only('id_user', 'password');
         if (Auth::attempt($credentials)) {
-            $role = AkunModel::with('level:id_level,kode,role')->where('id_level', Auth::user()->id_level)->first();
+            $role = AkunModel::with('level:id_level,kode,role')
+                ->where('id_akun', Auth::user()->id_akun)
+                ->where('id_level', Auth::user()->id_level)->first();
             $kode = $role->level->kode;
             $status = $role->status;
             if ($kode == 'ADM' && $status == 'aktif') {
                 return redirect('/admin/dashboard');
             } else if ($kode == 'MHS' && $status == 'aktif') {
                 return redirect('/mahasiswa/dashboard');
-            } else if ($kode == 'DSN' && $status == 'aktif'){
-                return redirect('/dosen/dashboard'); 
+            } else if ($kode == 'DSN' && $status == 'aktif') {
+                return redirect('/dosen/dashboard');
             }
         }
         return response()->json([
@@ -39,16 +41,19 @@ class LoginController extends Controller
         ]);
     }
 
-    public function getDashoboard(){
-        $role = AkunModel::with('level:id_level,kode,role')->where('id_level', Auth::user()->id_level)->first();
+    public function getDashoboard()
+    {
+        $role = AkunModel::with('level:id_level,kode,role')
+            ->where('id_akun', Auth::user()->id_akun)
+            ->where('id_level', Auth::user()->id_level)->first();
         $kode = $role->level->kode;
         $status = $role->status;
         if ($kode == 'ADM' && $status == 'aktif') {
             return redirect('/admin/dashboard');
         } else if ($kode == 'MHS' && $status == 'aktif') {
             return redirect('/mahasiswa/dashboard');
-        } else if ($kode == 'DSN' && $status == 'aktif'){
-            return redirect('/dosen/dashboard'); 
+        } else if ($kode == 'DSN' && $status == 'aktif') {
+            return redirect('/dosen/dashboard');
         }
     }
 

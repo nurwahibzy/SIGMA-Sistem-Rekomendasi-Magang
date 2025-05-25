@@ -83,7 +83,7 @@ class AdminController extends Controller
 
                         $id_level = 3;
                         $id_user = $request->input('id_user');
-                        $password = Hash::make('password');
+                        $password = 'password';
                         $status = 'aktif';
                         $foto_path = "$id_user.jpg";
                         $nama = $request->input('nama');

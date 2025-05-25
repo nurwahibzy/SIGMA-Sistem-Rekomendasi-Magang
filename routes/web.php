@@ -65,8 +65,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/', [LoginController::class, 'getDashoboard']);
     Route::middleware(['authorize:ADM'])->prefix('admin')->group(function () {
         Route::get('/dashboard', [MagangControllerAdmin::class, 'getDashboard']);
-        Route::get('/tes', [AkunControllerAdmin::class, 'tes']);
-        Route::post('/tes', [AkunControllerAdmin::class, 'postUserAdminExcel']); 
+        // Route::get('/tes', [AkunControllerAdmin::class, 'tes']);
+        // Route::post('/tes', [AkunControllerAdmin::class, 'postUserAdminExcel']); 
 
         Route::prefix('profil')->group(function () {
             Route::get('/', [AkunControllerAdmin::class, 'getProfil']);
@@ -224,8 +224,9 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::prefix('periode')->group(function () {
+            Route::get('/', [PeriodeMagangControllerMahasiswa::class, 'getPeriode']);
             Route::get('/detail/{id_periode}', [PeriodeMagangControllerMahasiswa::class, 'getDetailPeriode']);
-            Route::post('/daftar/{id_periode}', [MagangControllerMahasiswa::class, 'postMagang']);
+            Route::post('/{id_periode}', [MagangControllerMahasiswa::class, 'postMagang']);
         });
     });
 

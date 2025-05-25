@@ -102,7 +102,7 @@ class MahasiswaController extends Controller
 
                         $id_level = 2;
                         $id_user = $request->input('id_user');
-                        $password = Hash::make('password');
+                        $password = 'password';
                         $status = 'aktif';
                         $foto_path = "$id_user.jpg";
                         $id_prodi = $request->input('id_prodi');

@@ -79,6 +79,8 @@ class MagangController extends Controller
             'id_periode' => $id_periode,
             'tanggal_pengajuan' => $tanggal_pengajuan
         ]);
+        
+        return response()->json(['success' => true]);
     }
 
     public function getPerusahaan($id_magang)

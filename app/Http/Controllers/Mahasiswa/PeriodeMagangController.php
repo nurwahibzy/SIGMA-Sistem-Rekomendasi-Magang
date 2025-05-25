@@ -22,7 +22,11 @@ class PeriodeMagangController extends Controller
     }
     public function getDashboard()
     {
-        $magang = PeriodeMagangModel::with(
+        return redirect('/mahasiswa/periode');
+    }
+
+    public function getPeriode(){
+        $periode = PeriodeMagangModel::with(
             'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
             'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama',
             'lowongan_magang.bidang:id_bidang,nama',
@@ -31,8 +35,8 @@ class PeriodeMagangController extends Controller
             ->where('tanggal_mulai', '>', now())
             ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
 
-        return view('mahasiswa.index', [
-            'magang' => $magang,
+        return view('mahasiswa.periode.index', [
+            'periode' => $periode,
             'activeMenu' => 'dashboard'
         ]);
     }
@@ -41,7 +45,7 @@ class PeriodeMagangController extends Controller
     public function getDetailPeriode($id_periode)
     {
         $id_mahasiswa = $this->idMahasiswa();
-        $magang = PeriodeMagangModel::with(
+        $periode = PeriodeMagangModel::with(
             'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama,persyaratan,deskripsi',
             'lowongan_magang.periode_magang:id_lowongan,nama,tanggal_mulai,tanggal_selesai',
             'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama,provinsi,daerah',
@@ -50,13 +54,13 @@ class PeriodeMagangController extends Controller
         )
             ->where('id_periode', $id_periode)
             ->where('tanggal_mulai', '>', now())
-            ->get();
-        $status = MagangModel::where('id_mahasiswa', $id_mahasiswa)
-            ->whereIn('status', ['diterima', 'lulus'])
             ->first();
 
-        // $status = $status == null ? true : false;
-        // return response()->json($status == null);
-        return response()->json($magang);
+        $status = MagangModel::where('id_mahasiswa', $id_mahasiswa)
+            ->whereIn('status', ['proses', 'diterima'])
+            ->count();
+
+        // return response()->json($status);
+        return view('mahasiswa.periode.detail', ['periode' => $periode, 'status' => $status]);
     }
 }

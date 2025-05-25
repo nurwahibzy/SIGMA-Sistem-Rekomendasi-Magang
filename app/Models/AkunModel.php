@@ -16,6 +16,11 @@ class AkunModel extends Authenticatable
     protected $hidden = ['password'];
     protected $casts = ['password' => 'hashed'];
 
+    public function getAuthIdentifierName()
+    {
+        return 'id_user';
+    }
+
     public function level(): BelongsTo
     {
         return $this->belongsTo(LevelModel::class, 'id_level', 'id_level');

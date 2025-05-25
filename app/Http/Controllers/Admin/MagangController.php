@@ -37,7 +37,10 @@ class MagangController extends Controller
                 'periode_magang.lowongan_magang'
             )->where('id_magang', $id_magang)->firstOrFail();
 
-            $dosen = DosenModel::get();
+            $dosen = DosenModel::whereHas('akun', function ($query) {
+                $query->where('status', 'aktif');
+            })
+            ->get();
 
             $activeButton = [];
 
