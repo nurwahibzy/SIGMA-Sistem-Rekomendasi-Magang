@@ -37,7 +37,7 @@ class AkunController extends Controller
     }
     public function getProfil(){
         $akun = $this->allDataProfil();
-        return response()->json($akun);
+        return view('dosen.profil');
     }
 
     public function getEditProfil(){

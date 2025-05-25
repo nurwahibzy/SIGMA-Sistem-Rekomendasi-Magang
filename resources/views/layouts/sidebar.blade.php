@@ -173,7 +173,7 @@
                     </li>
 
                     <li class="sidebar-item {{ request()->is('mahasiswa/aktivitas*') ? 'active' : '' }}">
-                        <a href="{{ url('/mahasiswa/aktivitas') }}" class="sidebar-link">
+                        <a href="{{ url('/dosen/aktivitas') }}" class="sidebar-link">
                             <i class="bi bi-laptop-fill"></i>
                             <span>Monitoring Mahasiswa</span>
                         </a>
