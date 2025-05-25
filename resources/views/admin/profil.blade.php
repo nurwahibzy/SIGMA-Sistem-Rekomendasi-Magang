@@ -7,17 +7,25 @@
     <section class="section">
         <div class="row">
             <!-- Kolom Foto -->
-            <div class="col-md-4">
-                <div class="card text-center p-4">
-                    <img src="{{ Storage::exists('public/profil/akun/' . Auth::user()->foto_path)
-                        ? asset('storage/profil/akun/' . Auth::user()->foto_path)
-                        : asset('template/assets/images/mhs.jpeg') }}"
-                        alt="Profile Picture"
-                        class="rounded-circle mx-auto mb-3"
-                        width="100" height="100"
-                        style="border: 5px solid blue;">
-                    <h5 class="mb-0">{{ Auth::user()->admin->first_name ?? '-' }} {{ Auth::user()->admin->last_name ?? '' }}</h5>
-                    <small class="text-muted">{{ Auth::user()->admin->email ?? '-' }}</small>
+            <div class="col-12 col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                            <div class="avatar avatar-2xl mb-3">
+                                <label for="file">
+                                    <img id="preview" 
+                                        src="{{ Storage::exists('public/profil/akun/' . Auth::user()->foto_path)
+                                            ? asset('storage/profil/akun/' . Auth::user()->foto_path)
+                                            : asset('template/assets/images/mhs.jpeg') }}" 
+                                        alt="Profile Picture"
+                                        class="rounded-circle"
+                                        style="width: 120px; height: 120px; border: 5px solid blue; object-fit: cover;">
+                                </label>
+                            </div>
+                            <h4 class="mt-2 text-center">{{ Auth::user()->admin->nama ?? 'N/A' }}</h4>
+                            <p class="text-small">{{ Auth::user()->id_user ?? 'N/A' }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 

@@ -6,29 +6,38 @@
 
     <section class="section">
         <div class="row">
-            <!-- Kolom Foto -->
-            <div class="col-md-4">
-                <div class="card text-center p-4">
-                    <label for="file" style="cursor: pointer;">
-                        <img id="preview" src="{{ Storage::exists('public/profil/akun/' . Auth::user()->foto_path)
-                            ? asset('storage/profil/akun/' . Auth::user()->foto_path)
-                            : asset('template/assets/images/mhs.jpeg') }}"
-                            alt="Foto Profil"
-                            class="rounded-circle mx-auto mb-3"
-                            width="100" height="100"
-                            style="border: 5px solid blue;">
-                    </label>
-                    <input type="file" id="file" name="file" accept="image/*" onchange="previewImage(event)" style="display: none;">
-                    <h5 class="mb-0">{{ Auth::user()->admin->first_name ?? '-' }} {{ Auth::user()->admin->last_name ?? '' }}</h5>
-                    <small class="text-muted">{{ Auth::user()->admin->email ?? '-' }}</small>
+            <div class="col-12 col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                            <div class="avatar avatar-2xl mb-3">
+                                <label for="file" style="cursor: pointer;">
+                                    <img id="preview" 
+                                        src="{{ Storage::exists('public/profil/akun/' . Auth::user()->foto_path)
+                                            ? asset('storage/profil/akun/' . Auth::user()->foto_path)
+                                            : asset('template/assets/images/mhs.jpeg') }}" 
+                                        alt="Profile Picture"
+                                        class="rounded-circle"
+                                        style="width: 120px; height: 120px; border: 5px solid blue; object-fit: cover;">
+                                </label>
+                            </div>
+                            <small class="text-muted text-center">Tekan gambar untuk mengganti foto profil</small>
+                            <h4 class="mt-2 text-center">{{ Auth::user()->admin->nama ?? 'N/A' }}</h4>
+                            <p class="text-small">{{ Auth::user()->id_user ?? 'N/A' }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- Kolom Form -->
             <div class="col-md-8">
                 <div class="card p-4">
-                    <form id="form-tambah" action="{{ url('/admin/profil/edit/') }}" method="POST" enctype="multipart/form-data" class="row g-3">
+                    <form id="form-edit-profile" action="{{ url('/admin/profil/edit/') }}" method="POST" enctype="multipart/form-data" class="row g-3">
                         @csrf
+                            <!-- Hidden file input inside form -->
+                        <input type="file" id="file-upload" name="file" accept="image/*" 
+                                onchange="previewImage(event)" style="display: none;">
+
                         <input type="hidden" name="id_user" value="{{ Auth::user()->id_user }}">
 
                         <div class="col-md-6">
@@ -76,77 +85,168 @@
             </div>
         </div>
     </section>
-@endsection
 
-@push('scripts')
-    <script>
-        // Preview gambar saat dipilih
-        function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function () {
-                const preview = document.getElementById('preview');
-                preview.src = reader.result;
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        }
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        $(document).ready(function () {
-            $("#form-tambah").validate({
-                rules: {
-                    nama: { required: true },
-                    alamat: { required: true },
-                    telepon: { required: true, digits: true },
-                    tanggal_lahir: { required: true, date: true },
-                    email: { required: true, email: true }
+<script>
+    // Preview gambar
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            const preview = document.getElementById('preview');
+            preview.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+
+    // Klik gambar untuk trigger input
+    document.addEventListener('DOMContentLoaded', function() {
+        const preview = document.getElementById('preview');
+        const fileInput = document.getElementById('file-upload');
+        
+        preview.addEventListener('click', function() {
+            fileInput.click();
+        });
+    });
+
+    $(document).ready(function () {
+        $("#form-edit-profile").validate({
+            rules: {
+                nama: { 
+                    required: true,
+                    minlength: 2
                 },
-                messages: {
-                    nama: "Nama wajib diisi",
-                    alamat: "Alamat wajib diisi",
-                    telepon: "Nomor telepon wajib diisi dan numerik",
-                    tanggal_lahir: "Tanggal lahir wajib diisi",
-                    email: "Email wajib diisi dan harus valid"
+                alamat: { 
+                    required: true,
+                    minlength: 5
                 },
-                submitHandler: function (form) {
-                    const formData = new FormData(form);
+                telepon: { 
+                    required: true, 
+                    digits: true,
+                    minlength: 10
+                },
+                tanggal_lahir: { 
+                    required: true, 
+                    date: true 
+                },
+                email: { 
+                    required: true, 
+                    email: true 
+                },
+                password: {
+                    minlength: 6
+                }
+            },
+            messages: {
+                nama: {
+                    required: "Nama wajib diisi",
+                    minlength: "Nama minimal 2 karakter"
+                },
+                alamat: {
+                    required: "Alamat wajib diisi",
+                    minlength: "Alamat minimal 5 karakter"
+                },
+                telepon: {
+                    required: "Nomor telepon wajib diisi",
+                    digits: "Nomor telepon harus berupa angka",
+                    minlength: "Nomor telepon minimal 10 digit"
+                },
+                tanggal_lahir: {
+                    required: "Tanggal lahir wajib diisi",
+                    date: "Format tanggal tidak valid"
+                },
+                email: {
+                    required: "Email wajib diisi",
+                    email: "Format email tidak valid"
+                },
+                password: {
+                    minlength: "Password minimal 6 karakter"
+                }
+            },
+            errorElement: 'div',
+            errorClass: 'invalid-feedback',
+            validClass: 'is-valid',
+            errorClass: 'is-invalid',
+            highlight: function(element, errorClass, validClass) {
+                $(element).addClass('is-invalid').removeClass('is-valid');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).addClass('is-valid').removeClass('is-invalid');
+            },
+            submitHandler: function (form) {
+                const formData = new FormData(form);
+                
+                // Debug: Check if file is included
+                console.log('FormData contents:');
+                for (let pair of formData.entries()) {
+                    console.log(pair[0] + ': ' + pair[1]);
+                }
+                
+                // Show loading
+                Swal.fire({
+                    title: 'Menyimpan...',
+                    text: 'Sedang memproses data',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
 
-                    $.ajax({
-                        url: form.action,
-                        type: form.method,
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        headers: {
-                            'X-CSRF-TOKEN': $('input[name="_token"]').val()
-                        },
-                        success: function (response) {
-                            if (response.success) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Berhasil',
-                                    text: 'Profil berhasil diperbarui.'
-                                }).then(() => {
-                                    window.location.href = '{{ url('admin/profil') }}';
-                                });
-                            } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Gagal',
-                                    text: response.message || 'Terjadi kesalahan saat menyimpan.'
-                                });
-                            }
-                        },
-                        error: function (xhr) {
+                $.ajax({
+                    url: form.action,
+                    type: form.method,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('input[name="_token"]').val()
+                    },
+                    success: function (response) {
+                        Swal.close();
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: 'Profile berhasil diperbarui.',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                window.location.href = '{{ url("admin/profil") }}';
+                            });
+                        } else {
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Gagal',
-                                text: xhr.responseJSON?.message || 'Terjadi kesalahan pada server.'
+                                title: 'Gagal!',
+                                text: response.message || 'Terjadi kesalahan saat menyimpan data.',
+                                confirmButtonText: 'OK'
                             });
                         }
-                    });
+                    },
+                    error: function (xhr) {
+                        Swal.close();
+                        let errorMessage = 'Terjadi kesalahan saat menyimpan data.';
+                        
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                            const errors = xhr.responseJSON.errors;
+                            errorMessage = Object.values(errors).flat().join('\n');
+                        }
 
-                    return false; // Mencegah submit default
-                }
-            });
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: errorMessage,
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+
+                return false;
+            }
         });
-    </script>
-@endpush
+    });
+</script>
+@endsection
