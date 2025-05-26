@@ -51,28 +51,7 @@
             @include('mahasiswa.keahlian.index')
         </div>
         <div class="tab-pane fade" id="perusahaan" role="tabpanel">
-            <!-- PREFERENSI PERUSAHAAN SECTION -->
-            <div class="section-wrapper mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h5 class="fw-bold mb-0">Preferensi Perusahaan</h5>
-                </div>
-
-                <p class="text-muted mb-3">
-                    Jenis perusahaan.
-                </p>
-                @if (!empty($preferensi_perusahaan))
-                    <div class="card-body">
-                        <div class="d-flex flex-wrap gap-2 mb-3">
-                            @foreach ($preferensi_perusahaan as $item)
-                                <div class="bg-primary bg-opacity-10 px-3 py-1 rounded d-inline-block">
-                                    {{ $item->jenis_perusahaan->jenis }}
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
-
-            </div>
+            @include('mahasiswa.preferensi-perusahaan.index')
         </div>
         <div class="tab-pane fade" id="lokasi" role="tabpanel">
             @include('mahasiswa.preferensi-lokasi.index')

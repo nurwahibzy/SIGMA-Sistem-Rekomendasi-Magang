@@ -1,4 +1,4 @@
-<form action="{{ url('/mahasiswa/profil/edit/pengalaman/tambah/' ) }}" method="POST" id="form-tambah">
+<form action="{{ url('/mahasiswa/profil/edit/pengalaman/tambah/' ) }}" method="POST" id="form-tambah-pengalaman">
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -25,7 +25,7 @@
 </form>
 <script>
     $(document).ready(function () {
-        $("#form-tambah").validate({
+        $("#form-tambah-pengalaman").validate({
             rules: {
                 deskripsi: { required: true },
             },
@@ -69,7 +69,7 @@
                     }
                 });
 
-                return false;
+                // return false;
             }
         });
     });

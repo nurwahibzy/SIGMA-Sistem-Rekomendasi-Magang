@@ -1,5 +1,6 @@
 <!-- PREFERENSI LOKASI SECTION -->
-<form id="form-edit" method="POST" action="{{ url('/mahasiswa/profil/edit/preferensi/lokasi/' . $preferensi_lokasi->id_preferensi_lokasi) }}">
+<form id="form-preferensi-lokasi" method="POST"
+    action="{{ url('/mahasiswa/profil/edit/preferensi/lokasi/' . $preferensi_lokasi->id_preferensi_lokasi) }}">
     @csrf
     <div class="section-wrapper mb-4">
         <div class="d-flex justify-content-between align-items-center mb-2">

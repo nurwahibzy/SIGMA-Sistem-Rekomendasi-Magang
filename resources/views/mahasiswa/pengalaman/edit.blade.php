@@ -1,4 +1,4 @@
-<form action="{{ url('/mahasiswa/profil/edit/pengalaman/edit/' . $pengalaman->id_pengalaman  ) }}" method="POST" id="form-edit">
+<form action="{{ url('/mahasiswa/profil/edit/pengalaman/edit/' . $pengalaman->id_pengalaman  ) }}" method="POST" id="form-edit-pengalaman">
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -25,7 +25,7 @@
 </form>
 <script>
     $(document).ready(function () {
-        $("#form-edit").validate({
+        $("#form-edit-pengalaman").validate({
             rules: {
                 deskripsi: { required: true },
             },
@@ -69,7 +69,7 @@
                     }
                 });
 
-                return false;
+                // return false;
             }
         });
     });

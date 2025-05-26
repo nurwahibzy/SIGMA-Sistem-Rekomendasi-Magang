@@ -15,6 +15,26 @@
 
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+
+    <style>
+        .checkbox-label {
+            display: inline-block;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 10px;
+            border: 2px solid var(--bs-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .checkbox-input {
+            display: none;
+        }
+        .checkbox-input:checked+.checkbox-label {
+            background-color: var(--bs-primary);
+            color: white;
+            border: 2px solid var(--bs-primary);
+        }
+    </style>
 </head>
 
 <body>

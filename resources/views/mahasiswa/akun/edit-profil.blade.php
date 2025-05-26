@@ -13,8 +13,6 @@
         data-keyboard="false" data-width="75%" aria-hidden="true"></div>
     </div>
 @endsection
-@push('css')
-@endpush
 @push('js')
     <script src="{{ asset('template/assets/static/js/components/dark.js') }}"></script>
     <script>

@@ -1,4 +1,4 @@
-<form action="{{ url('/mahasiswa/profil/edit/keahlian/edit/' . $data->pilihan_terakhir->id_keahlian_mahasiswa ) }}" method="POST" id="form-edit">
+<form action="{{ url('/mahasiswa/profil/edit/keahlian/edit/' . $data->pilihan_terakhir->id_keahlian_mahasiswa ) }}" method="POST" id="form-edit-keahlian">
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -48,7 +48,7 @@
 </form>
 <script>
     $(document).ready(function () {
-        $("#form-edit").validate({
+        $("#form-edit-keahlian").validate({
             rules: {
                 id_bidang: { required: true },
                 prioritas: { required: true },
@@ -96,7 +96,7 @@
                     }
                 });
 
-                return false;
+                // return false;
             }
         });
     });
