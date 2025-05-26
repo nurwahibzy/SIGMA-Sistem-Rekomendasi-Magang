@@ -175,24 +175,24 @@ Route::middleware(['auth'])->group(function () {
                 Route::prefix('keahlian')->group(callback: function () {
                     Route::get('/tambah', [KeahlianMahasiswaController::class, 'getAddKeahlian']);
                     Route::post('/tambah', [KeahlianMahasiswaController::class, 'postKeahlian']);
-                    Route::get('/edit/{id_keahlian}', [KeahlianMahasiswaController::class, 'getKeahlian']);
-                    Route::post('/edit/{id_keahlian}', [KeahlianMahasiswaController::class, 'putKeahlian']);
+                    Route::get('/edit/{id_keahlian}', [KeahlianMahasiswaController::class, 'getEditKeahlian']);
+                    Route::post('/edit/{id_keahlian}', [KeahlianMahasiswaController::class, 'putEditKeahlian']);
                     Route::delete('{id_keahlian}/{prioritas}', [KeahlianMahasiswaController::class, 'deleteKeahlian']);
                 });
 
                 Route::prefix('pengalaman')->group(function () {
                     Route::get('/tambah', [PengalamanController::class, 'getAddPengalaman']);
                     Route::post('/tambah', [PengalamanController::class, 'postpengalaman']);
-                    Route::get('/edit/{id_pengalaman}', [PengalamanController::class, 'getpengalaman']);
-                    Route::post('/edit/{id_pengalaman}', [PengalamanController::class, 'putpengalaman']);
+                    Route::get('/edit/{id_pengalaman}', [PengalamanController::class, 'getEditpengalaman']);
+                    Route::post('/edit/{id_pengalaman}', [PengalamanController::class, 'putEditpengalaman']);
                     Route::delete('{id_pengalaman}', [PengalamanController::class, 'deletepengalaman']);
                 });
 
                 Route::prefix('dokumen')->group(callback: function () {
-                    Route::get('/', [DokumenController::class, 'getAddDokumen']);
-                    Route::get('{id_dokumen}', [DokumenController::class, 'getDokumen']);
-                    Route::post('/', [DokumenController::class, 'postDokumen']);
-                    Route::post('{id_dokumen}', [DokumenController::class, 'putDokumen']);
+                    Route::get('/tambah', [DokumenController::class, 'getAddDokumen']);
+                    Route::post('/tambah', [DokumenController::class, 'postDokumen']);
+                    Route::get('/edit/{id_dokumen}', [DokumenController::class, 'getEditDokumen']);
+                    Route::post('/edit/{id_dokumen}', [DokumenController::class, 'putEditDokumen']);
                     Route::delete('{id_dokumen}', [DokumenController::class, 'deleteDokumen']);
                 });
 

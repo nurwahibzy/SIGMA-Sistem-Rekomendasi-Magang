@@ -17,14 +17,14 @@ class DokumenSeeder extends Seeder
             [
                 'id_mahasiswa' => 1,
                 'nama' => 'CV',
-                'file_path' => 'dokumen/1_CV.pdf',
+                'file_path' => '1_CV.pdf',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id_mahasiswa' => 1,
                 'nama' => 'Transkrip',
-                'file_path' => 'dokumen/1_Transkrip.pdf',
+                'file_path' => '1_Transkrip.pdf',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

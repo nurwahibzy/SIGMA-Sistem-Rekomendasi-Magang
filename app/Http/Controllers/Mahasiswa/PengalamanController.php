@@ -26,7 +26,7 @@ class PengalamanController extends Controller
         return view('mahasiswa.pengalaman.tambah');
     }
 
-    public function getPengalaman($id_pengalaman)
+    public function getEditPengalaman($id_pengalaman)
     {
         try {
             $id_mahasiswa = $this->idMahasiswa();
@@ -59,7 +59,7 @@ class PengalamanController extends Controller
         }
     }
 
-    public function putpengalaman(Request $request, $id_pengalaman)
+    public function putEditpengalaman(Request $request, $id_pengalaman)
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {

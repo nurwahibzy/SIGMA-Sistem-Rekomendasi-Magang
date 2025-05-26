@@ -60,32 +60,7 @@
             @include('mahasiswa.pengalaman.index')
         </div>
         <div class="tab-pane fade" id="dokumen" role="tabpanel">
-            <!-- CV SECTION -->
-            <div class="section-wrapper mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h5 class="fw-bold mb-0">CV</h5>
-                </div>
-
-                <form id="form-cv" action="{{ url('/mahasiswa/profil/update/cv') }}" method="POST"
-                    enctype="multipart/form-data" class="section-form">
-                    @csrf
-                    <fieldset class="form-section" id="section-cv" disabled>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <h5 class="card-title">Upload CV</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <p class="card-text">Dokumen Pendukung.</p>
-                                        <input type="file" name="cv" class="form-control basic-filepond">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
-                </form>
-            </div>
+            @include('mahasiswa.dokumen.index')
         </div>
     </div>
 </div>

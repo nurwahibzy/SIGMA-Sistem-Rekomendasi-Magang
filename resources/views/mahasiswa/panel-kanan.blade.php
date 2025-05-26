@@ -39,7 +39,7 @@
             </li>
         </ul>
 
-        <a href="{{ url('mahasiswa/profil/edit') }}" class="btn-edit-section btn btn-outline-danger">
+        <a href="{{ url('mahasiswa/profil/edit') }}" class="btn-edit-section btn btn-outline-primary">
             <i class="bi bi-pencil-square"></i> Edit
         </a>
     </div>
@@ -89,7 +89,7 @@
                 <p class="text-muted mb-3">
                     Jenis perusahaan.
                 </p>
-                @if (!empty($preferensi_perusahaan))
+                @if (count($preferensi_perusahaan))
                     <div class="card-body">
                         <div class="d-flex flex-wrap gap-2 mb-3">
                             @foreach ($preferensi_perusahaan as $item)
@@ -145,7 +145,7 @@
                 <p class="text-muted mb-3">
                     Pengalaman yang pernah dijalani.
                 </p>
-                @if (!empty($pengalaman))
+                @if (count($pengalaman))
                     <fieldset class="form-section" id="section-pengalaman" disabled>
                         <div id="pengalaman-container">
                             @foreach ($pengalaman as $item)
@@ -168,28 +168,25 @@
             <!-- CV SECTION -->
             <div class="section-wrapper mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h5 class="fw-bold mb-0">CV</h5>
+                    <h5 class="fw-bold mb-0">Dokumen</h5>
                 </div>
-
-                <form id="form-cv" action="{{ url('/mahasiswa/profil/update/cv') }}" method="POST"
-                    enctype="multipart/form-data" class="section-form">
-                    @csrf
-                    <fieldset class="form-section" id="section-cv" disabled>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <h5 class="card-title">Upload CV</h5>
+                @if (count($dokumen))
+                    <div id="dokumen-container">
+                        @foreach ($dokumen as $item)
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div class="bg-primary bg-opacity-10 px-3 py-1 rounded d-inline-block  mb-4">
+                                        {{ $item->nama }}
                                     </div>
-                                    <div class="card-body">
-                                        <p class="card-text">Dokumen Pendukung.</p>
-                                        <input type="file" name="cv" class="form-control basic-filepond">
+                                    <div>
+                                        <embed src="{{ url('storage/dokumen/' . $item->file_path) }}" type="application/pdf"
+                                            width="100%" height="1000px" />
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </fieldset>
-                </form>
+                        @endforeach
+                    </div>
+                @endif
             </div>
         </div>
     </div>

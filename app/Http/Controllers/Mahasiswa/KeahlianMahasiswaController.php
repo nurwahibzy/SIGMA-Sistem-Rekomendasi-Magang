@@ -56,7 +56,7 @@ class KeahlianMahasiswaController extends Controller
         }
     }
 
-    public function getKeahlian($id_keahlian)
+    public function getEditKeahlian($id_keahlian)
     {
         try {
             $data = DB::transaction(function () use ($id_keahlian) {
@@ -131,7 +131,7 @@ class KeahlianMahasiswaController extends Controller
             });
     }
 
-    public function putKeahlian(Request $request, $id_keahlian)
+    public function putEditKeahlian(Request $request, $id_keahlian)
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {

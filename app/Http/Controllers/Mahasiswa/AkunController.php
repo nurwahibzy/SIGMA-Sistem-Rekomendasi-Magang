@@ -52,7 +52,8 @@ class AkunController extends Controller
                 'kompetensi' => $akun->mahasiswa->kompetensi,
                 'jenis' => $jenis,
                 'preferensi_perusahaan' => $akun->mahasiswa->preferensi_perusahaan_mahasiswa,
-                'preferensi_lokasi' => $akun->mahasiswa->preferensi_lokasi_mahasiswa
+                'preferensi_lokasi' => $akun->mahasiswa->preferensi_lokasi_mahasiswa,
+                'dokumen' => $akun->mahasiswa->dokumen,
             ]
         );
         // return response()->json($akun);
@@ -73,7 +74,8 @@ class AkunController extends Controller
                 'kompetensi' => $akun->mahasiswa->kompetensi,
                 'jenis' => $jenis,
                 'preferensi_perusahaan' => $akun->mahasiswa->preferensi_perusahaan_mahasiswa,
-                'preferensi_lokasi' => $akun->mahasiswa->preferensi_lokasi_mahasiswa
+                'preferensi_lokasi' => $akun->mahasiswa->preferensi_lokasi_mahasiswa,
+                'dokumen' => $akun->mahasiswa->dokumen,
             ]
         );
     }

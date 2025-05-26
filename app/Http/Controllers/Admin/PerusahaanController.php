@@ -76,7 +76,7 @@ class PerusahaanController extends Controller
                 }
 
                 $id_jenis = $request->input('id_jenis');
-                $nama = $request->input('nama');
+                $nama = Str::slug($request->input('nama'), '_');
                 $telepon = $request->input('telepon');
                 $deskripsi = $request->input('deskripsi');
                 $provinsi = $request->input('provinsi');
@@ -146,7 +146,7 @@ class PerusahaanController extends Controller
 
 
                         $id_jenis = $request->input('id_jenis');
-                        $nama = $request->input('nama');
+                        $nama = Str::slug($request->input('nama'), '_');
                         $telepon = $request->input('telepon');
                         $deskripsi = $request->input('deskripsi');
                         $provinsi = $request->input('provinsi');

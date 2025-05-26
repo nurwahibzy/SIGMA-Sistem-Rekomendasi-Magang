@@ -1,4 +1,4 @@
-<form action="{{ url('/mahasiswa/profil/edit/keahlian/tambah/' ) }}" method="POST" id="form-tambah-keahlian" style="height: 100%!important;
+<form action="{{ url('/mahasiswa/profil/edit/dokumen/tambah/') }}" method="POST" id="form-tambah-dokumen" style="height: 100%!important;
     display: flex;
     align-items: center;">
     @csrf
@@ -12,30 +12,13 @@
                 <div class="container mt-4">
                     <div class="tab-content" id="detailTabContent">
                         <div class="mb-3">
-                            <label for="id_bidang" class="form-label">Bidang</label>
-                            <select name="id_bidang" id="id_bidang" class="form-select" required>
-                                <option value="">Pilih Bidang</option>
-                                @foreach ($data->bidang as $bidang)
-                                    <option value="{{ $bidang->id_bidang }}">
-                                        {{ $bidang->nama }}
-                                    </option>
-                                @endforeach
-                            </select>
+                            <label for="file" class="form-label">Foto</label>
+                            <input type="file" class="form-control" id="file" name="file" accept=".pdf" required>
                         </div>
+
                         <div class="mb-3">
-                            <label for="prioritas" class="form-label">Prioritas</label>
-                            <select name="prioritas" id="prioritas" class="form-select" required>
-                                <option value="">Pilih Prioritas</option>
-                                @for ($i = 1; $i <= $data->prioritas; $i++)
-                                    <option value="{{ $i }}">
-                                        {{ $i }}
-                                    </option>
-                                @endfor
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="keahlian" class="form-label">Keahlian</label>
-                            <textarea class="form-control" id="keahlian" name="keahlian" rows="3" required></textarea>
+                            <label for="nama" class="form-label">Nama</label>
+                            <input type="text" class="form-control" id="nama" name="nama" required>
                         </div>
                     </div>
                 </div>
@@ -49,16 +32,14 @@
 </form>
 <script>
     $(document).ready(function () {
-        $("#form-tambah-keahlian").validate({
+        $("#form-tambah-dokumen").validate({
             rules: {
-                id_bidang: { required: true },
-                prioritas: { required: true },
-                keahlian: { required: true },
+                file: { required: true },
+                nama: { required: true },
             },
             messages: {
-                id_bidang: "Pilih bidang",
-                prioritas: "Pilih prioritas",
-                keahlian: "keahlian wajib diisi",
+                file: "File harus ada",
+                nama: "Nama file wajib diisi",
             },
             submitHandler: function (form) {
                 const formData = new FormData(form);
