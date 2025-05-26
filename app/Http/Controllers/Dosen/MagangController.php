@@ -36,18 +36,40 @@ class MagangController extends Controller
         }
     }
 
-    public function getRiwayat(){
+    public function getRiwayat()
+    {
         try {
             $id_dosen = $this->idDosen();
+
+            // Ambil semua data magang yang statusnya 'diterima' (untuk daftar riwayat)
             $magang = MagangModel::where('id_dosen', $id_dosen)
                 ->where('status', 'diterima')
                 ->get();
-            
-            return view('dosen.mahasiswa.index', compact('magang'));
+
+            // Hitung jumlah mahasiswa yang dibimbing (semua status)
+            $jumlah_dibimbing = MagangModel::where('id_dosen', $id_dosen)->count();
+
+            // Hitung jumlah mahasiswa dibimbing yang statusnya 'diterima'
+            $jumlah_diterima = MagangModel::where('id_dosen', $id_dosen)
+                ->where('status', 'diterima')
+                ->count();
+
+            // Hitung jumlah mahasiswa dibimbing yang statusnya 'lulus'
+            $jumlah_lulus = MagangModel::where('id_dosen', $id_dosen)
+                ->where('status', 'lulus')
+                ->count();
+
+            return view('dosen.mahasiswa.index', compact(
+                'magang',
+                'jumlah_dibimbing',
+                'jumlah_diterima',
+                'jumlah_lulus'
+            ));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
+
 
     public function getDetailRiwayat($id_magang)
     {
