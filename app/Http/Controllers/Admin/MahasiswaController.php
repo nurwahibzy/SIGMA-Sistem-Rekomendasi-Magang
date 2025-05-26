@@ -27,10 +27,10 @@ class MahasiswaController extends Controller
             ->get();
         $amountMahasiswa = MahasiswaModel::count();
         $aktif = MahasiswaModel::with('akun')
-        ->whereHas('akun', function($query){
-            $query->where('status', 'aktif');
-        })
-        ->count();
+            ->whereHas('akun', function ($query) {
+                $query->where('status', 'aktif');
+            })
+            ->count();
         // $aktif = DosenModel::withCount([
         //     'magang' => function ($query) {
         //         $query->where('status', 'diterima');
@@ -269,10 +269,18 @@ class MahasiswaController extends Controller
                 DB::transaction(
                     function () use ($request, $id_akun) {
 
-                        $akun = AkunModel::with('mahasiswa', 'mahasiswa.dokumen')
+                        $akun = AkunModel::with('mahasiswa', 'mahasiswa.dokumen', 'mahasiswa.magang', 'mahasiswa.magang.aktivitas_magang')
                             ->where('id_akun', $id_akun)->first();
 
-                            // tambahkan hapus file untuk aktifitas
+                        foreach ($akun->mahasiswa->magang as $magang) {
+                            foreach ($magang->aktivitas_magang as $aktivitas) {
+                                $foto_path = $aktivitas->foto_path;
+
+                                if (Storage::disk('public')->exists("aktivitas/$foto_path")) {
+                                    Storage::disk('public')->delete("aktivitas/$foto_path");
+                                }
+                            }
+                        }
                         foreach ($akun->mahasiswa->dokumen as $dokumen) {
                             $file_path = $dokumen->file_path;
 
