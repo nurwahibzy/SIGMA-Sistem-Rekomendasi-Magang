@@ -1,5 +1,6 @@
 @extends('layouts.tamplate')
 @section('content')
+<meta name="csrf-token" content="{{ csrf_token() }}">
     <div class="page-heading d-flex justify-content-between align-items-center">
         <h3>My Profile</h3>
         <a href="{{ url('dosen/profil/') }}" id="btn-edit-profile" class="btn-edit-section btn btn-outline-danger">
