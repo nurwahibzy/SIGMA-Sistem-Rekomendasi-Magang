@@ -2,10 +2,12 @@
 <div class="section-wrapper mb-4">
     <div class="d-flex justify-content-between align-items-center mb-2">
         <h5 class="fw-bold mb-0">Keahlian</h5>
-        <button type="button" class="btn-edit-section btn btn-outline-success"
-            onclick="modalAction('{{ url('/mahasiswa/profil/edit/keahlian/tambah') }}')">
-            <i class="bi bi-plus"></i> Tambah
-        </button>
+        @if (count($keahlian) != count($bidang))
+            <button type="button" class="btn-edit-section btn btn-outline-success"
+                onclick="modalAction('{{ url('/mahasiswa/profil/edit/keahlian/tambah') }}')">
+                <i class="bi bi-plus"></i> Tambah 
+            </button>
+        @endif
     </div>
 
     <p class="text-muted mb-3">Keahlian yang kamu miliki beserta skala prioritasnya</p>
@@ -25,7 +27,7 @@
                         </div>
                         <div>
                             <button type="button" class="btn-edit-section btn btn-outline-primary me-2"
-                            onclick="modalAction('{{ url('/mahasiswa/profil/edit/keahlian/edit/' . $item->id_keahlian_mahasiswa) }}')">
+                                onclick="modalAction('{{ url('/mahasiswa/profil/edit/keahlian/edit/' . $item->id_keahlian_mahasiswa) }}')">
                                 <i class="bi bi-pencil-square"></i>
                             </button>
 
@@ -75,7 +77,7 @@
                                 title: 'Berhasil',
                                 text: 'Data berhasil dihapus.'
                             }).then(() => {
-                                location.reload(); 
+                                location.reload();
                             });
                         },
                         error: function () {
