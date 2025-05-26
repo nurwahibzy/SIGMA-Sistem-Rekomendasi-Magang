@@ -81,7 +81,7 @@ class LowonganMagangController extends Controller
                 ]);
 
                 if ($validator->fails()) {
-                    return response()->json(['errors' => $validator->errors()], 422);
+                    return response()->json(['success' => false]);
                 }
 
                 $id_perusahaan = $request->input('id_perusahaan');
@@ -119,7 +119,7 @@ class LowonganMagangController extends Controller
                 ]);
 
                 if ($validator->fails()) {
-                    return response()->json(['errors' => $validator->errors()], 422);
+                    return response()->json(['success' => false]);
                 }
 
                 $id_perusahaan = $request->input('id_perusahaan');

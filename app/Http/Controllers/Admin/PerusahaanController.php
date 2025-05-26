@@ -72,7 +72,7 @@ class PerusahaanController extends Controller
                 ]);
 
                 if ($validator->fails()) {
-                    return false;
+                    return response()->json(['success' => false]);
                 }
 
                 $id_jenis = $request->input('id_jenis');
