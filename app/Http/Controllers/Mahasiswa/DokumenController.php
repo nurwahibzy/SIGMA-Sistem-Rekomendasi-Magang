@@ -53,7 +53,7 @@ class DokumenController extends Controller
                 $results = DB::transaction(function () use ($request) {
                     $validator = Validator::make($request->all(), [
                         'file' => 'nullable|file|mimes:pdf|max:2048',
-                        'nama' => 'required|string|max:100',
+                        'nama' => 'required|string|max:20',
                     ]);
 
                     if ($validator->fails()) {
@@ -93,7 +93,7 @@ class DokumenController extends Controller
                     function () use ($request, $id_dokumen) {
                         $validator = Validator::make($request->all(), [
                             'file' => 'nullable|file|mimes:pdf|max:2048',
-                            'nama' => 'required|string|max:100',
+                            'nama' => 'required|string|max:20',
                         ]);
 
                         if ($validator->fails()) {
