@@ -75,7 +75,7 @@
             $('#daerah').val(dataDaerah[daerahId] || '');
         });
 
-        $("#form-edit").validate({
+        $("#form-preferensi-lokasi").validate({
             rules: {
                 provinsi: { required: true },
                 daerah: { required: true }
