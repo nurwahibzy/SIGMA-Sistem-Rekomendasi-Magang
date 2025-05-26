@@ -30,7 +30,7 @@ class PenilaianController extends Controller
                 $id_mahasiswa = $this->idMahasiswa();
     
                 $magang = MagangModel::where('id_mahasiswa', $id_mahasiswa)
-                    ->where('status', 'lulus') 
+                    ->where('status', ['diterima','lulus']) 
                     ->with([
                         'periode_magang:id_periode,id_lowongan,nama,tanggal_mulai,tanggal_selesai',
                         'periode_magang.lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
