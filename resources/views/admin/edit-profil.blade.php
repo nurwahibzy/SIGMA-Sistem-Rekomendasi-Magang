@@ -91,7 +91,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    // Preview gambar
     function previewImage(event) {
         const reader = new FileReader();
         reader.onload = function () {
@@ -101,7 +100,6 @@
         reader.readAsDataURL(event.target.files[0]);
     }
 
-    // Klik gambar untuk trigger input
     document.addEventListener('DOMContentLoaded', function() {
         const preview = document.getElementById('preview');
         const fileInput = document.getElementById('file-upload');
@@ -244,7 +242,7 @@
                     }
                 });
 
-                return false;
+                // return false;
             }
         });
     });

@@ -208,7 +208,7 @@
                     Swal.fire({ icon: 'error', title: 'Gagal', text: 'Terjadi kesalahan pada server.' });
                 }
             });
-            return false;
+            // return false;
         },
         errorElement: 'span',
         errorPlacement: function (error, element) {
