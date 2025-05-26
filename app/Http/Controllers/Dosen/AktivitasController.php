@@ -21,11 +21,13 @@ class AktivitasController extends Controller
             ->id_dosen;
         return $id_dosen;
     }
-    public function getMagangDiterima(){
+    public function getMagangDiterima()
+    {
         $id_dosen = $this->idDosen();
+
         $magang = MagangModel::where('id_dosen', $id_dosen)
-        ->where('status', 'diterima')
-        ->get();
+                            ->whereIn('status', ['diterima', 'lulus'])
+                            ->get();
 
         return view('dosen.monitoring.index', compact('magang'));
     }
@@ -45,6 +47,16 @@ class AktivitasController extends Controller
 
         return response()->json($aktivitas);
     }
+
+    public function getDetail($id_magang) {
+    $id_dosen = $this->idDosen();
+    $magang = MagangModel::with(['mahasiswa.akun', 'periode_magang.lowongan_magang.perusahaan'])
+        ->where('id_magang', $id_magang)
+        ->where('id_dosen', $id_dosen)
+        ->first();
+    
+    return view('dosen.monitoring.detail', compact('magang'));
+}
 
     public function getDetailAktivitas($id_magang, $id_aktivitas){
         

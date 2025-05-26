@@ -256,6 +256,7 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('aktivitas')->group(function () {
             Route::get('/', [AktivitasControllerDosen::class, 'getMagangDiterima']);
             Route::get('/{id_magang}', [AktivitasControllerDosen::class, 'getAktivitas']);
+            Route::get('/detail/{id_magang}', [AktivitasControllerDosen::class, 'getDetail']);
             Route::get('/{id_magang}/profil', [AkunControllerDosen::class, 'getProfilMahasiswa']);
             Route::get('/{id_magang}/evaluasi', [EvaluasiController::class, 'getEvaluasi']);
             Route::post('/{id_magang}/evaluasi', [EvaluasiController::class, 'postEvaluasi']);
