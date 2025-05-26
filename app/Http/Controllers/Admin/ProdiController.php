@@ -97,6 +97,7 @@ class ProdiController extends Controller
                             ->first();
 
                         foreach ($prodi->mahasiswa as $item) {
+                            // tambahkan hapus file untuk aktifitas
                             if (!empty($item->dokumen)) {
                                 foreach ($item->dokumen as $dokumen) {
                                     $file_path = $dokumen->file_path;

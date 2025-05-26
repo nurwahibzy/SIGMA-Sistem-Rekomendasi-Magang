@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Log;
+use Validator;
 
 class PengalamanController extends Controller
 {
@@ -44,14 +45,24 @@ class PengalamanController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                DB::transaction(function () use ($request, ) {
+                $results = DB::transaction(function () use ($request, ) {
+                    $validator = Validator::make($request->all(), [
+                        'deskripsi' => 'required|string',
+                    ]);
+
+                    if ($validator->fails()) {
+                        return false;
+                    }
+
                     $id_mahasiswa = $this->idMahasiswa();
                     PengalamanModel::insert([
                         'id_mahasiswa' => $id_mahasiswa,
                         'deskripsi' => $request->input('deskripsi')
                     ]);
+
+                    return true;
                 });
-                return response()->json(['success' => true]);
+                return response()->json(['success' => $results]);
             } catch (\Exception $e) {
                 Log::error("Gagal menambahkan Pengalaman: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
@@ -63,14 +74,27 @@ class PengalamanController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                $deskripsi = $request->input('deskripsi');
-                $id_mahasiswa = $this->idMahasiswa();
-                PengalamanModel::where('id_mahasiswa', $id_mahasiswa)
-                    ->where('id_pengalaman', $id_pengalaman)
-                    ->update([
-                        'deskripsi' => $deskripsi
+                $results = DB::transaction(function () use ($request, $id_pengalaman) {
+
+                    $validator = Validator::make($request->all(), [
+                        'deskripsi' => 'required|string',
                     ]);
-                return response()->json(['success' => true]);
+
+                    if ($validator->fails()) {
+                        return false;
+                    }
+
+                    $deskripsi = $request->input('deskripsi');
+                    $id_mahasiswa = $this->idMahasiswa();
+                    PengalamanModel::where('id_mahasiswa', $id_mahasiswa)
+                        ->where('id_pengalaman', $id_pengalaman)
+                        ->update([
+                            'deskripsi' => $deskripsi
+                        ]);
+
+                    return true;
+                });
+                return response()->json(['success' => $results]);
             } catch (\Exception $e) {
                 Log::error("Gagal update Pengalaman: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
@@ -82,10 +106,12 @@ class PengalamanController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                $id_mahasiswa = $this->idMahasiswa();
-                PengalamanModel::where('id_mahasiswa', $id_mahasiswa)
-                    ->where('id_pengalaman', $id_pengalaman)
-                    ->delete();
+                DB::transaction(function () use ($request, $id_pengalaman) {
+                    $id_mahasiswa = $this->idMahasiswa();
+                    PengalamanModel::where('id_mahasiswa', $id_mahasiswa)
+                        ->where('id_pengalaman', $id_pengalaman)
+                        ->delete();
+                });
                 return response()->json(['success' => true]);
             } catch (\Exception $e) {
                 Log::error("Gagal hapus Pengalaman: " . $e->getMessage());

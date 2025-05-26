@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Log;
 use Storage;
 use Str;
+use Validator;
 
 class DokumenController extends Controller
 {
@@ -49,24 +50,34 @@ class DokumenController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                DB::transaction(function () use ($request) {
-                    if ($request->hasFile('file')) {
-                        $id_mahasiswa = $this->idMahasiswa();
-                        $file = $request->file('file');
+                $results = DB::transaction(function () use ($request) {
+                    $validator = Validator::make($request->all(), [
+                        'file' => 'nullable|file|mimes:pdf|max:2048',
+                        'nama' => 'required|string|max:20',
+                    ]);
 
-                        $nama = Str::slug($request->input('nama'), '_');
-
-                        $filename = $id_mahasiswa . '_' . $nama . '.' . $file->getClientOriginalExtension();
-                        DokumenModel::create([
-                            'id_mahasiswa' => $id_mahasiswa,
-                            'nama' => $nama,
-                            'file_path' => $filename
-                        ]);
-
-                        $file->storeAs('public/dokumen', $filename);
+                    if ($validator->fails()) {
+                        return false;
                     }
+
+                    // if ($request->hasFile('file')) {
+                    $id_mahasiswa = $this->idMahasiswa();
+                    $file = $request->file('file');
+
+                    $nama = Str::slug($request->input('nama'), '_');
+
+                    $filename = $id_mahasiswa . '_' . $nama . '.' . $file->getClientOriginalExtension();
+                    DokumenModel::create([
+                        'id_mahasiswa' => $id_mahasiswa,
+                        'nama' => $nama,
+                        'file_path' => $filename
+                    ]);
+
+                    $file->storeAs('public/dokumen', $filename);
+                    // }
+                    return true;
                 });
-                return response()->json(['success' => true]);
+                return response()->json(['success' => $results]);
             } catch (\Throwable $e) {
                 Log::error("Gagal menambahkan Dokumen: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
@@ -78,8 +89,17 @@ class DokumenController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                DB::transaction(
+                $results = DB::transaction(
                     function () use ($request, $id_dokumen) {
+                        $validator = Validator::make($request->all(), [
+                            'file' => 'nullable|file|mimes:pdf|max:2048',
+                            'nama' => 'required|string|max:20',
+                        ]);
+
+                        if ($validator->fails()) {
+                            return false;
+                        }
+
                         $id_mahasiswa = $this->idMahasiswa();
                         $data = DokumenModel::where('id_mahasiswa', $id_mahasiswa)
                             ->where('id_dokumen', $id_dokumen)
@@ -100,9 +120,11 @@ class DokumenController extends Controller
                                 'nama' => $nama,
                                 'file_path' => $file_path
                             ]);
+
+                        return true;
                     }
                 );
-                return response()->json(['success' => true]);
+                return response()->json(['success' => $results]);
             } catch (\Throwable $e) {
                 Log::error("Gagal update Dokumen: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);

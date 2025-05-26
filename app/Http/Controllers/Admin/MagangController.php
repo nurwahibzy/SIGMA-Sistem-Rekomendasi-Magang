@@ -69,7 +69,7 @@ class MagangController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return false;
+                return response()->json(['success' => false]);
             }
 
             $id_dosen = $request->input('id_dosen');

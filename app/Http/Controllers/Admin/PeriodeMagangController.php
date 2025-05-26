@@ -71,7 +71,7 @@ class PeriodeMagangController extends Controller
                 ]);
 
                 if ($validator->fails()) {
-                    return false;
+                    return response()->json(['success' => false]);
                 }
 
                 $id_lowongan = $request->input('id_lowongan');
@@ -105,7 +105,7 @@ class PeriodeMagangController extends Controller
                 ]);
 
                 if ($validator->fails()) {
-                    return false;
+                    return response()->json(['success' => false]);
                 }
                 
                 $id_lowongan = $request->input('id_lowongan');

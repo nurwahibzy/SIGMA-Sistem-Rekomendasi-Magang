@@ -11,6 +11,7 @@ use Geocoder\Provider\Nominatim\Nominatim;
 use Geocoder\StatefulGeocoder;
 use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
 use Log;
+use Validator;
 
 class PreferensiLokasiMahasiswaController extends Controller
 {
@@ -34,22 +35,15 @@ class PreferensiLokasiMahasiswaController extends Controller
             try {
                 $results = DB::transaction(
                     function () use ($request, $id_preferensi) {
-                        // $validator = Validator::make($request->all(), [
-                        //     'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
-                        //     'id_jenis' => 'required|exists:jenis_perusahaan,id_jenis',
-                        //     'nama' => 'required|string|max:100',
-                        //     'telepon' => 'required|digits_between:1,30',
-                        //     'deskripsi' => 'required|string',
-                        //     'provinsi' => 'required|string|max:30',
-                        //     'daerah' => 'required|string|max:30',
-                        // ]);
+                        $validator = Validator::make($request->all(), [
+                            'provinsi' => 'required|string|max:30',
+                            'daerah' => 'required|string|max:30',
+                        ]);
     
-                        // if ($validator->fails()) {
-                        //     return false;
-                        // }
+                        if ($validator->fails()) {
+                            return false;
+                        }
     
-
-
                         $provinsi = $request->input('provinsi');
                         $daerah = $request->input('daerah');
                         $provinsi = ucwords(strtolower($provinsi));

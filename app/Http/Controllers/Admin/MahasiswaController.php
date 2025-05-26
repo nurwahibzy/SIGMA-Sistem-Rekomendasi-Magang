@@ -272,6 +272,7 @@ class MahasiswaController extends Controller
                         $akun = AkunModel::with('mahasiswa', 'mahasiswa.dokumen')
                             ->where('id_akun', $id_akun)->first();
 
+                            // tambahkan hapus file untuk aktifitas
                         foreach ($akun->mahasiswa->dokumen as $dokumen) {
                             $file_path = $dokumen->file_path;
 

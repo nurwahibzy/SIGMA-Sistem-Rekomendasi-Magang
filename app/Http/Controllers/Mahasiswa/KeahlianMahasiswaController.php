@@ -10,6 +10,7 @@ use App\Models\KeahlianMahasiswaModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Validator;
 
 class KeahlianMahasiswaController extends Controller
 {
@@ -42,7 +43,7 @@ class KeahlianMahasiswaController extends Controller
                     'bidang' => $bidang,
                     'prioritas' => count($bidangDipilih) + 1
                 ];
-                
+
                 $data = json_decode(json_encode($data));
 
                 return $data;
@@ -89,7 +90,17 @@ class KeahlianMahasiswaController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                DB::transaction(function () use ($request) {
+                $results = DB::transaction(function () use ($request) {
+                    $validator = Validator::make($request->all(), [
+                        'id_bidang' => 'required|exists:bidang,id_bidang',
+                        'prioritas' => 'required|numeric',
+                        'keahlian' => 'required|string',
+                    ]);
+
+                    if ($validator->fails()) {
+                        return false;
+                    }
+
                     $id_mahasiswa = $this->idMahasiswa();
                     $bidangDipilih = $this->bidangDipilih($id_mahasiswa);
                     $prioritas = (int) $request->input('prioritas');
@@ -100,8 +111,10 @@ class KeahlianMahasiswaController extends Controller
                         $this->updatePrioritas($id_mahasiswa, $prioritas);
                         $this->insertKeahlian($id_mahasiswa, $request);
                     }
+
+                    return true;
                 });
-                return response()->json(['success' => true]);
+                return response()->json(['success' => $results]);
             } catch (\Exception $e) {
                 Log::error("Gagal menambahkan keahlian: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
@@ -135,7 +148,17 @@ class KeahlianMahasiswaController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                DB::transaction(function () use ($request, $id_keahlian) {
+                $results = DB::transaction(function () use ($request, $id_keahlian) {
+                    $validator = Validator::make($request->all(), [
+                        'id_bidang' => 'required|exists:bidang,id_bidang',
+                        'prioritas' => 'required|numeric',
+                        'keahlian' => 'required|string',
+                    ]);
+
+                    if ($validator->fails()) {
+                        return false;
+                    }
+
                     $id_mahasiswa = $this->idMahasiswa();
                     $dataLama = KeahlianMahasiswaModel::where('id_mahasiswa', $id_mahasiswa)
                         ->where('id_keahlian_mahasiswa', $id_keahlian)
@@ -156,8 +179,10 @@ class KeahlianMahasiswaController extends Controller
                     }
 
                     $this->updateKeahlian($id_keahlian, $id_mahasiswa, $request);
+
+                    return true;
                 });
-                return response()->json(['success' => true]);
+                return response()->json(['success' => $results]);
             } catch (\Exception $e) {
                 Log::error("Gagal update keahlian: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
