@@ -1,6 +1,8 @@
-<form action="{{ url('/mahasiswa/profil/edit/keahlian/edit/' . $data->pilihan_terakhir->id_keahlian_mahasiswa ) }}" method="POST" id="form-edit-keahlian">
+<form action="{{ url('/mahasiswa/profil/edit/keahlian/edit/' . $data->pilihan_terakhir->id_keahlian_mahasiswa ) }}" method="POST" id="form-edit-keahlian" style="height: 100%!important;
+    display: flex;
+    align-items: center;">
     @csrf
-    <div id="modal-master" class="modal-dialog modal-lg" role="document">
+    <div id="modal-master" class="modal-dialog modal-lg" role="document" style="width:100%">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Edit Keahlian</h5>

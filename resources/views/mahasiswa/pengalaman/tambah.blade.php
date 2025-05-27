@@ -1,6 +1,8 @@
-<form action="{{ url('/mahasiswa/profil/edit/pengalaman/tambah/' ) }}" method="POST" id="form-tambah-pengalaman">
+<form action="{{ url('/mahasiswa/profil/edit/pengalaman/tambah/' ) }}" method="POST" id="form-tambah-pengalaman" style="height: 100%!important;
+    display: flex;
+    align-items: center;">
     @csrf
-    <div id="modal-master" class="modal-dialog modal-lg" role="document">
+    <div id="modal-master" class="modal-dialog modal-lg" role="document" style="width:100%">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Tambah Pengalaman</h5>

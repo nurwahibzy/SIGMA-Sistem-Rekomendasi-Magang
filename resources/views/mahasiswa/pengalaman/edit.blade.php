@@ -1,6 +1,8 @@
-<form action="{{ url('/mahasiswa/profil/edit/pengalaman/edit/' . $pengalaman->id_pengalaman  ) }}" method="POST" id="form-edit-pengalaman">
+<form action="{{ url('/mahasiswa/profil/edit/pengalaman/edit/' . $pengalaman->id_pengalaman  ) }}" method="POST" id="form-edit-pengalaman" style="height: 100%!important;
+    display: flex;
+    align-items: center;">
     @csrf
-    <div id="modal-master" class="modal-dialog modal-lg" role="document">
+    <div id="modal-master" class="modal-dialog modal-lg" role="document" style="width:100%">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Edit Pengalaman</h5>
