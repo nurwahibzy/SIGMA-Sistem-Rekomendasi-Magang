@@ -84,7 +84,7 @@
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Berhasil',
-                                    text: 'Data berhasil disimpan.'
+                                    text: 'Berhasil Login.'
                                 }).then(() => {
                                     window.location.href = '{{ url("/") }}/' + response.level + '/dashboard';
                                 });
@@ -92,7 +92,7 @@
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Gagal',
-                                    text: response.message || 'Terjadi kesalahan saat menyimpan.'
+                                    text: response.message || 'Terjadi kesalahan saat Login.'
                                 });
                             }
                         },

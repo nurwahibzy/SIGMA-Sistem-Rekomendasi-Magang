@@ -169,7 +169,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/', [AkunControllerMahasiswa::class, 'getEditProfil']);
                 // Route::get('/', [AkunControllerMahasiswa::class, 'getEditProfil'])->name('mahasiswa.edit');
                 // Route::post('/update', [AkunControllerMahasiswa::class, 'updateProfil'])->name('mahasiswa.update');
-                
+
                 Route::post('/', [AkunControllerMahasiswa::class, 'putAkun']);
 
                 Route::prefix('keahlian')->group(callback: function () {
@@ -215,8 +215,9 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::prefix('riwayat')->group(function () {
-              Route::get('/', [MagangControllerMahasiswa::class, 'indexRiwayat']);
-            Route::get('/data', [MagangControllerMahasiswa::class, 'getRiwayatData']);
+            Route::get('/', [MagangControllerMahasiswa::class, 'indexRiwayat']);
+            Route::get('/aktivitas/{id_magang}', [AktivitasControllerMahasiswa::class, 'getRiwayatAktivitas']);
+            Route::get('/aktivitas/{id_magang}/detail/{id_aktivitas}', [AktivitasControllerMahasiswa::class, 'getRiwayatDetailAktivitas']);
         });
 
         Route::prefix('penilaian')->group(function () {

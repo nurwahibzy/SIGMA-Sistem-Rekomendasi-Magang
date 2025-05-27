@@ -2,17 +2,13 @@
 
 @section('content')
     <div class="page-heading">
-        <h3>Feedback Perusahaan</h3>
+        <h3>Riwayat Magang</h3>
     </div>
 
     <div class="page-content">
         <div class="row">
-            @if(empty($magang))
-                <div class="alert alert-warning">
-                    Belum ada magang yang diterima atau lulus.
-                </div>
-            @else
-                <div class="row">
+            @if(count($magang))
+            <div class="row">
                     @foreach($magang as $item)
                         <div class="col-md-6 col-xl-4">
                             <div class="card shadow-sm border-0 mb-4">
@@ -44,8 +40,8 @@
 
 
                                     <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <a href="{{ url('mahasiswa/aktivitas/' . $item->id_magang) }}"
-                                            class="btn-edit-section btn btn-outline-primary me-2">
+                                        <a href="{{ url('mahasiswa/riwayat/aktivitas/' . $item->id_magang) }}"
+                                            class="btn btn-primary">
                                             <i class="bi bi-pencil-square"></i> Detail
                                         </a>
 
@@ -54,7 +50,7 @@
                                         @endphp
 
                                         @if($sudahDinilai)
-                                            <a href="{{ route('penilaian.get', $item->id_magang) }}" class="btn-edit-section btn btn-outline-primary me-2">
+                                            <a href="{{ route('penilaian.get', $item->id_magang) }}" class="btn btn-primary">
                                                 <i class="bi bi-pencil-square"></i> Sertifikat
                                             </a>
                                         @endif
@@ -65,6 +61,11 @@
                             </div>
                         </div>
                     @endforeach
+                </div>
+                
+            @else
+            <div class="alert alert-warning">
+                    Belum ada magang yang lulus.
                 </div>
             @endif
         </div>

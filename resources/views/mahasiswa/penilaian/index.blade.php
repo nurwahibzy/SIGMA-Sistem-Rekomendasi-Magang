@@ -7,11 +7,8 @@
 
     <div class="page-content">
         <div class="row">
-            @if(empty($magang))
-                <div class="alert alert-warning">
-                    Belum ada magang yang diterima atau lulus.
-                </div>
-            @else
+            @if(count($magang))
+            
                 <div class="row">
                     @foreach($magang as $item)
                         <div class="col-md-6 col-xl-4">
@@ -54,6 +51,10 @@
                             </div>
                         </div>
                     @endforeach
+                </div>
+            @else
+            <div class="alert alert-warning">
+                    Belum ada magang yang lulus.
                 </div>
             @endif
         </div>

@@ -79,7 +79,7 @@ class MagangController extends Controller
             'id_periode' => $id_periode,
             'tanggal_pengajuan' => $tanggal_pengajuan
         ]);
-        
+
         return response()->json(['success' => true]);
     }
 
@@ -95,19 +95,14 @@ class MagangController extends Controller
         return response()->json($magang);
     }
 
-    public function getRiwayatData()
+    public function getRiwayatAktivitas($id_magang)
     {
-        $id_mahasiswa = $this->idMahasiswa();
-        $magang = MagangModel::where('id_mahasiswa', $id_mahasiswa)
-            ->with(
-                'periode_magang:id_periode,id_lowongan,nama,tanggal_mulai,tanggal_selesai',
-                'periode_magang.lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
-                'periode_magang.lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama',
-                'periode_magang.lowongan_magang.bidang:id_bidang,nama',
-                'periode_magang.lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
-            )
-            ->get();
-            return response()->json($magang);
+        // $id_mahasiswa = $this->idMahasiswa();
+        // $magang = MagangModel::where('id_mahasiswa', $id_mahasiswa)
+        //     ->where('id_magang', $id_magang)
+        //     ->with('aktivitas_magang')
+        //     ->first();
+        // return response()->json($magang);
     }
 
     public function indexRiwayat()
@@ -117,7 +112,7 @@ class MagangController extends Controller
                 $id_mahasiswa = $this->idMahasiswa();
 
                 $magang = MagangModel::where('id_mahasiswa', $id_mahasiswa)
-                    ->whereIn('status', ['diterima', 'lulus'])
+                    ->where('status', 'lulus')
                     ->with([
                         'periode_magang:id_periode,id_lowongan,nama,tanggal_mulai,tanggal_selesai',
                         'periode_magang.lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',

@@ -41,33 +41,8 @@ class AktivitasController extends Controller
                 'periode_magang.lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
             )
             ->first();
-        // return view('mahasiswa.aktivitas.magang', [
-        //     'magang' => collect([
-        //         (object) [
-        //             'id_magang' => 1,
-        //             'periode_magang' => (object) [
-        //                 'tanggal_mulai' => '2025-08-01',
-        //                 'tanggal_selesai' => '2025-10-31',
-        //                 'lowongan_magang' => (object) [
-        //                     'nama' => 'Intern UI/UX',
-        //                     'perusahaan' => (object) ['nama' => 'Tech Corp'],
-        //                     'bidang' => (object) ['nama' => 'Design'],
-        //                 ]
-        //             ]
-        //         ]
-        //     ])
-        // ]);
 
         return view('mahasiswa.aktivitas.magang', ['magang' => $magang]);
-
-        // $magang = PeriodeMagangModel::with(
-        // 'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama,foto_path',
-        // 'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama',
-        // 'lowongan_magang.bidang:id_bidang,nama',
-        // 'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
-        //     )
-        //     ->get(['id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
-        // return response()->json($magang);
     }
     public function getAktivitas($id_magang)
     {
@@ -362,5 +337,34 @@ class AktivitasController extends Controller
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
             }
         }
+    }
+
+    public function getRiwayatAktivitas($id_magang)
+    {
+        $id_mahasiswa = $this->idMahasiswa();
+
+        $aktivitas = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
+            ->where('id_magang', $id_magang)
+            ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+                $query->where('id_mahasiswa', $id_mahasiswa);
+            })
+            ->orderByDesc('tanggal')
+            ->get();
+
+        return view('mahasiswa.riwayat.index-aktivitas', ['aktivitas' => $aktivitas]);
+    }
+    public function getRiwayatDetailAktivitas($id_magang, $id_aktivitas)
+    {
+        $id_mahasiswa = $this->idMahasiswa();
+
+        $aktivitas = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
+            ->where('id_magang', $id_magang)
+            ->where('id_aktivitas', $id_aktivitas)
+            ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+                $query->where('id_mahasiswa', $id_mahasiswa);
+            })
+            ->first();
+
+        return view('mahasiswa.riwayat.detail-aktivitas', ['aktivitas' => $aktivitas]);
     }
 }

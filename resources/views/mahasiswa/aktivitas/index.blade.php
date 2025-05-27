@@ -28,9 +28,6 @@
                 @else
                     <div class="card">
                         <div class="card-header">
-                            <!-- Di bagian head -->
-                            <link rel="stylesheet"
-                                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css ">
                             <h4 class="card-title">Daftar Aktivitas</h4>
                         </div>
                         <div class="card-body">

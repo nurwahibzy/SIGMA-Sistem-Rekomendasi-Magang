@@ -10,7 +10,9 @@
     <link rel="stylesheet" href="{{ asset('template/assets/compiled/css/app.css') }}" />
     <link rel="stylesheet" href="{{ asset('template/assets/compiled/css/app-dark.css') }}" />
     <link rel="stylesheet" href="{{ asset('template/assets/compiled/css/iconly.css') }}" />
-    <link rel="stylesheet" href="{{ asset('template/assets/extensions/choices.js/public/assets/styles/choices.min.css') }}">
+    <link rel="stylesheet"
+        href="{{ asset('template/assets/extensions/choices.js/public/assets/styles/choices.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css ">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- DataTables CSS -->
@@ -26,9 +28,11 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
+
         .checkbox-input {
             display: none;
         }
+
         .checkbox-input:checked+.checkbox-label {
             background-color: var(--bs-primary);
             color: white;

@@ -1,9 +1,4 @@
 <div class="mb-3">
-    <h5>Deskripsi:</h5>
-    <p>{{ $aktivitas->keterangan }}</p>
-</div>
-
-<div class="mb-3">
     <h5>File:</h5>
     @if($aktivitas->foto_path)
         <img src="{{ asset('storage/aktivitas/' . $aktivitas->foto_path) }}" alt="Foto Aktivitas" class="img-thumbnail mt-2"
@@ -17,6 +12,11 @@
 <div class="mb-3">
     <h5>Tanggal:</h5>
     <p>{{ \Carbon\Carbon::parse($aktivitas->tanggal)->format('d M Y') }}</p>
+</div>
+
+<div class="mb-3">
+    <h5>Deskripsi:</h5>
+    <p>{{ $aktivitas->keterangan }}</p>
 </div>
 
 @php

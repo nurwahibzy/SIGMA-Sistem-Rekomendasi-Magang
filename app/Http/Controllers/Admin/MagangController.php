@@ -21,7 +21,15 @@ class MagangController extends Controller
 
     public function getKegiatan()
     {
-        $magang = MagangModel::with('mahasiswa', 'mahasiswa.akun', 'dosen', 'periode_magang', 'periode_magang.lowongan_magang', 'periode_magang.lowongan_magang.perusahaan')->get();
+        $magang = MagangModel::with(
+            'mahasiswa',
+            'mahasiswa.akun',
+            'dosen',
+            'periode_magang',
+            'periode_magang.lowongan_magang',
+            'periode_magang.lowongan_magang.perusahaan'
+        )
+            ->orderByDesc('tanggal_pengajuan')->get();
         return view('admin.kegiatan.index', ['magang' => $magang]);
     }
 
@@ -40,7 +48,7 @@ class MagangController extends Controller
             $dosen = DosenModel::whereHas('akun', function ($query) {
                 $query->where('status', 'aktif');
             })
-            ->get();
+                ->get();
 
             $activeButton = [];
 
@@ -91,7 +99,8 @@ class MagangController extends Controller
         }
     }
 
-    public function deleteKegiatan(Request $request, $id_magang){
+    public function deleteKegiatan(Request $request, $id_magang)
+    {
         MagangModel::where('id_magang', $id_magang)->delete();
         return response()->json(['success' => true]);
     }
