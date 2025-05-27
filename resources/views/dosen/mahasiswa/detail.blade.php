@@ -256,13 +256,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Modal Footer -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                <i class="bi bi-x-lg me-1"></i>Tutup
-                            </button>
-                        </div>
                     </div>
     </div>
 </div>
