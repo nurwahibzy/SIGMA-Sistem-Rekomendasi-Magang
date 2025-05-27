@@ -7,7 +7,7 @@
 
     <div class="page-content">
         <div class="row">
-            @if($magang->isEmpty())
+            @if(empty($magang))
                 <div class="alert alert-warning">
                     Belum ada magang yang diterima atau lulus.
                 </div>

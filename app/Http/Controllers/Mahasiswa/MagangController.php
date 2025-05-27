@@ -112,8 +112,28 @@ class MagangController extends Controller
 
     public function indexRiwayat()
     {
-        return view('mahasiswa.riwayat.index', [
-            'activeMenu' => 'riwayat'
-        ]);
+        try {
+            return DB::transaction(function () {
+                $id_mahasiswa = $this->idMahasiswa();
+
+                $magang = MagangModel::where('id_mahasiswa', $id_mahasiswa)
+                    ->whereIn('status', ['diterima', 'lulus'])
+                    ->with([
+                        'periode_magang:id_periode,id_lowongan,nama,tanggal_mulai,tanggal_selesai',
+                        'periode_magang.lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
+                        'periode_magang.lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama',
+                        'periode_magang.lowongan_magang.bidang:id_bidang,nama',
+                        'periode_magang.lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
+                    ])
+                    ->get();
+
+                return view('mahasiswa.riwayat.index', [
+                    'magang' => $magang
+                ]);
+            });
+        } catch (\Throwable $e) {
+            Log::error("Gagal memuat halaman penilaian: " . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
+        }
     }
 }

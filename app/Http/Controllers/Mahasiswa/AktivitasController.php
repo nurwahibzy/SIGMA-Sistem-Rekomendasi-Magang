@@ -58,7 +58,7 @@ class AktivitasController extends Controller
         //     ])
         // ]);
 
-        return view('mahasiswa.aktivitas.magang', ['magang' => collect([$magang])]);
+        return view('mahasiswa.aktivitas.magang', ['magang' => $magang]);
 
         // $magang = PeriodeMagangModel::with(
         // 'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama,foto_path',

@@ -11,22 +11,18 @@
                 <h4 class="card-title">Form Rating</h4>
             </div>
             <div class="card-body">
-                <form method="POST" id="ratingForm">
+                <form method="POST" action="{{ url('mahasiswa/penilaian/' . $id_magang) }}" id="ratingForm">
                     @csrf
                     <div class="form-group mb-4">
                         <label class="form-label">Fasilitas</label>
-                        <div class="rating rating-fasilitas" >
+                        <div class="rating rating-fasilitas">
 
                             <input type="radio" required class="form-check-input" name="fasilitas" value="1"
-                                id="fasilitas-1" >
-                            <input type="radio"  class="form-check-input" name="fasilitas" value="2"
-                                id="fasilitas-2">
-                            <input type="radio" class="form-check-input" name="fasilitas" value="3"
-                                id="fasilitas-3">
-                            <input type="radio" class="form-check-input" name="fasilitas" value="4"
-                                id="fasilitas-4">
-                            <input type="radio" class="form-check-input" name="fasilitas" value="5"
-                                id="fasilitas-5">
+                                id="fasilitas-1">
+                            <input type="radio" class="form-check-input" name="fasilitas" value="2" id="fasilitas-2">
+                            <input type="radio" class="form-check-input" name="fasilitas" value="3" id="fasilitas-3">
+                            <input type="radio" class="form-check-input" name="fasilitas" value="4" id="fasilitas-4">
+                            <input type="radio" class="form-check-input" name="fasilitas" value="5" id="fasilitas-5">
                         </div>
                         <div class="mt-2">
                             <span id="fasilitas-rating-value">1</span> Sampai 5
@@ -38,14 +34,10 @@
                         <div class="rating rating-kedisiplinan">
                             <input type="radio" required class="form-check-input" name="kedisiplinan" value="1"
                                 id="kedisiplinan-1">
-                            <input type="radio" class="form-check-input" name="kedisiplinan" value="2"
-                                id="kedisiplinan-2">
-                            <input type="radio" class="form-check-input" name="kedisiplinan" value="3"
-                                id="kedisiplinan-3">
-                            <input type="radio" class="form-check-input" name="kedisiplinan" value="4"
-                                id="kedisiplinan-4">
-                            <input type="radio" class="form-check-input" name="kedisiplinan" value="5"
-                                id="kedisiplinan-5">
+                            <input type="radio" class="form-check-input" name="kedisiplinan" value="2" id="kedisiplinan-2">
+                            <input type="radio" class="form-check-input" name="kedisiplinan" value="3" id="kedisiplinan-3">
+                            <input type="radio" class="form-check-input" name="kedisiplinan" value="4" id="kedisiplinan-4">
+                            <input type="radio" class="form-check-input" name="kedisiplinan" value="5" id="kedisiplinan-5">
                         </div>
                         <div class="mt-2">
                             <span id="kedisiplinan-rating-value">1</span> Sampai 5
@@ -74,33 +66,52 @@
         </div>
     </div>
     </div>
-@endsection
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#ratingForm").on('submit', function (e) {
+                e.preventDefault();
+                const form = this;
+                const formData = new FormData(form);
 
-@section('scripts')
-<script>
-    $(document).ready(function () {
-
-        $('#ratingForm').submit(function (e) {
-            e.preventDefault();
-
-            const idMagang = $(this).data('id');
-            const url = `{{ url('/mahasiswa/penilaian') }}/${idMagang}`;
-            
-            $.ajax({
-                url: url,
-                method: 'POST',
-                success: function (response) {
-                    alert('Rating berhasil dikirim!');
-                },
-                error: function (xhr) {
-                    alert('Terjadi kesalahan saat mengirim rating.');
-                    console.error(xhr.responseText);
-                }
+                $.ajax({
+                    url: form.action,
+                    type: form.method,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('input[name="_token"]').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: 'Data berhasil disimpan.'
+                            }).then(() => {
+                                window.location.href = '{{ url("mahasiswa/riwayat") }}';
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: response.message || 'Terjadi kesalahan saat menyimpan.'
+                            });
+                        }
+                    },
+                    error: function (xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: xhr.responseJSON?.message || 'Terjadi kesalahan saat menyimpan.'
+                        });
+                    }
+                });
             });
         });
-    });
-</script>
+    </script>
 @endsection
-@push('scripts')
+<!-- @push('scripts')
 <script src="{{ asset('template/assets/static/js/components/dark.js') }}"></script>
-@endpush
+@endpush -->
