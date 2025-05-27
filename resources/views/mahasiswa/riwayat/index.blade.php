@@ -64,7 +64,7 @@
                 </div>
                 
             @else
-            <div class="alert alert-warning">
+            <div class="alert alert-warning text-center">
                     Belum ada magang yang lulus.
                 </div>
             @endif

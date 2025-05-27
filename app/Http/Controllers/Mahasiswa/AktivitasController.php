@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Mahasiswa;
 use App\Http\Controllers\Controller;
 use App\Models\AktivitasMagangModel;
 use App\Models\AkunModel;
+use App\Models\EvaluasiMagangModel;
 use App\Models\MagangModel;
 use App\Models\PeriodeMagangModel;
 use Auth;
@@ -351,7 +352,15 @@ class AktivitasController extends Controller
             ->orderByDesc('tanggal')
             ->get();
 
-        return view('mahasiswa.riwayat.index-aktivitas', ['aktivitas' => $aktivitas]);
+
+        $evaluasi = EvaluasiMagangModel::with('magang:id_magang,id_mahasiswa')
+            ->where('id_magang', $id_magang)
+            ->whereHas('magang', function ($query) use ($id_mahasiswa) {
+                $query->where('id_mahasiswa', $id_mahasiswa);
+            })
+            ->first();
+
+        return view('mahasiswa.riwayat.index-aktivitas', ['aktivitas' => $aktivitas, 'evaluasi' => $evaluasi]);
     }
     public function getRiwayatDetailAktivitas($id_magang, $id_aktivitas)
     {
