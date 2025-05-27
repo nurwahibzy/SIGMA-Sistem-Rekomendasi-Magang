@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Mazer Admin Dashboard</title>
+    <title>Login - SIGMA</title>
 
     <link rel="shortcut icon" href="{{ asset('template/assets/compiled/svg/favicon.svg') }}" type="image/x-icon">
     <link rel="shortcut icon" href="{{ asset('template/assets/compiled/img/favicon.png') }}" type="image/png">
@@ -25,8 +25,8 @@
                             <img src="{{ asset('template/assets/compiled/svg/logo.svg') }}" alt="Logo">
                         </a>
                     </div>
-                    <h1 class="auth-title">Log in.</h1>
-                    <p class="auth-subtitle mb-5">Log in with your data that you entered during registration.</p>
+                    <h1 class="auth-title">Login</h1>
+                    <p class="auth-subtitle mb-5">Silakan login menggunakan data yang sesuai.</p>
 
                     <form action="{{ url('login') }}" method="POST" id="login">
                         @csrf

@@ -1,7 +1,7 @@
 @extends('layouts.tamplate')
 @section('content')
     <div class="page-heading">
-        <h3>My Profile</h3>
+        <h3>Profil Saya</h3>
     </div>
 
     <section class="section">

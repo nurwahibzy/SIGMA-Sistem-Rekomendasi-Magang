@@ -1,7 +1,7 @@
 @extends('layouts.tamplate')
 @section('content')
     <div class="page-heading d-flex justify-content-between align-items-center">
-        <h3>My Profile</h3>
+        <h3>Profil Saya</h3>
         <a href="{{ url('dosen/profil/edit') }}" id="btn-edit-profile" class="btn btn-outline-primary">
             <i class="bi bi-pencil-square"></i> Edit
         </a>

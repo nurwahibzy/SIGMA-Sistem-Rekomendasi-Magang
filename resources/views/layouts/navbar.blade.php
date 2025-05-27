@@ -76,10 +76,10 @@
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton"
                                     style="min-width: 11rem;">
                                     <li>
-                                        <h6 class="dropdown-header">Hello, {{ Auth::user()->admin->nama ?? 'Nama Admin' }}</h6>
+                                        <h6 class="dropdown-header">Halo, {{ Auth::user()->admin->nama ?? 'Nama Admin' }}</h6>
                                     </li>
                                     <li><a class="dropdown-item" href="{{ url('/admin/profil') }}"><i
-                                                class="icon-mid bi bi-person me-2"></i> My Profile</a></li>
+                                                class="icon-mid bi bi-person me-2"></i>Profil Saya</a></li>
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
@@ -111,11 +111,11 @@
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton"
                             style="min-width: 11rem;">
                             <li>
-                                <h6 class="dropdown-header">Hello, {{ Auth::user()->mahasiswa->nama ?? 'Nama Mahasiswa' }}
+                                <h6 class="dropdown-header">Halo, {{ Auth::user()->mahasiswa->nama ?? 'Nama Mahasiswa' }}
                                 </h6>
                             </li>
                             <li><a class="dropdown-item" href="{{ route('mahasiswa.profil') }}"><i
-                                        class="icon-mid bi bi-person me-2"></i> My Profile</a></li>
+                                        class="icon-mid bi bi-person me-2"></i>Profil Saya</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
@@ -146,10 +146,10 @@
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton"
                             style="min-width: 11rem;">
                             <li>
-                                <h6 class="dropdown-header">Hello, {{ Auth::user()->dosen->nama ?? 'Nama Dosen' }}</h6>
+                                <h6 class="dropdown-header">Halo, {{ Auth::user()->dosen->nama ?? 'Nama Dosen' }}</h6>
                             </li>
                             <li><a class="dropdown-item" href="{{ url('/dosen/profil') }}"><i
-                                class="icon-mid bi bi-person me-2"></i> My Profile</a>
+                                class="icon-mid bi bi-person me-2"></i>Profil Saya</a>
                             </li>
                             <li>
                                 <hr class="dropdown-divider">
