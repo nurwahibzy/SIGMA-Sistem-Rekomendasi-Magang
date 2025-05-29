@@ -64,7 +64,7 @@ class PerusahaanSeeder extends Seeder
                 'id_jenis' => $p[1],
                 'telepon' => $p[2],
                 'deskripsi' => $p[7],
-                'foto_path' => 'images/perusahaan/' . $slugifiedName . '.jpg',
+                'foto_path' => $slugifiedName . '.jpg',
                 'provinsi' => $p[3],
                 'daerah' => $p[4],
                 'latitude' => $p[5],

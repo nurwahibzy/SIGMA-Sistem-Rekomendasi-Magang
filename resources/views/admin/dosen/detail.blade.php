@@ -103,24 +103,48 @@
                 </div>
                 <div class="tab-pane fade" id="bimbingan" role="tabpanel">
                     @if (!empty($perusahaan))
-                        <div class="container mt-4">
-                            <label class="form-label fw-bold">Perusahaan Teratas</label>
-                            <div class="border rounded p-2">
-                                <p class="form-control-plaintext mb-0">{{ $perusahaan->nama }}</p>
+                                    <div class="container mt-4">
+                                        <label class="form-label fw-bold fs-5 mb-3">Perusahaan Teratas</label>
+                                        <div class="d-flex align-items-center border rounded p-3 shadow-sm">
+                                            <div class="me-4">
+                                                <img src="{{ Storage::exists('public/profil/perusahaan/' . $perusahaan->foto_path)
+                        ? asset('storage/profil/perusahaan/' . $perusahaan->foto_path)
+                        : asset('template/assets/images/mhs.jpeg') }}" alt="Profile Picture" class="img-fluid rounded"
+                                                    style="width: 100px; height: 100px; object-fit: cover;">
+                                            </div>
+                                            <div>
+                                                <table class="table table-borderless mb-0">
+                                                    <tr>
+                                                        <th class="text-muted">Perusahaan</th>
+                                                        <td>: {{ $perusahaan->nama }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-muted">Total Mahasiswa</th>
+                                                        <td>: {{ $perusahaan->total }} orang</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="container mt-4">
+                                    <label class="form-label fw-bold fs-5 mb-3">Mahasiswa</label>
+                                        <div class="d-flex justify-content-between">
+                                            <div class="w-50 me-2 border rounded d-flex justify-content-center">
+                                                <div style="width: 250px; height: 250px;">
+                                                    <canvas id="statusChart"></canvas>
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="w-50 ms-2 border rounded text-center d-flex flex-column justify-content-center align-items-center fw-bold py-3">
+                                                <p class="mb-1">Jumlah Mahasiswa</p>
+                                                <p class="mb-0">{{ $amountMahasiswaDiterima + $amountMahasiswaLulus }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @else
+                            <div class="alert alert-warning text-center">
+                                Belum ada mahasiswa yang dibimbing.
                             </div>
-                        </div>
-                        <div class="d-flex justify-content-between mt-4">
-                            <div class="w-50 me-2 border rounded d-flex justify-content-center">
-                                <div style="width: 250px; height: 250px;">
-                                    <canvas id="statusChart"></canvas>
-                                </div>
-                            </div>
-                            <div
-                                class="w-50 ms-2 border rounded text-center d-flex flex-column justify-content-center align-items-center fw-bold py-3">
-                                <p class="mb-1">Jumlah Mahasiswa</p>
-                                <p class="mb-0">{{ $amountMahasiswaDiterima + $amountMahasiswaLulus }}</p>
-                            </div>
-                        </div>
                     @endif
                 </div>
             </div>
