@@ -2,7 +2,7 @@
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-        <div class="modal-header bg-primary text-white rounded-top">
+            <div class="modal-header bg-primary text-white rounded-top">
                 <h5 class="modal-title">Edit Admin</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="Close"></button>
@@ -21,6 +21,8 @@
                             <div class="mb-3">
                                 <label for="file" class="form-label">Foto</label>
                                 <input type="file" class="form-control" id="file" name="file" accept=".jpg,.jpeg,.png">
+                                <button type="button" id="btn-hapus-file" class="btn btn-sm btn-danger mt-2"
+                                    disabled>Hapus File</button>
                             </div>
 
                             <div class="mb-3">
@@ -42,7 +44,7 @@
                                 <label for="password" class="form-label">Password</label>
                                 <input type="password" class="form-control" id="password" name="password">
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="telepon" class="form-label">Telepon</label>
                                 <input type="text" class="form-control" id="telepon" name="telepon" required
@@ -67,7 +69,7 @@
                                 <textarea class="form-control" id="alamat" name="alamat" rows="3"
                                     required>{{ $admin->alamat }}</textarea>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
                                 <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" required
@@ -85,7 +87,21 @@
         </div>
     </div>
 </form>
+<script>
 
+    $('#file').on('change', function () {
+        const isFileSelected = this.files.length > 0;
+        $('#btn-hapus-file').prop('disabled', !isFileSelected);
+    });
+
+    $('#btn-hapus-file').on('click', function () {
+        const fileInput = $('#file');
+        fileInput.val('');
+        fileInput.trigger('change');
+    });
+
+
+</script>
 <script>
     $(document).ready(function () {
         $("#form-tambah").validate({

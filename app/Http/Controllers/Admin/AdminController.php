@@ -30,8 +30,20 @@ class AdminController extends Controller
         $admin = AdminModel::with('akun')
             ->where('id_akun', '!=', $id_akun)
             ->get();
+            $amountAdmin = AdminModel::count();
+            $aktif = AdminModel::with('akun')
+                ->whereHas('akun', function ($query) {
+                    $query->where('status', 'aktif');
+                })
+                ->count();
+                $nonaktif = AdminModel::with('akun')
+                ->whereHas('akun', function ($query) {
+                    $query->where('status', 'nonaktif');
+                })
+                ->count();
+    
 
-        return view('admin.admin.index', ['admin' => $admin]);
+        return view('admin.admin.index', ['admin' => $admin, 'amountAdmin' => $amountAdmin, 'aktif' => $aktif, 'nonaktif' => $nonaktif]);
     }
 
     public function getAddAdmin()
@@ -46,7 +58,6 @@ class AdminController extends Controller
                 $query->where('id_akun', $id_akun);
             })
             ->first();
-
         return view('admin.admin.detail', ['admin' => $admin]);
     }
 
