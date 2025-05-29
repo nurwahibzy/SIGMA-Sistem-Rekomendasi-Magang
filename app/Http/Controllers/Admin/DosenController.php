@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AkunModel;
 use App\Models\DosenModel;
+use App\Models\KeahlianDosenModel;
+use App\Models\MagangModel;
+use App\Models\PerusahaanModel;
 use DB;
 use Hash;
 use Illuminate\Http\Request;
@@ -19,18 +22,19 @@ class DosenController extends Controller
         $dosen = DosenModel::with('akun')
             ->get();
 
-        $amountDosen = DosenModel::count();
         $aktif = DosenModel::with('akun')
             ->whereHas('akun', function ($query) {
                 $query->where('status', 'aktif');
             })
             ->count();
         $topDosen = DosenModel::with('akun')
-        ->withCount([
-            'magang' => function ($query) {
-                $query->where('status', 'diterima');
-            }
-        ])
+            ->withCount([
+                'magang' => function ($query) {
+                    $query->where('status', 'diterima');
+                }
+            ])->whereHas('akun', function ($query) {
+                $query->where('status', 'aktif');
+            })
             ->orderByDesc('magang_count')
             ->first();
 
@@ -43,7 +47,7 @@ class DosenController extends Controller
         // return view('admin.mahasiswa.index', ['mahasiswa' => $mahasiswa, 'amountMahasiswa' => $amountMahasiswa, 'aktif' => $aktif, 'nonaktif' => $nonaktif]);
         // return response()->json($aktif);
 
-        return view('admin.dosen.index', ['dosen' => $dosen, 'amountDosen' => $amountDosen, 'aktif' => $aktif, 'nonaktif' => $nonaktif, 'topDosen' => $topDosen]);
+        return view('admin.dosen.index', ['dosen' => $dosen, 'aktif' => $aktif, 'nonaktif' => $nonaktif, 'topDosen' => $topDosen]);
         // return response()->json($topDosen);
     }
 
@@ -60,7 +64,43 @@ class DosenController extends Controller
             })
             ->first();
 
-        return view('admin.dosen.detail', ['dosen' => $dosen]);
+        $keahlian = KeahlianDosenModel::with('dosen', 'dosen.akun', 'bidang')
+            ->whereHas('dosen.akun', function ($query) use ($id_akun) {
+                $query->where('id_akun', $id_akun);
+            })
+            ->get();
+
+        $amountMahasiswaDiterima = MagangModel::with('dosen')
+            ->whereHas('dosen', function ($query) use ($id_akun) {
+                $query->where('id_akun', $id_akun);
+            })
+            ->where('status', 'diterima')
+            ->count();
+
+        $amountMahasiswaLulus = MagangModel::with('dosen')
+            ->whereHas('dosen', function ($query) use ($id_akun) {
+                $query->where('id_akun', $id_akun);
+            })
+            ->where('status', 'lulus')
+            ->count();
+
+        $perusahaan = MagangModel::select(
+            'perusahaan.id_perusahaan as id_perusahaan',
+            'perusahaan.nama as nama',
+            'perusahaan.foto_path as foto_path',
+            DB::raw('COUNT(magang.id_magang) as total')
+        )
+            ->join('dosen', 'magang.id_dosen', '=', 'dosen.id_dosen')
+            ->join('periode_magang', 'magang.id_periode', '=', 'periode_magang.id_periode')
+            ->join('lowongan_magang', 'periode_magang.id_lowongan', '=', 'lowongan_magang.id_lowongan')
+            ->join('perusahaan', 'lowongan_magang.id_perusahaan', '=', 'perusahaan.id_perusahaan')
+            ->where('dosen.id_akun', $id_akun)
+            ->groupBy('perusahaan.id_perusahaan')
+            ->orderByDesc('total')
+            ->first();
+
+        // return response()->json(empty($perusahaan));
+        return view('admin.dosen.detail', ['dosen' => $dosen, 'keahlian' => $keahlian, 'amountMahasiswaDiterima' => $amountMahasiswaDiterima, 'amountMahasiswaLulus' => $amountMahasiswaLulus, 'perusahaan' => $perusahaan]);
     }
 
     public function getEditDosen($id_akun)

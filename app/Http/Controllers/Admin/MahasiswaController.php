@@ -25,7 +25,6 @@ class MahasiswaController extends Controller
     {
         $mahasiswa = MahasiswaModel::with('akun')
             ->get();
-        $amountMahasiswa = MahasiswaModel::count();
         $aktif = MahasiswaModel::with('akun')
             ->whereHas('akun', function ($query) {
                 $query->where('status', 'aktif');
@@ -45,7 +44,7 @@ class MahasiswaController extends Controller
             })
             ->count();
 
-        return view('admin.mahasiswa.index', ['mahasiswa' => $mahasiswa, 'amountMahasiswa' => $amountMahasiswa, 'aktif' => $aktif, 'nonaktif' => $nonaktif]);
+        return view('admin.mahasiswa.index', ['mahasiswa' => $mahasiswa, 'aktif' => $aktif, 'nonaktif' => $nonaktif]);
         // return response()->json($aktif);
     }
 

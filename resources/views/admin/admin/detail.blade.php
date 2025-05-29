@@ -34,7 +34,7 @@
                         <div class="mt-4">
                             <label class="form-label fw-bold">Tanggal Lahir</label>
                             <div class="border rounded p-2">
-                                <p class="form-control-plaintext mb-0">{{ $admin->tanggal_lahir }}</p>
+                                <p class="form-control-plaintext mb-0">{{ \Carbon\Carbon::parse($admin->tanggal_lahir)->format('d M Y') }}</p>
                             </div>
                         </div>
                     </div>
