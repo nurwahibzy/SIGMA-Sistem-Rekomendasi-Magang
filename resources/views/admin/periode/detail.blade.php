@@ -2,29 +2,38 @@
     <div class="modal-content">
 
         <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Detail Perusahaan</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Detail Periode</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-
         <div class="modal-body">
             <div class="container mt-4">
-            <div class="mb-3">
+
+                <div class="mb-3">
                     <label class="form-label fw-bold">Lowongan</label>
-                    <p class="form-control-plaintext">{{ $periode->lowongan_magang->perusahaan->nama . ' - ' . $periode->lowongan_magang->nama . ' - ' . $periode->lowongan_magang->bidang->nama }}</p>
+                    <div class="border rounded p-2">
+                        <p class="form-control-plaintext mb-0">{{  $periode->lowongan_magang->perusahaan->nama . ' - ' . $periode->lowongan_magang->nama . ' - ' . $periode->lowongan_magang->bidang->nama }}</p>
+                    </div>
                 </div>
-            <div class="mb-3">
+                <div class="mb-3">
                     <label class="form-label fw-bold">Nama</label>
-                    <p class="form-control-plaintext">{{ $periode->nama }}</p>
+                    <div class="border rounded p-2">
+                        <p class="form-control-plaintext mb-0">{{ $periode->nama }}</p>
+                    </div>
                 </div>
-            <div class="mb-3">
+
+                <div class="mb-3">
                     <label class="form-label fw-bold">Tanggal Mulai</label>
-                    <p class="form-control-plaintext">{{ $periode->tanggal_mulai->format('d M Y') }}</p>
+                    <div class="border rounded p-2">
+                        <p class="form-control-plaintext mb-0">{{ $periode->tanggal_mulai->format('d M Y') }}</p>
+                    </div>
                 </div>
-            <div class="mb-3">
+
+                <div class="mb-3">
                     <label class="form-label fw-bold">Tanggal Selesai</label>
-                    <p class="form-control-plaintext">{{ $periode->tanggal_selesai->format('d M Y') }}</p>
+                    <div class="border rounded p-2">
+                        <p class="form-control-plaintext mb-0">{{ $periode->tanggal_selesai->format('d M Y') }}</p>
+                    </div>
                 </div>
-                
             </div>
         </div>
 

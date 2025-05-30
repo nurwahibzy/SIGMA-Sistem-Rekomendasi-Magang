@@ -8,7 +8,7 @@
     <div class="page-content">
         <div class="row">
             @if(empty($magang))
-                <div class="alert alert-warning">
+                <div class="alert alert-warning text-center">
                     Belum ada magang yang diterima.
                 </div>
             @else

@@ -37,13 +37,19 @@
                                         s/d
                                         {{ \Carbon\Carbon::parse(optional($item->periode_magang)->tanggal_selesai)->format('d M Y') ?? '-' }}
                                     </p>
+                                    <p class="mb-1">
+                                        <strong>Status:</strong>
+                                        {{ $item->status ?? '-' }}
+                                    </p>
 
 
                                     <div class="d-flex justify-content-between align-items-center mb-3">
+                                        @if ($item->status == 'lulus')
                                         <a href="{{ url('mahasiswa/riwayat/aktivitas/' . $item->id_magang) }}"
                                             class="btn btn-primary">
                                             <i class="bi bi-pencil-square"></i> Detail
                                         </a>
+                                        @endif
 
                                         @php
                                             $sudahDinilai = \App\Models\PenilaianModel::where('id_magang', $item->id_magang)->exists();
@@ -65,7 +71,7 @@
                 
             @else
             <div class="alert alert-warning text-center">
-                    Belum ada magang yang lulus.
+                    Belum ada riwayat magang.
                 </div>
             @endif
         </div>

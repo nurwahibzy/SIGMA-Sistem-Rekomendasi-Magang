@@ -15,7 +15,7 @@
         <div class="tab-pane fade show active" id="aktivitas" role="tabpanel">
             <div class="card">
                 <div class="card-body">
-                    @if (!empty($aktivitas))
+                    @if (count($aktivitas))
                         <div class="table-responsive">
                             <table class="table" id="table1">
                                 <colgroup>

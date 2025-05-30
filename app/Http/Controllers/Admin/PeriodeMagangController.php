@@ -20,7 +20,11 @@ class PeriodeMagangController extends Controller
             'lowongan_magang.perusahaan'
         )
             ->get();
-        return view('admin.periode.index', ['periode' => $periode]);
+        $selesai = PeriodeMagangModel::where('tanggal_selesai', '<', now())->count();
+        $berlangsung = PeriodeMagangModel::where('tanggal_mulai', '<', now())->where('tanggal_selesai', '>', now())->count();
+        $segera = PeriodeMagangModel::where('tanggal_mulai', '>', now())->count();
+        // return response()->json($segera);
+        return view('admin.periode.index', ['periode' => $periode, 'selesai' => $selesai, 'berlangsung' => $berlangsung, 'segera' => $segera]);
     }
 
     public function getAddPeriode()
@@ -107,7 +111,7 @@ class PeriodeMagangController extends Controller
                 if ($validator->fails()) {
                     return response()->json(['success' => false]);
                 }
-                
+
                 $id_lowongan = $request->input('id_lowongan');
                 $nama = $request->input('nama');
                 $tanggal_mulai = $request->input('tanggal_mulai');

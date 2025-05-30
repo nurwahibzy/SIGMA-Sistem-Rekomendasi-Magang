@@ -48,7 +48,7 @@
                                 title: 'Berhasil',
                                 text: 'Berhasil daftar.'
                             }).then(() => {
-                                location.reload();
+                                window.location.href = '{{ url("/mahasiswa/riwayat") }}';
                             });
                         },
                         error: function () {

@@ -14,47 +14,44 @@
                     <div class="border rounded p-2">
                         <p class="form-control-plaintext mb-0">{{ $lowongan->perusahaan->nama }}</p>
                     </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Bidang</label>
-                        <div class="border rounded p-2">
-                            <p class="form-control-plaintext mb-0">{{ $lowongan->bidang->nama }}</p>
-                        </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Bidang</label>
+                    <div class="border rounded p-2">
+                        <p class="form-control-plaintext mb-0">{{ $lowongan->bidang->nama }}</p>
                     </div>
+                </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Nama Lowongan</label>
-                        <div class="border rounded p-2">
-                            <p class="form-control-plaintext mb-0">{{ $lowongan->nama }}</p>
-                        </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Nama Lowongan</label>
+                    <div class="border rounded p-2">
+                        <p class="form-control-plaintext mb-0">{{ $lowongan->nama }}</p>
                     </div>
+                </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Persyaratan</label>
-                        <div class="border rounded p-2">
-                            <p class="form-control-plaintext mb-0">{{ $lowongan->persyaratan }}</p>
-                        </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Persyaratan</label>
+                    <div class="border rounded p-2">
+                        <p class="form-control-plaintext mb-0">{{ $lowongan->persyaratan }}</p>
                     </div>
+                </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Deskripsi</label>
-                        <div class="border rounded p-2">
-                            <p class="form-control-plaintext mb-0">{{ $lowongan->deskripsi }}</p>
-                        </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Deskripsi</label>
+                    <div class="border rounded p-2">
+                        <p class="form-control-plaintext mb-0">{{ $lowongan->deskripsi }}</p>
                     </div>
                 </div>
             </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" id="btn-hapus">
-                    <i class="bi bi-trash"></i> Hapus
-                </button>
-                <button type="button" class="btn btn-primary"
-                    onclick="modalAction('{{ url('/admin/lowongan/edit/' . $lowongan->id_lowongan) }}')">
-                    Edit
-                </button>
-            </div>
-
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" id="btn-hapus">
+                <i class="bi bi-trash"></i> Hapus
+            </button>
+            <button type="button" class="btn btn-primary"
+                onclick="modalAction('{{ url('/admin/lowongan/edit/' . $lowongan->id_lowongan) }}')">
+                Edit
+            </button>
         </div>
     </div>
     <script>
