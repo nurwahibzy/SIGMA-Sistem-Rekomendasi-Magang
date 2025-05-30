@@ -44,6 +44,10 @@ class LoginController extends Controller
                         'level' => 'dosen'
                     ]);
                 }
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Login Gagal'
+                ]);
             }
             return response()->json([
                 'success' => false,
