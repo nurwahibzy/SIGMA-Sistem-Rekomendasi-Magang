@@ -127,7 +127,7 @@
                                         </div>
                                     </div>
                                     <div class="container mt-4">
-                                    <label class="form-label fw-bold fs-5 mb-3">Mahasiswa</label>
+                                        <label class="form-label fw-bold fs-5 mb-3">Mahasiswa</label>
                                         <div class="d-flex justify-content-between">
                                             <div class="w-50 me-2 border rounded d-flex justify-content-center">
                                                 <div style="width: 250px; height: 250px;">
@@ -141,10 +141,10 @@
                                             </div>
                                         </div>
                                     </div>
-                                    @else
-                            <div class="alert alert-warning text-center">
-                                Belum ada mahasiswa yang dibimbing.
-                            </div>
+                    @else
+                        <div class="alert alert-warning text-center">
+                            Belum ada mahasiswa yang dibimbing.
+                        </div>
                     @endif
                 </div>
             </div>
@@ -159,9 +159,9 @@
                 Edit
             </button>
         </div>
-        <div>
-        </div>
-        <div id="image-popup" style="
+    </div>
+</div>
+<div id="image-popup" style="
     display: none;
     position: fixed;
     top: 0; left: 0;
@@ -171,7 +171,7 @@
     justify-content: center;
     align-items: center;
 ">
-            <span id="close-popup" style="
+    <span id="close-popup" style="
         position: absolute;
         top: 20px; right: 30px;
         font-size: 30px;
@@ -179,113 +179,113 @@
         cursor: pointer;
         z-index: 1060;
     ">&times;</span>
-            <img id="popup-img" src="" alt="Full Image" style="
+    <img id="popup-img" src="" alt="Full Image" style="
         max-width: 90vw;
         max-height: 90vh;
         border-radius: 10px;
         box-shadow: 0 0 10px #000;
         object-fit: contain;
     ">
-        </div>
+</div>
 
-        <script>
-            const ctx = document.getElementById('statusChart').getContext('2d');
+<script>
+    const ctx = document.getElementById('statusChart').getContext('2d');
 
-            const statusChart = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: ['diterima', 'lulus'],
-                    datasets: [{
-                        label: 'Jumlah Mahasiswa',
-                        data: [{{ $amountMahasiswaDiterima }}, {{ $amountMahasiswaLulus }}],
-                        backgroundColor: [
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(255, 99, 132, 1)'
-                        ],
-                        borderColor: [
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(255, 99, 132, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
+    const statusChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['diterima', 'lulus'],
+            datasets: [{
+                label: 'Jumlah Mahasiswa',
+                data: [{{ $amountMahasiswaDiterima }}, {{ $amountMahasiswaLulus }}],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
                 },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        },
-                        title: {
-                            display: true,
-                            text: 'Status Magang'
-                        }
-                    }
+                title: {
+                    display: true,
+                    text: 'Status Magang'
                 }
-            });
-        </script>
-        <script>
-            function showImagePopup(src) {
-                const popup = document.getElementById('image-popup');
-                const popupImg = document.getElementById('popup-img');
-                popupImg.src = src;
-                popup.style.display = 'flex';
             }
+        }
+    });
+</script>
+<script>
+    function showImagePopup(src) {
+        const popup = document.getElementById('image-popup');
+        const popupImg = document.getElementById('popup-img');
+        popupImg.src = src;
+        popup.style.display = 'flex';
+    }
 
-            document.getElementById('close-popup').addEventListener('click', function () {
-                document.getElementById('image-popup').style.display = 'none';
-            });
+    document.getElementById('close-popup').addEventListener('click', function () {
+        document.getElementById('image-popup').style.display = 'none';
+    });
 
-            document.getElementById('image-popup').addEventListener('click', function (e) {
-                if (e.target.id === 'image-popup') {
-                    document.getElementById('image-popup').style.display = 'none';
-                }
-            });
+    document.getElementById('image-popup').addEventListener('click', function (e) {
+        if (e.target.id === 'image-popup') {
+            document.getElementById('image-popup').style.display = 'none';
+        }
+    });
 
-            document.addEventListener('keydown', function (e) {
-                if (e.key === "Escape") {
-                    document.getElementById('image-popup').style.display = 'none';
-                }
-            });
-        </script>
-        <script>
-            $(document).ready(function () {
-                $('#btn-hapus').click(function () {
-                    Swal.fire({
-                        title: 'Yakin ingin menghapus data ini?',
-                        text: "Tindakan ini tidak dapat dibatalkan!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Ya, hapus!',
-                        cancelButtonText: 'Batal'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                url: "{{ url(path: 'admin/dosen/edit/' . $dosen->akun->id_akun) }}",
-                                type: 'DELETE',
-                                data: {
-                                    _token: '{{ csrf_token() }}'
-                                },
-                                success: function (response) {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Berhasil',
-                                        text: 'Data berhasil dihapus.'
-                                    }).then(() => {
-                                        location.reload();
-                                    });
-                                },
-                                error: function () {
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Gagal',
-                                        text: 'Gagal menghapus data. Silakan coba lagi.'
-                                    });
-                                }
+    document.addEventListener('keydown', function (e) {
+        if (e.key === "Escape") {
+            document.getElementById('image-popup').style.display = 'none';
+        }
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#btn-hapus').click(function () {
+            Swal.fire({
+                title: 'Yakin ingin menghapus data ini?',
+                text: "Tindakan ini tidak dapat dibatalkan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ url(path: 'admin/dosen/edit/' . $dosen->akun->id_akun) }}",
+                        type: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function (response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: 'Data berhasil dihapus.'
+                            }).then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: 'Gagal menghapus data. Silakan coba lagi.'
                             });
                         }
                     });
-                });
-            })
-        </script>
+                }
+            });
+        });
+    })
+</script>
