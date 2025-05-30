@@ -1,28 +1,58 @@
 <form action="{{ url('/admin/perusahaan/edit/' . $perusahaan->id_perusahaan) }}" method="POST" id="form-edit">
     @csrf
-<div id="modal-master" class="modal-dialog modal-lg" role="document">
-    <div class="modal-content shadow-sm rounded">
+    <div id="modal-master" class="modal-dialog modal-lg" role="document">
+        <div class="modal-content shadow-sm rounded">
 
-        <div class="modal-header bg-primary text-white rounded-top">
-            <h5 class="modal-title">Edit Perusahaan</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-
+            <div class="modal-header bg-primary text-white rounded-top">
+                <h5 class="modal-title">Edit Perusahaan</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
             <div class="modal-body">
                 <div class="container mt-4">
-                    <ul class="nav nav-tabs mb-3" id="detailTab" role="tablist">
-                        <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#Profil">Profil</a>
-                        </li>
-                        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#Data">Data</a></li>
-                    </ul>
-
-                    <div class="tab-content" id="detailTabContent">
-                        <div class="tab-pane fade show active" id="Profil" role="tabpanel">
-                            <div class="mb-3">
-                                <label for="file" class="form-label">Logo</label>
-                                <input type="file" class="form-control" id="file" name="file" accept=".jpg,.jpeg,.png">
+                    <div class="d-flex justify-content-center align-items-center flex-column">
+                        <div class="avatar avatar-2xl mb-3">
+                            <label for="file" style="cursor: pointer;">
+                                <img id="preview" src="{{ Storage::exists('public/profil/perusahaan/' . $perusahaan->foto_path)
+    ? asset('storage/profil/perusahaan/' . $perusahaan->foto_path)
+    : asset('template/assets/images/mhs.jpeg') }}" alt="Profile Picture" class="rounded-circle"
+                                    style="width: 120px; height: 120px; border: 5px solid blue; object-fit: cover;">
+                            </label>
+                        </div>
+                        <small class="text-muted text-center">Tekan gambar untuk mengganti logo</small>
+                        <input type="file" id="file" name="file" accept="image/*" onchange="previewImage(event)"
+                            style="display: none;">
+                        <button type="button" class="btn btn-sm btn-primary mt-2"
+                            onclick="batalkanPreview()">Batalkan</button>
+                    </div>
+                </div>
+                <div class="container mt-4">
+                    <div class="d-flex justify-content-between">
+                        <div class="w-50 me-2">
+                            <label for="nama" class="form-label">Nama Perusahaan</label>
+                            <input type="text" class="form-control" id="nama" name="nama" required
+                                value="{{ $perusahaan->nama }}">
+                        </div>
+                        <div class="w-50 ms-2"></div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div class="w-50 me-2">
+                            <div>
+                                <label for="telepon" class="form-label">Telepon</label>
+                                <input type="text" class="form-control" id="telepon" name="telepon" required
+                                    value="{{ $perusahaan->telepon }}">
                             </div>
-                            <div class="mb-3">
+                            <div class="mt-4">
+                                <label for="nama_provinsi" class="form-label">Provinsi:
+                                    {{ $perusahaan->provinsi }}</label>
+                                <select name="nama_provinsi" id="nama_provinsi" class="form-control">
+                                    <option value="">Perbarui Provinsi</option>
+                                </select>
+                                <input type="hidden" name="provinsi" id="provinsi" value="{{ $perusahaan->provinsi }}">
+                            </div>
+                        </div>
+                        <div class="w-50 ms-2">
+                            <div>
                                 <label for="id_jenis" class="form-label">Jenis Perusahaan</label>
                                 <select name="id_jenis" id="id_jenis" class="form-control" required>
                                     <option value="">Pilih Jenis</option>
@@ -31,37 +61,7 @@
                                     @endforeach
                                 </select>
                             </div>
-
-
-                            <div class="mb-3">
-                                <label for="nama" class="form-label">Nama Perusahaan</label>
-                                <input type="text" class="form-control" id="nama" name="nama" required
-                                    value="{{ $perusahaan->nama }}">
-                            </div>
-                        </div>
-
-                        <div class="tab-pane fade" id="Data" role="tabpanel">
-                            <div class="mb-3">
-                                <label for="telepon" class="form-label">Telepon</label>
-                                <input type="text" class="form-control" id="telepon" name="telepon" required
-                                    value="{{ $perusahaan->telepon }}">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="deskripsi" class="form-label">Deskripsi</label>
-                                <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3"
-                                    required>{{ $perusahaan->deskripsi }}</textarea>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="nama_provinsi" class="form-label">Provinsi: {{ $perusahaan->provinsi }}</label>
-                                <select name="nama_provinsi" id="nama_provinsi" class="form-control">
-                                    <option value="">Perbarui Provinsi</option>
-                                </select>
-                                <input type="hidden" name="provinsi" id="provinsi" value="{{ $perusahaan->provinsi }}" >
-                            </div>
-
-                            <div class="mb-3">
+                            <div class="mt-4">
                                 <label for="nama_daerah" class="form-label">Daerah: {{ $perusahaan->daerah }}</label>
                                 <select name="nama_daerah" id="nama_daerah" class="form-control">
                                     <option value="">Perbarui Daerah</option>
@@ -71,9 +71,17 @@
                         </div>
                     </div>
                 </div>
+                <div class="container mt-4">
+                    <div class="mb-3">
+                        <label for="deskripsi" class="form-label">Deskripsi</label>
+                        <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3"
+                            required>{{ $perusahaan->deskripsi }}</textarea>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" onclick="modalAction('{{ url('/admin/perusahaan/detail/' . $perusahaan->id_perusahaan) }}')">Batal</button>
+                <button type="button" class="btn btn-warning"
+                    onclick="modalAction('{{ url('/admin/perusahaan/detail/' . $perusahaan->id_perusahaan) }}')">Batal</button>
                 <button type="submit" class="btn btn-primary">Simpan</button>
             </div>
         </div>

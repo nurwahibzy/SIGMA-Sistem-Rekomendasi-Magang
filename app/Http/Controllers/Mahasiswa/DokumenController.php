@@ -64,9 +64,11 @@ class DokumenController extends Controller
                     $id_mahasiswa = $this->idMahasiswa();
                     $file = $request->file('file');
 
-                    $nama = Str::slug($request->input('nama'), '_');
+                    // $nama = Str::slug($request->input('nama'), '_');
+                    $nama = $request->input('nama');
+                    $slugifiedName = Str::slug($nama, '_');
 
-                    $filename = $id_mahasiswa . '_' . $nama . '.' . $file->getClientOriginalExtension();
+                    $filename = $id_mahasiswa . '_' . $slugifiedName . '.' . $file->getClientOriginalExtension();
                     DokumenModel::create([
                         'id_mahasiswa' => $id_mahasiswa,
                         'nama' => $nama,
@@ -105,7 +107,8 @@ class DokumenController extends Controller
                             ->where('id_dokumen', $id_dokumen)
                             ->firstOrFail(['file_path', 'nama']);
 
-                        $nama = Str::slug($request->input('nama'), '_');
+                        $nama = $request->input('nama');
+                        // $nama = Str::slug($request->input('nama'), '_');
                         $file_path = $data->file_path;
 
                         if ($request->hasFile('file')) {
@@ -134,7 +137,8 @@ class DokumenController extends Controller
     private function handleFileUpload(Request $request, $file_path, $id_mahasiswa, $nama)
     {
         $file = $request->file('file');
-        $filename = $id_mahasiswa . '_' . $nama . '.' . $file->getClientOriginalExtension();
+        $slugifiedName = Str::slug($nama, '_');
+        $filename = $id_mahasiswa . '_' . $slugifiedName . '.' . $file->getClientOriginalExtension();
         Storage::disk('public')->delete("dokumen/{$file_path}");
         $file->storeAs('public/dokumen', $filename);
 
@@ -144,7 +148,8 @@ class DokumenController extends Controller
     private function renameFileOnly($file_path, $id_mahasiswa, $nama)
     {
         $extension = pathinfo($file_path, PATHINFO_EXTENSION);
-        $file_path_baru = $id_mahasiswa . '_' . $nama . '.' . $extension;
+        $slugifiedName = Str::slug($nama, '_');
+        $file_path_baru = $id_mahasiswa . '_' . $slugifiedName . '.' . $extension;
 
         if (Storage::disk('public')->exists("dokumen/$file_path")) {
             Storage::disk('public')->move("dokumen/$file_path", "dokumen/$file_path_baru");

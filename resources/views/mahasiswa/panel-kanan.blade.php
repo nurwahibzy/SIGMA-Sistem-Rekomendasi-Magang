@@ -176,7 +176,7 @@
                             <div class="card mb-4">
                                 <div class="card-body">
                                     <div class="bg-primary bg-opacity-10 px-3 py-1 rounded d-inline-block  mb-4">
-                                    {{ str_replace('_', ' ', $item->nama) }}
+                                    {{  $item->nama }}
                                     </div>
                                     <div>
                                         <embed src="{{ url('storage/dokumen/' . $item->file_path) }}" type="application/pdf"

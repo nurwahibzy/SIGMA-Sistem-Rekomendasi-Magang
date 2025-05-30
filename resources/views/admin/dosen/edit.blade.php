@@ -58,7 +58,7 @@
                                 <label for="password" class="form-label">Password</label>
                                 <input type="password" class="form-control" id="password" name="password">
                             </div>
-                            <div class="mt-4"">
+                            <div class="mt-4">
                                 <label for=" nama" class="form-label">Nama</label>
                                 <input type="text" class="form-control" id="nama" name="nama" required
                                     value="{{ $dosen->nama }}">

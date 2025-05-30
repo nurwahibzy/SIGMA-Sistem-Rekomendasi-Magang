@@ -76,7 +76,7 @@ class PerusahaanController extends Controller
                 }
 
                 $id_jenis = $request->input('id_jenis');
-                $nama = Str::slug($request->input('nama'), '_');
+                $nama = $request->input('nama');
                 $telepon = $request->input('telepon');
                 $deskripsi = $request->input('deskripsi');
                 $provinsi = $request->input('provinsi');
@@ -146,7 +146,7 @@ class PerusahaanController extends Controller
 
 
                         $id_jenis = $request->input('id_jenis');
-                        $nama = Str::slug($request->input('nama'), '_');
+                        $nama = $request->input('nama');
                         $telepon = $request->input('telepon');
                         $deskripsi = $request->input('deskripsi');
                         $provinsi = $request->input('provinsi');
@@ -221,7 +221,8 @@ class PerusahaanController extends Controller
     {
         $lama = $data->foto_path;
         $extension = pathinfo($lama, PATHINFO_EXTENSION);
-        $file_path_baru = $nama . '.' . $extension;
+        $slugifiedName = Str::slug($nama, '_');
+        $file_path_baru = $slugifiedName . '.' . $extension;
 
         if (Storage::disk('public')->exists("profil/perusahaan/$lama")) {
             Storage::disk('public')->move("profil/perusahaan/$lama", "profil/perusahaan/$file_path_baru");
