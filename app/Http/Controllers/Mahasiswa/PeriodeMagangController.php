@@ -76,12 +76,16 @@ class PeriodeMagangController extends Controller
     public function getDetailPeriode($id_periode)
     {
         $id_mahasiswa = $this->idMahasiswa();
+        // $periode = PeriodeMagangModel::with(
+        //     'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama,persyaratan,deskripsi',
+        //     'lowongan_magang.periode_magang:id_lowongan,nama,tanggal_mulai,tanggal_selesai',
+        //     'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama,provinsi,daerah',
+        //     'lowongan_magang.bidang:id_bidang,nama',
+        //     'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
+        // )
         $periode = PeriodeMagangModel::with(
-            'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama,persyaratan,deskripsi',
-            'lowongan_magang.periode_magang:id_lowongan,nama,tanggal_mulai,tanggal_selesai',
-            'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama,provinsi,daerah',
-            'lowongan_magang.bidang:id_bidang,nama',
-            'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
+            'lowongan_magang.perusahaan.jenis_perusahaan',
+            'lowongan_magang.bidang'
         )
             ->where('id_periode', $id_periode)
             ->where('tanggal_mulai', '>', now())
@@ -91,7 +95,7 @@ class PeriodeMagangController extends Controller
             ->whereIn('status', ['proses', 'diterima'])
             ->count();
 
-        // return response()->json($status);
+        // return response()->json(data: $periode);
         return view('mahasiswa.periode.detail', ['periode' => $periode, 'status' => $status]);
     }
 }
