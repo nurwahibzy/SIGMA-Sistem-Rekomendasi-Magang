@@ -1,15 +1,80 @@
 <div id="modal-master" class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
 
-    <div class="modal-header bg-primary text-white rounded-top">
-                            <h5 class="modal-title">Detail Mahasiswa</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
+        <div class="modal-header bg-primary text-white rounded-top">
+            <h5 class="modal-title">Detail Mahasiswa</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
 
         <div class="modal-body">
             <div class="container mt-4">
-                
+                <div class="d-flex justify-content-center align-items-center flex-column">
+                    <div class="avatar avatar-2xl mb-3">
+                        <img id="preview" src="{{ Storage::exists('public/profil/akun/' . $mahasiswa->akun->foto_path)
+    ? asset('storage/profil/akun/' . $mahasiswa->akun->foto_path)
+    : asset('template/assets/images/mhs.jpeg') }}" alt="Profile Picture" class="rounded-circle"
+                            style="width: 120px; height: 120px; border: 5px solid blue; object-fit: cover; cursor: pointer;"
+                            onclick="showImagePopup(this.src)" />
+
+                    </div>
+                    <h4 class="mt-2 text-center">{{ $mahasiswa->nama }}</h4>
+                    <p class="text-small">{{ $mahasiswa->akun->id_user }}</p>
+                </div>
+            </div>
+            <div class="container mt-4">
+                <div class="d-flex justify-content-between">
+                    <div class="w-50 me-2">
+                        <div>
+                            <label class="form-label fw-bold">Program Studi</label>
+                            <div class="border rounded p-2">
+                                <p class="form-control-plaintext mb-0">
+                                    {{ $mahasiswa->prodi->nama_prodi }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-50 ms-2"></div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <div class="w-50 me-2">
+                        <div class="mt-4">
+                            <label class="form-label fw-bold">Email</label>
+                            <div class="border rounded p-2">
+                                <p class="form-control-plaintext mb-0">{{ $mahasiswa->email }}</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <label class="form-label fw-bold">Tanggal Lahir</label>
+                            <div class="border rounded p-2">
+                                <p class="form-control-plaintext mb-0">
+                                    {{ \Carbon\Carbon::parse($mahasiswa->tanggal_lahir)->format('d M Y') }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-50 ms-2">
+                        <div class="mt-4">
+                            <label class="form-label fw-bold">Telepon</label>
+                            <div class="border rounded p-2">
+                                <p class="form-control-plaintext mb-0">{{ $mahasiswa->telepon }}</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <label class="form-label fw-bold">Gender</label>
+                            <div class="border rounded p-2">
+                                <p class="form-control-plaintext mb-0">{{ $mahasiswa->Gender ?? '-' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container mt-4">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Alamat</label>
+                    <div class="border rounded p-2">
+                        <p class="form-control-plaintext mb-0">{{ $mahasiswa->alamat }}</p>
+                    </div>
+                </div>
             </div>
         </div>
 
