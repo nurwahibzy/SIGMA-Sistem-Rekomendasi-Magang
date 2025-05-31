@@ -11,7 +11,7 @@
         <textarea class="form-control" id="deskripsi" name="keterangan" required rows="5">{{ $keterangan }}</textarea>
     </div>
 
-    <div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex justify-content-end">
         <div>
             <button type="submit" class="btn btn-primary">
                 <i class="bi bi-upload"></i> Kirim

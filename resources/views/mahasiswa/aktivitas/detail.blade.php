@@ -32,13 +32,10 @@
 @endif
 
 <div class="d-flex justify-content-end">
-    <button class="btn btn-warning me-2" id="btnEdit" data-id="{{ $aktivitas->id_aktivitas }}" {{ $isPastActivity ? 'disabled' : '' }}>
-        <i class="bi bi-pencil"></i> Edit
-    </button>
     <button class="btn btn-danger me-2" id="btnHapus" data-id="{{ $aktivitas->id_aktivitas }}" {{ $isPastActivity ? 'disabled' : '' }}>
         <i class="bi bi-trash"></i> Hapus
     </button>
-    <button class="btn btn-secondary" data-bs-dismiss="modal">
-        Batal
+    <button class="btn btn-warning me-2" id="btnEdit" data-id="{{ $aktivitas->id_aktivitas }}" {{ $isPastActivity ? 'disabled' : '' }}>
+        <i class="bi bi-pencil"></i> Edit
     </button>
 </div>
