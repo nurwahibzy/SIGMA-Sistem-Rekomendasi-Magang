@@ -36,7 +36,6 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Deskripsi</th>
-                                        <th>Bukti</th>
                                         <th>Tanggal</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -46,16 +45,6 @@
                                         <tr>
                                             <td>{{ $i + 1 }}</td>
                                             <td>{{ $item->keterangan }}</td>
-                                            <td>
-                                                @if($item->foto_path)
-                                                <span style="display: inline-block; vertical-align: center;">
-                                                    <a href="{{ asset('storage/aktivitas/' . $item->foto_path) }}">
-                                                         <i class="fas fa-eye"></i></a>
-                                                    </span>
-                                                @else
-                                                    -
-                                                @endif
-                                            </td>
                                             <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}
                                             </td>
                                             <td>

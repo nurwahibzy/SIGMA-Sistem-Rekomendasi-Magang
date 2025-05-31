@@ -28,7 +28,7 @@
 
                     </div>
                     <div>
-                        <div class="bg-primary bg-opacity-10 px-3 py-1 rounded d-inline-block">
+                        <div class="px-3 py-1 rounded d-inline-block">
                             {{ $item->deskripsi }}
                         </div>
                     </div>
