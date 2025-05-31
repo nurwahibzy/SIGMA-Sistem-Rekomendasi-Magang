@@ -20,7 +20,7 @@
     <style>
         .checkbox-label {
             display: inline-block;
-            padding: 10px 15px;
+            padding: 5px 10px;
             margin: 5px;
             border-radius: 10px;
             border: 2px solid var(--bs-primary);

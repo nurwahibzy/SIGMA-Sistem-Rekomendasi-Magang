@@ -18,8 +18,8 @@
                         <small class="text-muted text-center">Tekan gambar untuk memberikan foto profil</small>
                         <input type="file" id="file" name="file" accept="image/*" onchange="previewImage(event)"
                             style="display: none;">
-                        <button type="button" class="btn btn-sm btn-primary mt-2"
-                            onclick="batalkanPreview()">Batalkan</button>
+                            <button type="button" id="tombolBatal" class="btn btn-sm btn-primary mt-2"
+                            style="visibility: hidden;" onclick="batalkanPreview()">Batalkan</button>
                     </div>
                 </div>
                 <div class="container mt-4">
@@ -77,7 +77,7 @@
 </form>
 
 <script>
-    const defaultPreview = document.getElementById('preview').src;  
+    const defaultPreview = document.getElementById('preview').src;
 
     function previewImage(event) {
         const reader = new FileReader();
@@ -85,18 +85,20 @@
             document.getElementById('preview').src = reader.result;
         };
         reader.readAsDataURL(event.target.files[0]);
+        document.getElementById('tombolBatal').style.visibility = 'visible';
     }
 
     function batalkanPreview() {
         document.getElementById('preview').src = defaultPreview;
-        document.getElementById('file').value = ""; 
+        document.getElementById('file').value = "";
+        document.getElementById('tombolBatal').style.visibility = 'hidden';
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const preview = document.getElementById('preview');
         const fileInput = document.getElementById('file');
 
-        preview.addEventListener('click', function() {
+        preview.addEventListener('click', function () {
             fileInput.click();
         });
     });

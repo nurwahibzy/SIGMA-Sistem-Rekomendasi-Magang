@@ -60,16 +60,16 @@
                         <div class="card mb-4">
                             <div class="card-body">
                                 <div class="d-flex mb-3">
-                                    <div class="bg-primary bg-opacity-10 px-3 py-1 rounded d-inline-block me-2">
-                                        {{  $item->prioritas }}
+                                    <div class="d-inline-block me-2 fw-bold">
+                                        <h5>{{ $item->prioritas }}</h5>
                                     </div>
-                                    <div class="bg-primary bg-opacity-10 px-3 py-1 rounded d-inline-block">
-                                        {{ $item->bidang->nama }}
+                                    <div class="d-inline-block fw-bold">
+                                        <h5>{{ $item->bidang->nama }}</h5>
                                     </div>
                                 </div>
 
                                 <div>
-                                    <div class="bg-primary bg-opacity-10 px-3 py-1 rounded d-inline-block">
+                                    <div class="px-3 py-1 rounded d-inline-block">
                                         {{ $item->keahlian }}
                                     </div>
                                 </div>
@@ -176,7 +176,7 @@
                             <div class="card mb-4">
                                 <div class="card-body">
                                     <div class="bg-primary bg-opacity-10 px-3 py-1 rounded d-inline-block  mb-4">
-                                    {{  $item->nama }}
+                                        {{  $item->nama }}
                                     </div>
                                     <div>
                                         <embed src="{{ url('storage/dokumen/' . $item->file_path) }}" type="application/pdf"

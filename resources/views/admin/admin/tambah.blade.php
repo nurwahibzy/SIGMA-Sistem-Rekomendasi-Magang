@@ -12,15 +12,16 @@
                     <div class="d-flex justify-content-center align-items-center flex-column">
                         <div class="avatar avatar-2xl mb-3">
                             <label for="file" style="cursor: pointer;">
-                                <img id="preview" src="{{ asset('template/assets/images/mhs.jpeg') }}" alt="Profile Picture" class="rounded-circle"
+                                <img id="preview" src="{{ asset('template/assets/images/mhs.jpeg') }}"
+                                    alt="Profile Picture" class="rounded-circle"
                                     style="width: 120px; height: 120px; border: 5px solid blue; object-fit: cover;">
                             </label>
                         </div>
                         <small class="text-muted text-center">Tekan gambar untuk memberikan foto profil</small>
                         <input type="file" id="file" name="file" accept="image/*" onchange="previewImage(event)"
                             style="display: none;">
-                        <button type="button" class="btn btn-sm btn-primary mt-2"
-                            onclick="batalkanPreview()">Batalkan</button>
+                        <button type="button" id="tombolBatal" class="btn btn-sm btn-primary mt-2"
+                            style="visibility: hidden;" onclick="batalkanPreview()">Batalkan</button>
                     </div>
                 </div>
                 <div class="container mt-4">
@@ -36,7 +37,8 @@
                             </div>
                             <div class="mt-4">
                                 <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
-                                <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" max="{{ now()->format('Y-m-d') }}" required>
+                                <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir"
+                                    max="{{ now()->format('Y-m-d') }}" required>
                             </div>
                         </div>
                         <div class="w-50 ms-2">
@@ -64,8 +66,7 @@
                 <div class="container mt-4">
                     <div class="mb-3">
                         <label for="alamat" class="form-label">Alamat</label>
-                        <textarea class="form-control" id="alamat" name="alamat" rows="3"
-                            required></textarea>
+                        <textarea class="form-control" id="alamat" name="alamat" rows="3" required></textarea>
                     </div>
                 </div>
             </div>
@@ -77,7 +78,7 @@
     </div>
 </form>
 <script>
-    const defaultPreview = document.getElementById('preview').src;  
+    const defaultPreview = document.getElementById('preview').src;
 
     function previewImage(event) {
         const reader = new FileReader();
@@ -85,18 +86,20 @@
             document.getElementById('preview').src = reader.result;
         };
         reader.readAsDataURL(event.target.files[0]);
+        document.getElementById('tombolBatal').style.visibility = 'visible';
     }
 
     function batalkanPreview() {
         document.getElementById('preview').src = defaultPreview;
-        document.getElementById('file').value = ""; 
+        document.getElementById('file').value = "";
+        document.getElementById('tombolBatal').style.visibility = 'hidden';
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const preview = document.getElementById('preview');
         const fileInput = document.getElementById('file');
 
-        preview.addEventListener('click', function() {
+        preview.addEventListener('click', function () {
             fileInput.click();
         });
     });

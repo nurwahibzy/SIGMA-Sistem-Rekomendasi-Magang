@@ -5,7 +5,7 @@
         @if (count($keahlian) != count($bidang))
             <button type="button" class="btn-edit-section btn btn-outline-success"
                 onclick="modalAction('{{ url('/mahasiswa/profil/edit/keahlian/tambah') }}')">
-                <i class="bi bi-plus"></i> Tambah 
+                <i class="bi bi-plus"></i> Tambah
             </button>
         @endif
     </div>
@@ -18,11 +18,11 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
-                            <div class="bg-primary bg-opacity-10 px-3 py-1 rounded d-inline-block me-2">
-                                {{  $item->prioritas }}
+                            <div class="d-inline-block me-2 fw-bold">
+                                <h5>{{ $item->prioritas }}</h5>
                             </div>
-                            <div class="bg-primary bg-opacity-10 px-3 py-1 rounded d-inline-block">
-                                {{ $item->bidang->nama }}
+                            <div class="d-inline-block fw-bold">
+                                <h5>{{ $item->bidang->nama }}</h5>
                             </div>
                         </div>
                         <div>
@@ -39,7 +39,7 @@
                         </div>
                     </div>
                     <div>
-                        <div class="bg-primary bg-opacity-10 px-3 py-1 rounded d-inline-block">
+                        <div class="px-3 py-1 rounded d-inline-block">
                             {{ $item->keahlian }}
                         </div>
                     </div>
