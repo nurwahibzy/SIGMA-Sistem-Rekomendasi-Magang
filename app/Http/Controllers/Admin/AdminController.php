@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AdminModel;
 use App\Models\AkunModel;
+use App\Models\DosenModel;
+use App\Models\MahasiswaModel;
+use App\Models\PerusahaanModel;
 use Auth;
 use DB;
 use Hash;
@@ -57,6 +60,8 @@ class AdminController extends Controller
                 $query->where('id_akun', $id_akun);
             })
             ->first();
+
+        // return response()->json($admin);
         return view('admin.admin.detail', ['admin' => $admin]);
     }
 
@@ -68,6 +73,26 @@ class AdminController extends Controller
             })
             ->first();
         return view('admin.admin.edit', ['admin' => $admin]);
+    }
+
+    private function checkEmailAndTelepon($email, $telepon)
+    {
+        $amount = PerusahaanModel::where('telepon', $telepon)->count();
+        if ($amount != 0) {
+            return true;
+        }
+        $amount = MahasiswaModel::where('telepon', $telepon)
+            ->orWhere('email', $email)
+            ->count();
+        if ($amount != 0) {
+            return true;
+        }
+        $amount = DosenModel::where('telepon', $telepon)->orWhere('email', $email)
+            ->count();
+        if ($amount != 0) {
+            return true;
+        }
+        return false;
     }
 
     public function postAdmin(Request $request)
@@ -83,6 +108,7 @@ class AdminController extends Controller
                             'alamat' => 'required|string',
                             'telepon' => 'required|digits_between:1,30',
                             'tanggal_lahir' => 'required|date',
+                            'gender' => 'required|in:l,p',
                             'email' => 'required|email|max:100',
                             'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
                         ]);
@@ -100,8 +126,12 @@ class AdminController extends Controller
                         $alamat = $request->input('alamat');
                         $telepon = $request->input('telepon');
                         $tanggal_lahir = $request->input('tanggal_lahir');
+                        $gender = $request->input('gender');
                         $email = $request->input('email');
 
+                        if ($this->checkEmailAndTelepon($email, $telepon)) {
+                            return false;
+                        }
                         if ($request->hasFile('file')) {
                             $foto_path = $this->handleFileUpload($request, $id_user, $foto_path);
                         }
@@ -120,6 +150,7 @@ class AdminController extends Controller
                             'alamat' => $alamat,
                             'telepon' => $telepon,
                             'tanggal_lahir' => $tanggal_lahir,
+                            'gender' => $gender,
                             'email' => $email
                         ]);
 
@@ -148,6 +179,7 @@ class AdminController extends Controller
                             'alamat' => 'required|string',
                             'telepon' => 'required|digits_between:1,30',
                             'tanggal_lahir' => 'required|date',
+                            'gender' => 'required|in:l,p',
                             'email' => 'required|email|max:100',
                             'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
                             'password' => 'nullable|string|min:6|max:255'
@@ -163,7 +195,12 @@ class AdminController extends Controller
                         $alamat = $request->input('alamat');
                         $telepon = $request->input('telepon');
                         $tanggal_lahir = $request->input('tanggal_lahir');
+                        $gender = $request->input('gender');
                         $email = $request->input('email');
+
+                        if ($this->checkEmailAndTelepon($email, $telepon)) {
+                            return false;
+                        }
 
                         $data = AkunModel::where('id_akun', $id_akun)->first();
 
@@ -203,6 +240,7 @@ class AdminController extends Controller
                                 'alamat' => $alamat,
                                 'telepon' => $telepon,
                                 'tanggal_lahir' => $tanggal_lahir,
+                                'gender' => $gender,
                                 'email' => $email
                             ]);
                         return true;

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminModel;
+use App\Models\DosenModel;
 use App\Models\JenisPerusahaanModel;
+use App\Models\MahasiswaModel;
 use App\Models\PerusahaanModel;
 use DB;
 use Illuminate\Http\Request;
@@ -56,6 +59,23 @@ class PerusahaanController extends Controller
             ->where('id_perusahaan', $id_perusahaan)->first();
         return view('admin.perusahaan.detail', ['perusahaan' => $perusahaan]);
     }
+
+    private function checkTelepon( $telepon)
+    {
+        $amount = AdminModel::where('telepon', $telepon)->count();
+        if ($amount != 0) {
+            return true;
+        }
+        $amount = MahasiswaModel::where('telepon', $telepon)->count();
+        if ($amount != 0) {
+            return true;
+        }
+        $amount = DosenModel::where('telepon', $telepon)->count();
+        if ($amount != 0) {
+            return true;
+        }
+        return false;
+    }
     public function postPerusahaan(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
@@ -86,6 +106,10 @@ class PerusahaanController extends Controller
                 $daerah = ucwords(strtolower($daerah));
                 $slugifiedName = Str::slug($nama, '_');
                 $filename = $slugifiedName . "." . $file->getClientOriginalExtension();
+
+                if ($this->checkTelepon($telepon)) {
+                    return false;
+                }
 
                 $lokasi = $this->latitudeLongitude($provinsi, $daerah);
 
@@ -153,6 +177,10 @@ class PerusahaanController extends Controller
                         $daerah = $request->input('daerah');
                         $provinsi = ucwords(strtolower($provinsi));
                         $daerah = ucwords(strtolower($daerah));
+
+                        if ($this->checkTelepon($telepon)) {
+                            return false;
+                        }
 
                         $data = PerusahaanModel::where('id_perusahaan', $id_perusahaan)
                             ->first();

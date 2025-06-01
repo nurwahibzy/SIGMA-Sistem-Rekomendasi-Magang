@@ -73,9 +73,9 @@
                                 <label for="gender" class="form-label">Gender</label>
                                 <select name="gender" id="gender" class="form-select">
                                     <option value="">Pilih Gender</option>
-                                    <option value="l" {{ $admin->akun->gender == 'l' ? 'selected' : ''  }}>Laki-laki
+                                    <option value="l" {{ $admin->gender == 'l' ? 'selected' : ''  }}>Laki-laki
                                     </option>
-                                    <option value="p" {{ $admin->akun->gender == 'p' ? 'selected' : ''  }}>
+                                    <option value="p" {{ $admin->gender == 'p' ? 'selected' : ''  }}>
                                         Perempuan</option>
                                 </select>
                             </div>

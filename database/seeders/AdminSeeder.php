@@ -20,6 +20,7 @@ class AdminSeeder extends Seeder
             'alamat' => 'Jl. Merdeka No. 1, Jakarta',
             'telepon' => '081234567890',
             'tanggal_lahir' => Carbon::parse('1987-01-01')->toDateString(),
+            'gender' => 'l',
             'email' => 'admin1@example.com',
             'created_at' => now(),
             'updated_at' => now(),

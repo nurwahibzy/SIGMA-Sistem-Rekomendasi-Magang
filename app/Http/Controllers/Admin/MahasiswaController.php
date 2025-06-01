@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminModel;
 use App\Models\AkunModel;
 use App\Models\DosenModel;
 use App\Models\MahasiswaModel;
+use App\Models\PerusahaanModel;
 use App\Models\PreferensiLokasiMahasiswaModel;
 use App\Models\PreferensiPerusahaanMahasiswaModel;
 use App\Models\ProdiModel;
@@ -78,6 +80,26 @@ class MahasiswaController extends Controller
         return view('admin.mahasiswa.edit', ['mahasiswa' => $mahasiswa, 'prodi' => $prodi]);
     }
 
+    private function checkEmailAndTelepon($email, $telepon)
+    {
+        $amount = PerusahaanModel::where('telepon', $telepon)->count();
+        if ($amount != 0) {
+            return true;
+        }
+        $amount = AdminModel::where('telepon', $telepon)
+            ->orWhere('email', $email)
+            ->count();
+        if ($amount != 0) {
+            return true;
+        }
+        $amount = DosenModel::where('telepon', $telepon)->orWhere('email', $email)
+            ->count();
+        if ($amount != 0) {
+            return true;
+        }
+        return false;
+    }
+
     public function postMahasiswa(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
@@ -91,6 +113,7 @@ class MahasiswaController extends Controller
                             'alamat' => 'required|string',
                             'telepon' => 'required|digits_between:1,30',
                             'tanggal_lahir' => 'required|date',
+                            'gender' => 'required|in:l,p',
                             'email' => 'required|email|max:100',
                             'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
                         ]);
@@ -109,11 +132,16 @@ class MahasiswaController extends Controller
                         $alamat = $request->input('alamat');
                         $telepon = $request->input('telepon');
                         $tanggal_lahir = $request->input('tanggal_lahir');
+                        $gender = $request->input('gender');
                         $email = $request->input('email');
                         $provinsi = 'Jawa Timur';
                         $daerah = 'Kota Malang';
                         $latitude = '-7.9771308';
                         $longitude = '112.6340265';
+
+                        if ($this->checkEmailAndTelepon($email, $telepon)) {
+                            return false;
+                        }
 
                         if ($request->hasFile('file')) {
                             $foto_path = $this->handleFileUpload($request, $id_user, $foto_path);
@@ -134,6 +162,7 @@ class MahasiswaController extends Controller
                             'alamat' => $alamat,
                             'telepon' => $telepon,
                             'tanggal_lahir' => $tanggal_lahir,
+                            'gender' => $gender,
                             'email' => $email
                         ]);
 
@@ -169,6 +198,7 @@ class MahasiswaController extends Controller
                             'alamat' => 'required|string',
                             'telepon' => 'required|digits_between:1,30',
                             'tanggal_lahir' => 'required|date',
+                            'gender' => 'required|in:l,p',
                             'email' => 'required|email|max:100',
                             'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
                             'password' => 'nullable|string|min:6|max:255'
@@ -185,7 +215,12 @@ class MahasiswaController extends Controller
                         $alamat = $request->input('alamat');
                         $telepon = $request->input('telepon');
                         $tanggal_lahir = $request->input('tanggal_lahir');
+                        $gender = $request->input('gender');
                         $email = $request->input('email');
+
+                        if ($this->checkEmailAndTelepon($email, $telepon)) {
+                            return false;
+                        }
 
                         $data = AkunModel::where('id_akun', $id_akun)->first();
 
@@ -226,6 +261,7 @@ class MahasiswaController extends Controller
                                 'alamat' => $alamat,
                                 'telepon' => $telepon,
                                 'tanggal_lahir' => $tanggal_lahir,
+                                'gender' => $gender,
                                 'email' => $email
                             ]);
 

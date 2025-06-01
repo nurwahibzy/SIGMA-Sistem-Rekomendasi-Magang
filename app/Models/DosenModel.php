@@ -13,7 +13,7 @@ class DosenModel extends Model
 
     protected $table = 'dosen';
     protected $primaryKey = 'id_dosen';
-    protected $fillable = ['id_akun', 'nip', 'nama', 'alamat', 'telepon', 'tanggal_lahir', 'email'];
+    protected $fillable = ['id_akun', 'nip', 'nama', 'alamat', 'telepon', 'tanggal_lahir', 'email', 'gender'];
     public function akun(): BelongsTo
     {
         return $this->belongsTo(AkunModel::class, 'id_akun', 'id_akun');

@@ -99,9 +99,9 @@
                                 <label for="gender" class="form-label">Gender</label>
                                 <select name="gender" id="gender" class="form-select">
                                     <option value="">Pilih Gender</option>
-                                    <option value="l" {{ $mahasiswa->akun->gender == 'l' ? 'selected' : ''  }}>Laki-laki
+                                    <option value="l" {{ $mahasiswa->gender == 'l' ? 'selected' : ''  }}>Laki-laki
                                     </option>
-                                    <option value="p" {{ $mahasiswa->akun->gender == 'p' ? 'selected' : ''  }}>
+                                    <option value="p" {{ $mahasiswa->gender == 'p' ? 'selected' : ''  }}>
                                         Perempuan</option>
                                 </select>
                             </div>

@@ -19,7 +19,8 @@ return new class extends Migration
             $table->text('alamat');
             $table->string('telepon', 30)->unique();
             $table->date('tanggal_lahir');
-            $table->string('email', 100);
+            $table->enum('gender', ['l', 'p']);
+            $table->string('email', 100)->unique();
             $table->timestamps();
 
             $table->foreign('id_akun')->references('id_akun')->on('akun')->onDelete('cascade');

@@ -23,6 +23,7 @@ class MahasiswaSeeder extends Seeder
                 'telepon' => '081234567804',
                 'tanggal_lahir' => Carbon::parse('2000-05-25')->toDateString(),
                 'email' => 'fajar.pratama@example.com',
+                'gender' => 'l',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]

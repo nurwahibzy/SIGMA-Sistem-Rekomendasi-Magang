@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminModel;
 use App\Models\AkunModel;
 use App\Models\DosenModel;
 use App\Models\KeahlianDosenModel;
 use App\Models\MagangModel;
+use App\Models\MahasiswaModel;
 use App\Models\PerusahaanModel;
 use DB;
 use Hash;
@@ -113,6 +115,26 @@ class DosenController extends Controller
         return view('admin.dosen.edit', ['dosen' => $dosen]);
     }
 
+    private function checkEmailAndTelepon($email, $telepon)
+    {
+        $amount = PerusahaanModel::where('telepon', $telepon)->count();
+        if ($amount != 0) {
+            return true;
+        }
+        $amount = AdminModel::where('telepon', $telepon)
+            ->orWhere('email', $email)
+            ->count();
+        if ($amount != 0) {
+            return true;
+        }
+        $amount = MahasiswaModel::where('telepon', $telepon)->orWhere('email', $email)
+            ->count();
+        if ($amount != 0) {
+            return true;
+        }
+        return false;
+    }
+
     public function postDosen(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
@@ -126,6 +148,7 @@ class DosenController extends Controller
                             'alamat' => 'required|string',
                             'telepon' => 'required|digits_between:1,30',
                             'tanggal_lahir' => 'required|date',
+                            'gender' => 'required|in:l,p',
                             'email' => 'required|email|max:100',
                             'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
                         ]);
@@ -143,7 +166,12 @@ class DosenController extends Controller
                         $alamat = $request->input('alamat');
                         $telepon = $request->input('telepon');
                         $tanggal_lahir = $request->input('tanggal_lahir');
+                        $gender = $request->input('gender');
                         $email = $request->input('email');
+
+                        if ($this->checkEmailAndTelepon($email, $telepon)) {
+                            return false;
+                        }
 
                         if ($request->hasFile('file')) {
                             $foto_path = $this->handleFileUpload($request, $id_user, $foto_path);
@@ -163,6 +191,7 @@ class DosenController extends Controller
                             'alamat' => $alamat,
                             'telepon' => $telepon,
                             'tanggal_lahir' => $tanggal_lahir,
+                            'gender' => $gender,
                             'email' => $email
                         ]);
 
@@ -191,6 +220,7 @@ class DosenController extends Controller
                             'alamat' => 'required|string',
                             'telepon' => 'required|digits_between:1,30',
                             'tanggal_lahir' => 'required|date',
+                            'gender' => 'required|in:l,p',
                             'email' => 'required|email|max:100',
                             'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
                             'password' => 'nullable|string|min:6|max:255'
@@ -206,7 +236,12 @@ class DosenController extends Controller
                         $alamat = $request->input('alamat');
                         $telepon = $request->input('telepon');
                         $tanggal_lahir = $request->input('tanggal_lahir');
+                        $gender = $request->input('gender');
                         $email = $request->input('email');
+
+                        if ($this->checkEmailAndTelepon($email, $telepon)) {
+                            return false;
+                        }
 
                         $data = AkunModel::where('id_akun', $id_akun)->first();
 
@@ -246,6 +281,7 @@ class DosenController extends Controller
                                 'alamat' => $alamat,
                                 'telepon' => $telepon,
                                 'tanggal_lahir' => $tanggal_lahir,
+                                'gender' => $gender,
                                 'email' => $email
                             ]);
                         return true;

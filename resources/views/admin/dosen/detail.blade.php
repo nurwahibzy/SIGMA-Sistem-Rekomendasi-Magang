@@ -66,7 +66,7 @@
                                 <div class="mt-4">
                                     <label class="form-label fw-bold">Gender</label>
                                     <div class="border rounded p-2">
-                                        <p class="form-control-plaintext mb-0">{{ $dosen->Gender ?? '-' }}</p>
+                                        <p class="form-control-plaintext mb-0">{{ $dosen->gender == 'l' ? 'Laki-laki' : 'Perempuan' }}</p>
                                     </div>
                                 </div>
                             </div>

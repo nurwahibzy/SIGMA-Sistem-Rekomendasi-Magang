@@ -12,7 +12,7 @@ class MahasiswaModel extends Model
     use HasFactory;
     protected $table = 'mahasiswa';
     protected $primaryKey = 'id_mahasiswa';
-    protected $fillable = ['id_akun', 'id_prodi', 'nama', 'alamat', 'telepon', 'tanggal_lahir', 'email'];
+    protected $fillable = ['id_akun', 'id_prodi', 'nama', 'alamat', 'telepon', 'tanggal_lahir', 'email', 'gender'];
     public function akun(): BelongsTo
     {
         return $this->belongsTo(AkunModel::class, 'id_akun', 'id_akun');
