@@ -45,10 +45,10 @@
 
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         @if ($item->status == 'lulus')
-                                        <a href="{{ url('mahasiswa/riwayat/aktivitas/' . $item->id_magang) }}"
+                                            <a href="{{ url('mahasiswa/riwayat/aktivitas/' . $item->id_magang) }}"
                                             class="btn btn-primary">
-                                            <i class="bi bi-pencil-square"></i> Detail
-                                        </a>
+                                                <i class="bi bi-pencil-square"></i> Detail
+                                            </a>
                                         @endif
 
                                         @php
@@ -56,10 +56,16 @@
                                         @endphp
 
                                         @if($sudahDinilai)
+                                            <a href="{{ route('penilaian.download', $item->id_magang) }}" class="btn btn-success">
+                                                <i class="bi bi-file-earmark-pdf-fill"></i> Download Sertifikat
+                                            </a>
+                                        @endif
+
+                                        {{-- @if($sudahDinilai)
                                             <a href="{{ route('penilaian.get', $item->id_magang) }}" class="btn btn-primary">
                                                 <i class="bi bi-pencil-square"></i> Sertifikat
                                             </a>
-                                        @endif
+                                        @endif --}}
 
                                     </div>
 

@@ -13,6 +13,7 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Log;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class MagangController extends Controller
 {
@@ -131,4 +132,39 @@ class MagangController extends Controller
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
         }
     }
+
+    public function downloadSertifikat($idMagang)
+    {
+        // Validasi ID Magang
+        $magang = MagangModel::with('mahasiswa.akun', 'periode_magang.lowongan_magang.perusahaan')
+                            ->where('id_magang', $idMagang)
+                            ->firstOrFail();
+
+        // Data untuk template sertifikat
+        $data = [
+            'nama' => $magang->mahasiswa->nama,
+            'perusahaan' => $magang->periode_magang->lowongan_magang->perusahaan->nama,
+            'tanggal_mulai' => $magang->periode_magang->tanggal_mulai->format('d F Y'),
+            'tanggal_selesai' => $magang->periode_magang->tanggal_selesai->format('d F Y'),
+            'tanggal_terbit' => now()->format('d F Y'), // Tanggal penerbitan sertifikat
+        ];
+
+        // Render view Blade menjadi PDF dengan ukuran A4 landscape
+        $pdf = Pdf::loadView('certificates.sertifikat', $data)
+                ->setPaper('A4', 'landscape')
+                ->setOptions([
+                    'dpi' => 150,
+                    'defaultFont' => 'serif',
+                    'isRemoteEnabled' => true,
+                    'isHtml5ParserEnabled' => true,
+                    'enable_php' => false
+                ]);
+
+        // Simpan nama file sesuai NIM mahasiswa
+        $filename = "Sertifikat_Magang_{$magang->mahasiswa->akun->id_user}.pdf";
+
+        // Return PDF untuk di-download
+        return $pdf->download($filename);
+    }
+
 }

@@ -221,6 +221,8 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [MagangControllerMahasiswa::class, 'indexRiwayat']);
             Route::get('/aktivitas/{id_magang}', [AktivitasControllerMahasiswa::class, 'getRiwayatAktivitas']);
             Route::get('/aktivitas/{id_magang}/detail/{id_aktivitas}', [AktivitasControllerMahasiswa::class, 'getRiwayatDetailAktivitas']);
+            Route::get('/sertifikat/{id_magang}', [MagangControllerMahasiswa::class, 'downloadSertifikat'])
+            ->name('penilaian.download');
         });
 
         Route::prefix('penilaian')->group(function () {
