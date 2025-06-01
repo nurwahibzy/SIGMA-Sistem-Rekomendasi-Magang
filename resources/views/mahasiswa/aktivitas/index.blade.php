@@ -9,10 +9,12 @@
             <div class="col-12">
 
                 {{-- Tombol Tambah --}}
-                <button class="btn btn-primary mb-3" id="btnTambahAktivitas" data-bs-toggle="modal"
-                    data-bs-target="#modalTambah" {{ $hasActivityToday ? 'disabled' : '' }}>
-                    <i class="bi bi-plus"></i> Tambah Aktivitas
-                </button>
+                <div class="d-flex justify-content-end align-items-center">
+                    <button class="btn btn-primary mb-3" id="btnTambahAktivitas" data-bs-toggle="modal"
+                        data-bs-target="#modalTambah" {{ $hasActivityToday ? 'disabled' : '' }}>
+                        <i class="bi bi-plus"></i> Tambah Aktivitas
+                    </button>
+                </div>
 
                 @if($hasActivityToday)
                     <div class="alert alert-info mb-3">

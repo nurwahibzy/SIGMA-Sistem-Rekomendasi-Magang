@@ -4,20 +4,25 @@
 
             <form id="form-tambah" action="{{ url('/mahasiswa/profil/edit/') }}" method="POST" class="text-start mt-3">
                 @csrf
-                <div class="text-center mb-3">
-                    <label for="file" style="cursor: pointer;">
-
-                        <img id="preview" src="{{ Storage::exists('public/profil/akun/' . Auth::user()->foto_path)
+                <div class="container mt-4">
+                    <div class="d-flex justify-content-center align-items-center flex-column">
+                        <div class="avatar avatar-2xl mb-3">
+                            <label for="file" style="cursor: pointer;">
+                                <img id="preview" src="{{ Storage::exists('public/profil/akun/' . Auth::user()->foto_path)
     ? asset('storage/profil/akun/' . Auth::user()->foto_path)
-    : asset('template/assets/images/mhs.jpeg') }}" alt="Foto Profil" alt="Profile Picture"
-                            class="rounded-circle mx-auto d-block mb-3" width="100" height="100"
-                            style="border: 5px solid blue;" />
-                    </label>
-                    <input type="file" id="file" name="file" accept="image/*" onchange="previewImage(event)"
-                        style="display: none;">
+    : asset('template/assets/images/mhs.jpeg') }}" alt="Profile Picture" class="rounded-circle"
+                                    style="width: 120px; height: 120px; border: 5px solid blue; object-fit: cover;">
+                            </label>
+                        </div>
+                        <small class="text-muted text-center">Tekan gambar untuk mengganti foto profil</small>
+                        <input type="file" id="file" name="file" accept="image/*" onchange="previewImage(event)"
+                            style="display: none;">
+                        <button type="button" id="tombolBatal" class="btn btn-sm btn-primary mt-2"
+                            style="visibility: hidden;" onclick="batalkanPreview()">Batalkan</button>
+                    </div>
                 </div>
                 <input type="text" class="form-control" id="id_user" name="id_user" required
-                        value="{{ Auth::user()->id_user ?? '-' }}" hidden>
+                    value="{{ Auth::user()->id_user ?? '-' }}" hidden>
                 <div class="mb-2">
                     <label for="nama" class="form-label">Nama</label>
                     <input type="text" class="form-control" id="nama" name="nama" required
@@ -60,13 +65,21 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    const defaultPreview = document.getElementById('preview').src;
+
     function previewImage(event) {
         const reader = new FileReader();
         reader.onload = function () {
-            const preview = document.getElementById('preview');
-            preview.src = reader.result;
+            document.getElementById('preview').src = reader.result;
         };
         reader.readAsDataURL(event.target.files[0]);
+        document.getElementById('tombolBatal').style.visibility = 'visible';
+    }
+
+    function batalkanPreview() {
+        document.getElementById('preview').src = defaultPreview;
+        document.getElementById('file').value = "";
+        document.getElementById('tombolBatal').style.visibility = 'hidden';
     }
 </script>
 <script>

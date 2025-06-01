@@ -20,7 +20,6 @@
                     <h4 class="mt-2 text-center">{{ $admin->nama }}</h4>
                     <p class="text-small">{{ $admin->akun->id_user }}</p>
                 </div>
-
             </div>
             <div class="container mt-4">
                 <div class="d-flex justify-content-between">

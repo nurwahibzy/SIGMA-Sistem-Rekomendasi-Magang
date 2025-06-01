@@ -14,7 +14,7 @@
     <div class="d-flex justify-content-end">
         <div>
             <button type="submit" class="btn btn-primary">
-                <i class="bi bi-upload"></i> Kirim
+                <i class="bi bi-upload"></i> Simpan
             </button>
         </div>
         <div id="result" class="text-muted small"></div>

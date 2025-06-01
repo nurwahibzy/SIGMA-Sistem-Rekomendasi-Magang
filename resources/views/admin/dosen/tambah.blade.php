@@ -93,15 +93,6 @@
         document.getElementById('file').value = "";
         document.getElementById('tombolBatal').style.visibility = 'hidden';
     }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const preview = document.getElementById('preview');
-        const fileInput = document.getElementById('file');
-
-        preview.addEventListener('click', function () {
-            fileInput.click();
-        });
-    });
 </script>
 <script>
     $(document).ready(function () {
