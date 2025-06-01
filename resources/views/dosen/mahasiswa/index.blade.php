@@ -61,51 +61,55 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table" id="table1">
-                    <thead>
-                        <tr>
-                            <th>Nama</th>
-                            <th>Periode Magang</th>
-                            <th>Tanggal Pengajuan</th>
-                            <th>Status</th>
-                            <th>Detail</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($magang as $item)
+                @if ($magang->isEmpty())
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-circle"></i> Tidak ada mahasiswa bimbingan.
+                    </div>
+                @else
+                    <table class="table" id="table1">
+                        <thead>
                             <tr>
-                                <td>{{ $item->mahasiswa->nama ?? '-' }}</td>
-                                <td>
-                                    @if($item->periode_magang)
-                                        {{ $item->periode_magang->tanggal_mulai->format('d M Y') }} - {{ $item->periode_magang->tanggal_selesai->format('d M Y') }}
-                                    @else
-                                        -
-                                    @endif
-                                </td>
-                                <td>{{ $item->tanggal_pengajuan ? \Carbon\Carbon::parse($item->tanggal_pengajuan)->format('d M Y') : '-' }}</td>
-                                <td>
-                                    <span class="badge 
-                                        @if($item->status == 'diterima') bg-success
-                                        @else bg-secondary
-                                        @endif">
-                                        {{ ucfirst($item->status ?? '-') }}
-                                    </span>
-                                </td>
-                                <td class="text-center">
-                                    <button class="btn btn-sm btn-info btn-detail"
-                                            data-url="{{ url('/dosen/riwayat/detail/' . $item->id_magang) }}"
-                                            onclick="modalAction(this.dataset.url)">
-                                        <i class="bi bi-eye me-1"></i>Detail
-                                    </button>
-                                </td>
+                                <th>Nama</th>
+                                <th>Periode Magang</th>
+                                <th>Tanggal Pengajuan</th>
+                                <th>Status</th>
+                                <th>Detail</th>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="text-center">Tidak ada mahasiswa bimbingan</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach ($magang as $item)
+                                <tr>
+                                    <td>{{ $item->mahasiswa->nama ?? '-' }}</td>
+                                    <td>
+                                        @if($item->periode_magang)
+                                            {{ $item->periode_magang->tanggal_mulai->format('d M Y') }} - 
+                                            {{ $item->periode_magang->tanggal_selesai->format('d M Y') }}
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                    <td>{{ $item->tanggal_pengajuan ? \Carbon\Carbon::parse($item->tanggal_pengajuan)->format('d M Y') : '-' }}</td>
+                                    <td>
+                                        <span class="badge 
+                                            @if($item->status == 'diterima') bg-success
+                                            @elseif($item->status == 'lulus') bg-primary
+                                            @else bg-secondary
+                                            @endif">
+                                            {{ ucfirst($item->status ?? '-') }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-info btn-detail"
+                                                data-url="{{ url('/dosen/riwayat/detail/' . $item->id_magang) }}"
+                                                onclick="modalAction(this.dataset.url)">
+                                            <i class="bi bi-eye me-1"></i>Detail
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
             </div>
         </div>
     </div>
