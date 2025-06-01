@@ -32,6 +32,7 @@ use App\Http\Controllers\Mahasiswa\PreferensiLokasiMahasiswaController;
 use App\Http\Controllers\Mahasiswa\PreferensiPerusahaanMahasiswaController;
 use App\Http\Controllers\Mahasiswa\RekomendasiController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LandingPageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +52,8 @@ use Illuminate\Support\Facades\Route;
 
 // Route::get('/jarak', [JarakController::class, 'hitungJarak']);
 // Route::get('/koordinat', [GeolokasiController::class, 'getKoordinat']);
+Route::get('/dashboard', [LandingPageController::class, 'index'])->name('dashboard');
+
 
 Route::pattern('id', '[0-9]+');
 Route::get('/login', [LoginController::class, 'getLogin'])->name('login');

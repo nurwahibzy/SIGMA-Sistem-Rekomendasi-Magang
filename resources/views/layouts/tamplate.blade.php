@@ -49,7 +49,7 @@
 
         <div id="main" class="layout-navbar navbar-fixed">
             {{-- Navbar --}}
-            @include('layouts.navbar')
+            @include('layouts.navbar-sistem')
 
             <div id="main-content">
                 <div class="page-content">
