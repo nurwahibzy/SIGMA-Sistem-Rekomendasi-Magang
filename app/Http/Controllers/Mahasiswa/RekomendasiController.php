@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Mahasiswa;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\JarakController;
 use App\Models\BidangModel;
+use App\Models\LowonganMagangModel;
 use App\Models\MahasiswaModel;
 use App\Models\PerusahaanModel;
 
@@ -17,15 +18,25 @@ class RekomendasiController extends Controller
         $perusahaans = PerusahaanModel::with(['jenis_perusahaan', 'lowongan_magang'])->get();
         $preferensiKeahlianMahasiswa = BidangModel::all();
         $totalPrioritas = $preferensiKeahlianMahasiswa->count();
+        $hariIni = date('Y-m-d');
+        $lowonganMagang = LowonganMagangModel::with(['periode_magang.magang'])
+            ->whereHas('periode_magang', function ($query) use ($hariIni) {
+                $query->where('tanggal_mulai', '>', $hariIni); // Belum dilaksanakan
+            })->get();
+
+
+        // dd($hariIni,$lowonganMagang);
         // dd($preferensiKeahlianMahasiswa);
         // return response()->json($preferensiKeahlianMahasiswa);
 
-        $bobot_prioritas = [];
-        for ($i = 0; $i < $totalPrioritas; $i++) {
-            // Mahasiswa ke-i memiliki prioritas ke-i+1
-            $prioritas = $preferensiKeahlianMahasiswa[$i]->prioritas;
-            $bobot_prioritas[$prioritas] = $totalPrioritas - $i;
-        }
+        // $bobot_prioritas = [];
+        // for ($i = 0; $i < $totalPrioritas; $i++) {
+        //     // Mahasiswa ke-i memiliki prioritas ke-i+1
+        //     $prioritas = $preferensiKeahlianMahasiswa[$i]->prioritas;
+        //     $bobot_prioritas[$prioritas] = $totalPrioritas - $i;
+        // }
+
+        // dd($bobot_prioritas);
 
         $kriteria = [
             (object)['id' => 'jenis_perusahaan', 'type' => 'cost'],
@@ -40,6 +51,15 @@ class RekomendasiController extends Controller
 
         foreach ($perusahaans as $perusahaan) {
             foreach ($perusahaan->lowongan_magang as $lowongan) {
+
+                // Skip semua lowongan yang periodenya sudah dimulai
+                $upcoming = $lowongan->periode_magang->filter(function ($periode) use ($hariIni) {
+                    return $periode->tanggal_mulai > $hariIni;
+                });
+
+                if ($upcoming->isEmpty()) {
+                    continue; // Lewati lowongan yang waktu pelaksanaannya sudah dimulai
+                }
 
                 $penilaian = null;
                 $nilai_fasilitas = 0;
