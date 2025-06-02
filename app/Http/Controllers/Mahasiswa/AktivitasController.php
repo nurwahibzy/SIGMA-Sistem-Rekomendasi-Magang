@@ -51,7 +51,7 @@ class AktivitasController extends Controller
             return DB::transaction(function () use ($id_magang) {
                 $id_mahasiswa = $this->idMahasiswa();
 
-                $aktivitas = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
+                $aktivitas = AktivitasMagangModel::with('magang')
                     ->where('id_magang', $id_magang)
                     ->whereHas('magang', function ($query) use ($id_mahasiswa) {
                         $query->where('id_mahasiswa', $id_mahasiswa);
@@ -60,6 +60,10 @@ class AktivitasController extends Controller
                     ->get();
 
                 $today = Carbon::now()->toDateString();
+
+                $magang = MagangModel::with('dosen')
+                ->where('id_magang', $id_magang)
+                ->first();
 
                 $hasActivityToday = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
                     ->where('id_magang', $id_magang)
@@ -75,6 +79,7 @@ class AktivitasController extends Controller
                     'aktivitas' => $aktivitas,
                     'id_magang' => $id_magang,
                     'hasActivityToday' => $hasActivityToday,
+                    'magang' => $magang
                 ]);
             });
         } catch (\Exception $e) {
@@ -84,15 +89,18 @@ class AktivitasController extends Controller
     }
 
 
-    public function detail($id)
+    public function getDetailAktivitas($id_magang ,$id_aktivitas)
     {
-        $aktivitas = AktivitasMagangModel::findOrFail($id);
-        return view('mahasiswa.aktivitas.detail', compact('aktivitas'));
+        $aktivitas = AktivitasMagangModel::where('id_magang', $id_magang)
+        ->where('id_aktivitas', $id_aktivitas)
+        ->first();
+
+        return view('mahasiswa.aktivitas.detail', ['aktivitas' => $aktivitas]);
     }
 
     public function getAddAktivitas($id_magang)
     {
-        return view('tes.aktivitas', ['id_magang' => $id_magang]);
+        return view('mahasiswa.aktivitas.tambah', ['id_magang' => $id_magang]);
     }
 
     public function getEditAktivitas($id_magang, $id_aktivitas)
@@ -109,27 +117,10 @@ class AktivitasController extends Controller
                     })
                     ->first();
 
-                if (!$aktivitas) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Data aktivitas tidak ditemukan'
-                    ], 404);
-                }
-
-                $activityDate = Carbon::parse($aktivitas->tanggal)->startOfDay();
-                $today = Carbon::now()->startOfDay();
-
-                if ($activityDate->lt($today)) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Aktivitas tanggal sebelumnya tidak dapat diubah'
-                    ], 403);
-                }
-
                 return view('mahasiswa.aktivitas.edit', [
-                    'id_magang' => $aktivitas->id_magang,
-                    'id_aktivitas' => $aktivitas->id_aktivitas,
-                    'keterangan' => $aktivitas->keterangan
+                    'id_magang' => $id_magang,
+                    'id_aktivitas' => $id_aktivitas,
+                    'aktivitas' => $aktivitas
                 ]);
             });
         } catch (\Exception $e) {
@@ -272,35 +263,6 @@ class AktivitasController extends Controller
                 'foto_path' => $filename
             ]);
     }
-
-    public function confirm($id_magang, $id_aktivitas)
-    {
-        try {
-            $result = DB::transaction(function () use ($id_magang, $id_aktivitas) {
-                $id_mahasiswa = $this->idMahasiswa();
-
-                $aktivitas = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
-                    ->where('id_aktivitas', $id_aktivitas)
-                    ->where('id_magang', $id_magang)
-                    ->whereHas('magang', function ($query) use ($id_mahasiswa) {
-                        $query->where('id_mahasiswa', $id_mahasiswa);
-                    })
-                    ->firstOrFail();
-
-                $activityDate = Carbon::parse($aktivitas->tanggal)->startOfDay();
-                $today = Carbon::now()->startOfDay();
-                $isPastActivity = $activityDate->lt($today);
-
-                return compact('aktivitas', 'id_magang', 'isPastActivity');
-            });
-
-            return view('mahasiswa.aktivitas.confirm', $result);
-        } catch (\Throwable $e) {
-            Log::error('Gagal mengambil data konfirmasi hapus aktivitas: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
-        }
-    }
-
 
     public function deleteAktivitas(Request $request, $id_magang, $id_aktivitas)
     {

@@ -209,13 +209,12 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('aktivitas')->group(function () {
             Route::get('/', [AktivitasControllerMahasiswa::class, 'getMagangDiterima']);
             Route::get('/{id_magang}', [AktivitasControllerMahasiswa::class, 'getAktivitas']);
-            Route::get('/{id}/detail', [AktivitasControllerMahasiswa::class, 'detail']);
             Route::get('/{id_magang}/tambah', [AktivitasControllerMahasiswa::class, 'getAddAktivitas']);
             Route::post('/{id_magang}/tambah', [AktivitasControllerMahasiswa::class, 'postAktivitas']);
+            Route::get('/{id_magang}/detail/{id_aktivitas}', [AktivitasControllerMahasiswa::class, 'getDetailAktivitas']);
             Route::get('/{id_magang}/edit/{id_aktivitas}', [AktivitasControllerMahasiswa::class, 'getEditAktivitas']);
             Route::post('/{id_magang}/edit/{id_aktivitas}', [AktivitasControllerMahasiswa::class, 'putAktivitas']);
-            Route::get('/{id_magang}/confirm/{id_aktivitas}', [AktivitasControllerMahasiswa::class, 'confirm']);
-            Route::delete('/{id_magang}/delete/{id_aktivitas}', [AktivitasControllerMahasiswa::class, 'deleteAktivitas']);
+            Route::delete('/{id_magang}/edit/{id_aktivitas}', [AktivitasControllerMahasiswa::class, 'deleteAktivitas']);
         });
 
         Route::prefix('riwayat')->group(function () {

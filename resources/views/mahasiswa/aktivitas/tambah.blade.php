@@ -1,4 +1,4 @@
-<form action="{{ url('/mahasiswa/aktivitas/' . $aktivitas->id_magang . '/edit/' . $aktivitas->id_aktivitas) }}" method="POST" id="form-edit">
+<form action="{{ url('/mahasiswa/aktivitas/' . $id_magang . '/tambah') }}" method="POST" id="form-tambah">
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -8,27 +8,26 @@
                     aria-label="Close"></button>
             </div>
             <div class="modal-body">
-            <div class="container mt-4">
+                <div class="container mt-4">
                     <div class="d-flex justify-content-center align-items-center flex-column">
                         <div class="avatar avatar-2xl mb-3">
                             <label for="file" style="cursor: pointer;">
-                                <img id="preview" src="{{ Storage::exists('public/aktivitas/' . $aktivitas->foto_path)
-    ? asset('storage/aktivitas/' . $aktivitas->foto_path)
-    : asset('template/assets/images/mhs.jpeg') }}" alt="Profile Picture" class="img-fluid rounded w-100 h-100"
+                                <img id="preview" src="{{ asset('template/assets/images/mhs.jpeg') }}"
+                                    alt="Profile Picture" class="img-fluid rounded w-100 h-100"
                                     style="width: 120px; height: 120px; border: 5px solid blue; object-fit: cover;">
                             </label>
                         </div>
-                        <small class="text-muted text-center">Tekan gambar untuk mengganti foto profil</small>
+                        <small class="text-muted text-center">Tekan gambar untuk menambahkan</small>
                         <input type="file" id="file" name="file" accept="image/*" onchange="previewImage(event)"
-                            style="display: none;">
-                            <button type="button" id="tombolBatal" class="btn btn-sm btn-primary mt-2"
+                            style="display: none;" required>
+                        <button type="button" id="tombolBatal" class="btn btn-sm btn-primary mt-2"
                             style="visibility: hidden;" onclick="batalkanPreview()">Batalkan</button>
                     </div>
                 </div>
                 <div class="container mt-4">
                     <div class="mb-3">
                         <label for="keterangan" class="form-label">Kenterangan</label>
-                        <textarea class="form-control" id="keterangan" name="keterangan" rows="3" required>{{ $aktivitas->keterangan }}</textarea>
+                        <textarea class="form-control" id="keterangan" name="keterangan" rows="3" required></textarea>
                     </div>
                 </div>
             </div>
@@ -59,11 +58,13 @@
 </script>
 <script>
     $(document).ready(function () {
-        $("#form-edit").validate({
+        $("#form-tambah").validate({
             rules: {
-                keterangan: { required: true }
+                file: { required: true },
+                keterangan: { required: true },
             },
             messages: {
+                file: "File wajib diisi",
                 keterangan: "Keterangan wajib diisi dan harus valid"
             },
             submitHandler: function (form) {
