@@ -17,7 +17,7 @@
 <div class="d-flex">
     <div class="card px-5 py-3 border border-secondary mb-5 me-3 ms-5 text-center w-100" style="border-width: 5px;">
         <div class="d-flex flex-column align-items-center">
-            <img src="{{ asset('template/assets/images/magang.jpg') }}" alt="Foto Profil"
+            <img src="{{ asset('template/assets/images/target.jpg') }}" alt="Foto Profil"
                 class="rounded-circle shadow mb-4" style="width: 120px; height: 120px; object-fit: cover;">
 
             <h4 class="fw-bold text-primary mb-3">
@@ -30,7 +30,7 @@
     </div>
     <div class="card px-5 py-3 border border-secondary mb-5 me-5 ms-3 text-center w-100" style="border-width: 5px;">
         <div class="d-flex flex-column align-items-center">
-            <img src="{{ asset('template/assets/images/magang.jpg') }}" alt="Foto Profil"
+            <img src="{{ asset('template/assets/images/rocket.jpg') }}" alt="Foto Profil"
                 class="rounded-circle shadow mb-4" style="width: 120px; height: 120px; object-fit: cover;">
 
             <h4 class="fw-bold text-primary mb-3">
@@ -46,7 +46,7 @@
 <div class="d-flex">
     <div class="card px-5 py-3 border border-secondary mb-5 me-3 ms-5 text-center w-100" style="border-width: 5px;">
         <div class="d-flex flex-column align-items-center">
-            <img src="{{ asset('template/assets/images/magang.jpg') }}" alt="Foto Profil"
+            <img src="{{ asset('template/assets/images/profile.jpg') }}" alt="Foto Profil"
                 class="rounded-circle shadow mb-4" style="width: 120px; height: 120px; object-fit: cover;">
 
             <h4 class="fw-bold text-primary mb-3">
@@ -60,7 +60,7 @@
 
     <div class="card px-5 py-3 border border-secondary mb-5 me-5 ms-3 text-center w-100" style="border-width: 5px;">
         <div class="d-flex flex-column align-items-center">
-            <img src="{{ asset('template/assets/images/magang.jpg') }}" alt="Foto Profil"
+            <img src="{{ asset('template/assets/images/otomatis.jpg') }}" alt="Foto Profil"
                 class="rounded-circle shadow mb-4" style="width: 120px; height: 120px; object-fit: cover;">
 
             <h4 class="fw-bold text-primary mb-3">
