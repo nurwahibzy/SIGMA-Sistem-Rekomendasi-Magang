@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Layout Horizontal - Mazer Admin Dashboard</title>
 
@@ -28,14 +28,21 @@
             @include('layouts.navbar-landing')
 
             <div id="main-content">
-                <div >
-                    <div >
+                <div>
+                    <div>
                         @yield('content')
                     </div>
                 </div>
 
-                {{-- Footer --}}
-                @include('layouts.footer')
+                <footer class="card bg-primary text-center text-lg-start border-top mt-5">
+                    <div class="container p-4">
+                        <p class="text-light">
+                            &copy; {{ date('Y') }} <strong>SIGMA</strong> - Sistem Informasi Magang Mahasiswa. All
+                            rights reserved.
+                        </p>
+                    </div>
+                </footer>
+
             </div>
         </div>
     </div>
