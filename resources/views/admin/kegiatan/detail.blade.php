@@ -26,7 +26,16 @@
                             <table class="table table-borderless">
                                 <tr>
                                     <th>Status</th>
-                                    <td>{{ $magang->status }}</td>
+                                    <td>                                    
+                                        <span class="badge 
+                                            @if($magang->status == 'diterima') bg-warning
+                                            @elseif($magang->status == 'lulus') bg-success
+                                            @elseif($magang->status == 'ditolak') bg-danger
+                                            @else bg-secondary
+                                            @endif">
+                                            {{ ucfirst($magang->status ?? '-') }}
+                                        </span>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>Tanggal Pengajuan</th>

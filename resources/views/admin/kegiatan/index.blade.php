@@ -104,7 +104,16 @@
                                     <td>{{ $item->mahasiswa->nama ?? '-' }}</td>
                                     <td>{{ $item->dosen->nama ?? '-' }}</td>
                                     <td>{{ $item->periode_magang->lowongan_magang->perusahaan->nama ?? '-' }}</td>
-                                    <td>{{ $item->status ?? '-' }}</td>
+                                    <td>                                    
+                                        <span class="badge 
+                                            @if($item->status == 'diterima') bg-warning
+                                            @elseif($item->status == 'lulus') bg-success
+                                            @elseif($item->status == 'ditolak') bg-danger
+                                            @else bg-secondary
+                                            @endif">
+                                            {{ ucfirst($item->status ?? '-') }}
+                                        </span>
+                                    </td>
                                     <td class="text-center"> <button class="btn btn-sm btn-info btn-detail"
                                             onclick="modalAction('{{ url('/admin/kegiatan/detail/' . $item->id_magang) }}')">
                                             Detail

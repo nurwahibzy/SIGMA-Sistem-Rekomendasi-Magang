@@ -112,7 +112,15 @@
                                     <td>{{ $item->nama ?? '-' }}</td>
                                     <td>{{ $item->telepon ?? '-' }}</td>
                                     <td>{{ $item->email }}</td>
-                                    <td>{{ $item->akun->status }}</td>
+                                    <td>
+                                        <span class="badge 
+                                            @if($item->akun->status == 'aktif') bg-success
+                                            @elseif($item->akun->status == 'nonaktif') bg-primary
+                                            @else bg-secondary
+                                            @endif">
+                                            {{ ucfirst($item->akun->status ?? '-') }}
+                                        </span>
+                                    </td>
                                     <td class="text-center">
                                         <button class="btn btn-sm btn-info btn-detail"
                                             onclick="modalAction('{{ url('/admin/dosen/detail/' . $item->akun->id_akun) }}')">
