@@ -39,10 +39,19 @@
                                     </p>
                                     <p class="mb-1">
                                         <strong>Status:</strong>
-                                        {{ $item->status ?? '-' }}
+                                                                            <td>                                    
+                                        <span class="badge 
+                                            @if($item->status == 'diterima') bg-warning
+                                            @elseif($item->status == 'lulus') bg-success
+                                            @elseif($item->status == 'ditolak') bg-danger
+                                            @else bg-secondary
+                                            @endif">
+                                            {{ ucfirst($item->status ?? '-') }}
+                                        </span>
+                                    </td>
                                     </p>
 
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mt-4">
                                         @if ($item->status == 'lulus')
                                             <a href="{{ url('mahasiswa/riwayat/aktivitas/' . $item->id_magang) }}"
                                             class="btn btn-primary">
