@@ -22,7 +22,7 @@
                 <div id="auth-left">
                     <div class="auth-logo">
                         <a href="{{ url('index.html') }}">
-                            <img src="{{ asset('template/assets/compiled/svg/logo.svg') }}" alt="Logo">
+                            <img src="{{ asset('template/assets/compiled/svg/logo.svg') }}" alt="Logo"  style="width: 200px; height: auto;">
                         </a>
                     </div>
                     <h1 class="auth-title">Login</h1>
