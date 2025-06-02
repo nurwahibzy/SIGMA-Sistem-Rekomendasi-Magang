@@ -42,7 +42,6 @@
                                         {{ $item->status ?? '-' }}
                                     </p>
 
-
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         @if ($item->status == 'lulus')
                                             <a href="{{ url('mahasiswa/riwayat/aktivitas/' . $item->id_magang) }}"
@@ -55,18 +54,19 @@
                                             $sudahDinilai = \App\Models\PenilaianModel::where('id_magang', $item->id_magang)->exists();
                                         @endphp
 
+                                        {{-- Jika sudah dinilai, tampilkan tombol download sertifikat --}}
                                         @if($sudahDinilai)
                                             <a href="{{ route('penilaian.download', $item->id_magang) }}" class="btn btn-success">
-                                                <i class="bi bi-file-earmark-pdf-fill"></i> Download Sertifikat
+                                                <i class="bi bi-file-earmark-pdf-fill"></i> Sertifikat
                                             </a>
+                                        @else
+                                            {{-- Jika belum dinilai, tampilkan tombol untuk mengisi penilaian --}}
+                                            @if ($item->status == 'lulus')
+                                                <a href="{{ route('penilaian.get', $item->id_magang) }}" class="btn btn-warning">
+                                                    <i class="bi bi-pencil-square"></i> Isi Penilaian
+                                                </a>
+                                            @endif
                                         @endif
-
-                                        {{-- @if($sudahDinilai)
-                                            <a href="{{ route('penilaian.get', $item->id_magang) }}" class="btn btn-primary">
-                                                <i class="bi bi-pencil-square"></i> Sertifikat
-                                            </a>
-                                        @endif --}}
-
                                     </div>
 
                                 </div>
