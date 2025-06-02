@@ -44,7 +44,7 @@
                     <div class="d-flex justify-content-between">
                         <div class="w-50 me-2">
                             <div class="mt-4">
-                                <label for="id_user" class="form-label">NIP</label>
+                                <label for="id_user" class="form-label">NIM</label>
                                 <input type="text" class="form-control" id="id_user" name="id_user" required>
                             </div>
                             <div class="mt-4">
