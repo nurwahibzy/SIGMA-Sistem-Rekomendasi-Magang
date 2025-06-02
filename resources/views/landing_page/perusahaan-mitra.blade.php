@@ -85,7 +85,7 @@
     @foreach ($perusahaan as $item)
         <div class="card px-5 border border-secondary mb-5 me-4 " style="border-width: 5px; min-width: 300px;">
 
-            <img src="{{ asset('storage/profil/perusahaan/' . $item->foto_path) }}" alt="Foto Profil"
+            <img src="{{ asset('template/assets/images/magang.jpg') }}" alt="Foto Profil"
                 class="img-fluid rounded w-50 h-50 mb-1 mt-3" style="object-fit: cover;">
 
             <h4 class="fw-bold text-black mb-1">

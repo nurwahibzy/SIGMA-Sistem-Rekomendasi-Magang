@@ -57,9 +57,9 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="card-title mb-0">Admin</h5>
-            <button onclick="modalAction('{{ url('/admin/admin/tambah') }}')" class="btn btn-primary">
+            <a href="{{ url('/mahasiswa/rekomendasi') }}" class="btn btn-primary">
                 Rekomendasi
-            </button>
+            </a>
         </div>
         <div class="card-body">
             @if (count($periode))

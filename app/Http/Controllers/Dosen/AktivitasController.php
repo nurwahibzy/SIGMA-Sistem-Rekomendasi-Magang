@@ -46,6 +46,8 @@ class AktivitasController extends Controller
             ->get();
 
         return response()->json($aktivitas);
+
+        // return response()->json($aktivitas);
     }
 
     public function getDetail($id_magang) {

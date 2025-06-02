@@ -6,11 +6,11 @@
            @include('landing_page.dashboard')
         </div>
         <div class="tab-pane fade" id="program" role="tabpanel">
-            <h1>a</h1>
+           @include('landing_page.program-magang')
 
         </div>
         <div class="tab-pane fade" id="perusahaan" role="tabpanel">
-            <h1>ad</h1>
+            @include('landing_page.perusahaan-mitra')
         </div>
     </div>
 @endsection
