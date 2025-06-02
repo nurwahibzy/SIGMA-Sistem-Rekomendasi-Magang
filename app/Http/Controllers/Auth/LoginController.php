@@ -14,6 +14,8 @@ class LoginController extends Controller
         if (Auth::check()) {
             return redirect(to: '/');
         }
+        // return view('welcome');
+        // return redirect('/main');
         return view('auth.login');
         // return view('auth.login');
         // return response()->json('a');

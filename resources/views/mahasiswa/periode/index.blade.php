@@ -55,8 +55,11 @@
         </div>
     </div>
     <div class="card">
-        <div class="card-header">
-            <h5 class="card-title">Lowongan Magang</h5>
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Admin</h5>
+            <button onclick="modalAction('{{ url('/admin/admin/tambah') }}')" class="btn btn-primary">
+                Rekomendasi
+            </button>
         </div>
         <div class="card-body">
             @if (count($periode))

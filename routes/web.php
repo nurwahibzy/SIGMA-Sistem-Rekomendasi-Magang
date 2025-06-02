@@ -56,6 +56,7 @@ Route::get('/dashboard', [LandingPageController::class, 'index'])->name('dashboa
 
 
 Route::pattern('id', '[0-9]+');
+Route::get('/main', [LandingPageController::class, 'index'])->name('main');
 Route::get('/login', [LoginController::class, 'getLogin'])->name('login');
 Route::post('/login', [LoginController::class, 'postLogin']);
 Route::get('/logout', [LogoutController::class, 'getLogout'])->middleware('auth');
