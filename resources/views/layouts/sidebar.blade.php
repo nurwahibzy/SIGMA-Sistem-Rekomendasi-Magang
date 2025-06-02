@@ -4,7 +4,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div class="logo">
                     <a href="{{ url('/mahasiswa/dashboard') }}">
-                        <img src="{{ asset('template/assets/compiled/svg/logo.svg') }}" alt="Logo">
+                        <img src="{{ asset('template/assets/compiled/svg/logo.svg') }}" alt="Logo"  style="width: 130px; height: auto;">
                     </a>
                 </div>
                 <div class="theme-toggle d-flex gap-2  align-items-center mt-2">
