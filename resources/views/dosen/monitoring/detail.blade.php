@@ -190,54 +190,67 @@ $(document).ready(function () {
     }
 
     // Load Evaluasi
-    function loadEvaluasi() {
-        $('#loading-evaluasi').show();
-        $('#evaluasi-content').hide();
-        $('#evaluasi-list').empty();
-        $('#no-evaluasi').hide();
+function loadEvaluasi() {
+    $('#loading-evaluasi').show();
+    $('#evaluasi-content').hide();
+    $('#evaluasi-list').empty();
+    $('#no-evaluasi').hide();
 
-        $.ajax({
-            url: `/dosen/aktivitas/${idMagang}/evaluasi`,
-            method: 'GET',
-            success: function (response) {
-                $('#loading-evaluasi').hide();
-                $('#evaluasi-content').show();
+    $.ajax({
+        url: `/dosen/aktivitas/${idMagang}/evaluasi`,
+        method: 'GET',
+        success: function (response) {
+            $('#loading-evaluasi').hide();
+            $('#evaluasi-content').show();
 
-                if (response.length > 0) {
-                    response.forEach(function (item) {
-                        const tanggal = item.created_at ? new Date(item.created_at).toLocaleDateString('id-ID') : '-';
-                        let html = `
-                            <div class="card mb-2" id="evaluasi-item-${item.id_evaluasi}">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-start">
-                                        <div class="flex-grow-1">
-                                            <p class="mb-1">${item.feedback}</p>
-                                            <small class="text-muted">Tanggal: ${tanggal}</small>
-                                        </div>
-                                        <div class="btn-group btn-group-sm">
-                                            <button class="btn btn-outline-primary" onclick="editInline(${item.id_evaluasi}, '${item.feedback.replace(/'/g, "\\'")}')">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-outline-danger" onclick="deleteEvaluasi(${item.id_evaluasi})">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
+            if (response.length > 0) {
+                // Tampilkan semua evaluasi
+                response.forEach(function (item) {
+                    const tanggal = item.created_at ? new Date(item.created_at).toLocaleDateString('id-ID') : '-';
+                    let html = `
+                        <div class="card mb-2" id="evaluasi-item-${item.id_evaluasi}">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <p class="mb-1">${item.feedback}</p>
+                                        <small class="text-muted">Tanggal: ${tanggal}</small>
+                                    </div>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-primary" onclick="editInline(${item.id_evaluasi}, '${item.feedback.replace(/'/g, "\\'")}')">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger" onclick="deleteEvaluasi(${item.id_evaluasi})">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                        `;
-                        $('#evaluasi-list').append(html);
-                    });
-                } else {
-                    $('#no-evaluasi').show();
-                }
-            },
-            error: function () {
-                $('#loading-evaluasi').hide();
-                $('#evaluasi-list').html('<div class="alert alert-danger">Gagal memuat data evaluasi</div>');
+                        </div>
+                    `;
+                    $('#evaluasi-list').append(html);
+                });
+
+                // Jika sudah ada evaluasi, disable tombol tambah dan tampilkan info
+                $('#btn-tambah-inline').prop('disabled', true).addClass('btn-secondary').removeClass('btn-primary');
+                $('#info-limit-evaluasi').remove(); // Hindari duplikasi
+                $('#btn-tambah-inline').after(`
+                    <div id="info-limit-evaluasi" class="text-muted mt-1 small">
+                        Hanya diperbolehkan menambah evaluasi satu kali.
+                    </div>
+                `);
+
+            } else {
+                $('#no-evaluasi').show();
+                $('#btn-tambah-inline').prop('disabled', false).removeClass('btn-secondary').addClass('btn-primary');
+                $('#info-limit-evaluasi').remove();
             }
-        });
-    }
+        },
+        error: function () {
+            $('#loading-evaluasi').hide();
+            $('#evaluasi-list').html('<div class="alert alert-danger">Gagal memuat data evaluasi</div>');
+        }
+    });
+}
 
     // Cek status magang sebelum izinkan akses tab Evaluasi
     $('#evaluasi-tab').on('click', function (e) {
