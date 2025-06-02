@@ -57,9 +57,12 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="card-title mb-0">Lowongan Magang</h5>
-            <a href="{{ url('/mahasiswa/rekomendasi') }}" class="btn btn-primary">
-                Rekomendasi
-            </a>
+            <button id="btn-rekomendasi" class="btn btn-primary">
+                <span id="text-rekomendasi">Rekomendasi</span>
+                <span id="spinner-rekomendasi" class="spinner-border spinner-border-sm d-none" role="status"
+                    aria-hidden="true"></span>
+            </button>
+
         </div>
         <div class="card-body">
             @if (count($periode))
@@ -123,5 +126,20 @@
                 $('#myModal').modal('show');
             });
         }
+
+        document.getElementById('btn-rekomendasi').addEventListener('click', function() {
+            const button = this;
+            const text = document.getElementById('text-rekomendasi');
+            const spinner = document.getElementById('spinner-rekomendasi');
+
+            // Tampilkan spinner dan disable tombol
+            button.disabled = true;
+            text.textContent = 'Memproses...';
+            spinner.classList.remove('d-none');
+
+            setTimeout(() => {
+                window.location.href = "{{ url('/mahasiswa/rekomendasi') }}";
+            }, 1500);
+        });
     </script>
 @endpush
