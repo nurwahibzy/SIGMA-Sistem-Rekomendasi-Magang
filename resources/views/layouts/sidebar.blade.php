@@ -150,8 +150,8 @@
                 <ul class="menu">
                     <li class="sidebar-title">Menu</li>
                     
-                    <li class="sidebar-item {{ request()->is('dosen/riwayat*') ? 'active' : '' }}">
-                        <a href="{{ url('/dosen/riwayat') }}" class="sidebar-link">
+                    <li class="sidebar-item {{ request()->is('dosen/dashboard*') ? 'active' : '' }}">
+                        <a href="{{ url('/dosen/dashboard') }}" class="sidebar-link">
                             <i class="bi bi-people-fill"></i>
                             <span>Mahasiswa Bimbingan</span>
                         </a>

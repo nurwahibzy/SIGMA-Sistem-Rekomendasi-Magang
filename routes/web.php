@@ -240,7 +240,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::middleware(['authorize:DSN'])->prefix('dosen')->group(function () {
-        Route::get('/dashboard', [MagangControllerDosen::class, 'getDashboard']);
+        Route::get('/dashboard', [MagangControllerDosen::class, 'getRiwayat']);
         Route::prefix('profil')->group(function () {
             Route::get('/', [AkunControllerDosen::class, 'getProfil']);
 
@@ -273,7 +273,7 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::prefix('riwayat')->group(function () {
-            Route::get('/', [MagangControllerDosen::class, 'getRiwayat']);
+            // Route::get('/', [MagangControllerDosen::class, 'getRiwayat']);
             Route::get('/detail/{id_magang}', [MagangControllerDosen::class, 'getDetailRiwayat']);
         });
     });
