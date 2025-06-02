@@ -3,7 +3,8 @@
         <div class="d-flex justify-content-between align-items-center">
             <div class="ms-5">
                 <div class="logo">
-                    <a href="index.html"><img src="./assets/compiled/svg/logo.svg" alt="Logo"></a>
+                    <a href="index.html"><img src="{{  asset('template/assets/compiled/svg/logo.svg')}}" alt="Logo"
+                            style="width: 120px; height: auto;"></a>
                 </div>
             </div>
             <div class="d-flex justify-content-between align-items-center">
