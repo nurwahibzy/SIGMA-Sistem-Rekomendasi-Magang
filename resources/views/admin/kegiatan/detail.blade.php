@@ -3,10 +3,10 @@
         <form id="form-status" method="POST" action="{{ url('admin/kegiatan/edit/' . $magang->id_magang) }}">
             @csrf
             <div class="modal-header bg-primary text-white rounded-top">
-                            <h5 class="modal-title">Detail Kegiatan</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
+                <h5 class="modal-title">Detail Kegiatan</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
             <div class="modal-body">
                 <div class="container mt-4">
                     <ul class="nav nav-tabs mb-3" id="detailTab" role="tablist">
@@ -38,7 +38,7 @@
                                         @if($magang->dosen)
                                             {{ $magang->dosen->nama }}
                                         @elseif($magang->status == 'ditolak')
-                                        -
+                                            -
                                         @else
                                             <select name="id_dosen" class="form-select" id="input-dosen" required>
                                                 <option value="">Pilih Dosen Pembimbing</option>
@@ -192,7 +192,7 @@
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil',
-                            text: 'Data berhasil dihapus.'
+                            text: 'Data berhasil disimpan.'
                         }).then(() => {
                             location.reload();
                         });
@@ -222,7 +222,7 @@
             $(element).removeClass('is-invalid');
         }
         });
-        
+
     $('#btn-hapus').click(function () {
         Swal.fire({
             title: 'Yakin ingin menghapus data ini?',
