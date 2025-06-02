@@ -28,7 +28,12 @@ class RekomendasiController extends Controller
         $id_mahasiswa = $this->idMahasiswa();
         $mahasiswa = MahasiswaModel::with(['preferensi_lokasi_mahasiswa', 'keahlian_mahasiswa'])->findOrFail($id_mahasiswa);
         $preferensiJenisPerusahaanMahasiswa = $mahasiswa->preferensi_perusahaan_mahasiswa->pluck('id_jenis')->toArray();
-        $perusahaans = PerusahaanModel::with(['jenis_perusahaan', 'lowongan_magang'])->get();
+        $perusahaans = PerusahaanModel::with([
+            'jenis_perusahaan',
+            'lowongan_magang.periode_magang.magang.penilaian'
+        ])->get();
+
+
         $preferensiKeahlianMahasiswa = BidangModel::all();
         $totalPrioritas = $preferensiKeahlianMahasiswa->count();
         $hariIni = date('Y-m-d');
@@ -86,6 +91,7 @@ class RekomendasiController extends Controller
                             $nilai_fasilitas = (int) $penilaian->fasilitas;
                             $nilai_tugas = (int) $penilaian->tugas;
                             $nilai_kedisiplinan = (int) $penilaian->kedisiplinan;
+                            // dd($nilai_fasilitas, $nilai_tugas, $nilai_kedisiplinan);
                             break 2; // Ambil satu penilaian pertama saja
                         }
                     }
@@ -102,6 +108,8 @@ class RekomendasiController extends Controller
                 //         }
                 //     }
                 // }
+
+                // dd($nilai_fasilitas, $nilai_tugas, $nilai_kedisiplinan);
 
                 $data_array[] = [
                     'id_perusahaan' => $perusahaan->id_perusahaan,
@@ -124,7 +132,16 @@ class RekomendasiController extends Controller
 
         $normalisasiMatriks = $this->normalisasiMerec($matriksKeputusan, $kriteria);
 
-        $bobot = $this->hitungBobotMerec($normalisasiMatriks, $kriteria);
+        // $bobot = $this->hitungBobotMerec($normalisasiMatriks, $kriteria);
+        $bobot = [
+            "jenis_perusahaan" => 0.15,
+            "fasilitas" => 0.2,
+            "tugas" => 0.2,
+            "kedisiplinan" => 0.15,
+            "jarak" => 0.3
+        ];
+
+        // dd($bobot);
 
         $normalisasiAras = $this->normalisasiAras($matriksKeputusan, $kriteria);
 
@@ -148,7 +165,13 @@ class RekomendasiController extends Controller
             ->whereIn('id_lowongan', $topLowonganIds)
             ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
 
-        return view('mahasiswa.periode.index', compact('periode'));
+        return view('mahasiswa.periode.index', [
+            'periode' => $periode,
+            'activeMenu' => 'dashboard',
+            'jumlahPerusahaan' => $perusahaans->count(),
+            'jumlahJenisPerusahaan' => $perusahaans->pluck('jenis_perusahaan.id_jenis')->unique()->count(),
+            'jumlahBidang' => BidangModel::count(),
+        ]);
     }
 
     // Fungsi untuk membangun matriks keputusan dari data alternatif dan nilai kriteria
