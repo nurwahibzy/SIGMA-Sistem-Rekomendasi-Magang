@@ -4,16 +4,29 @@ namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\JarakController;
+use App\Models\AkunModel;
 use App\Models\BidangModel;
 use App\Models\LowonganMagangModel;
 use App\Models\MahasiswaModel;
+use App\Models\PeriodeMagangModel;
 use App\Models\PerusahaanModel;
+use Illuminate\Support\Facades\Auth;
 
 class RekomendasiController extends Controller
 {
-    public function getRekomendasi($mahasiswa_id)
+    private function idMahasiswa()
     {
-        $mahasiswa = MahasiswaModel::with(['preferensi_lokasi_mahasiswa', 'keahlian_mahasiswa'])->findOrFail($mahasiswa_id);
+        $id_mahasiswa = AkunModel::with(relations: 'mahasiswa:id_mahasiswa,id_akun')
+            ->where('id_akun', Auth::user()->id_akun)
+            ->first(['id_akun', 'id_level'])
+            ->mahasiswa
+            ->id_mahasiswa;
+        return $id_mahasiswa;
+    }
+    public function getRekomendasi()
+    {
+        $id_mahasiswa = $this->idMahasiswa();
+        $mahasiswa = MahasiswaModel::with(['preferensi_lokasi_mahasiswa', 'keahlian_mahasiswa'])->findOrFail($id_mahasiswa);
         $preferensiJenisPerusahaanMahasiswa = $mahasiswa->preferensi_perusahaan_mahasiswa->pluck('id_jenis')->toArray();
         $perusahaans = PerusahaanModel::with(['jenis_perusahaan', 'lowongan_magang'])->get();
         $preferensiKeahlianMahasiswa = BidangModel::all();
@@ -120,7 +133,22 @@ class RekomendasiController extends Controller
         // dd($data_array);
         // dd($peringkat);
 
-        return response()->json($peringkat); // Mengembalikan 10 rekomendasi teratas
+        // return response()->json($peringkat);
+
+        // Ambil 5 rekomendasi terbaik
+        $topLowonganIds = array_column(array_slice($peringkat, 0, 5), 'id_lowongan');
+
+        // Ambil detail periode dari 5 lowongan terbaik
+        $periode = PeriodeMagangModel::with([
+            'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
+            'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama',
+            'lowongan_magang.bidang:id_bidang,nama',
+            'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
+        ])
+            ->whereIn('id_lowongan', $topLowonganIds)
+            ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
+
+        return view('mahasiswa.periode.index', compact('periode'));
     }
 
     // Fungsi untuk membangun matriks keputusan dari data alternatif dan nilai kriteria
