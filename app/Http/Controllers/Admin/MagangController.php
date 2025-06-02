@@ -29,14 +29,24 @@ class MagangController extends Controller
             'periode_magang.lowongan_magang',
             'periode_magang.lowongan_magang.perusahaan'
         )
-            ->orderByDesc('tanggal_pengajuan')->get();
+            ->orderByRaw("FIELD(status, 'proses', 'diterima', 'lulus', 'ditolak')")
+            ->orderByDesc('tanggal_pengajuan')
+            ->get();
 
         $proses = MagangModel::where('status', 'proses')->count();
         $diterima = MagangModel::where('status', 'diterima')->count();
-        $Lulus = MagangModel::where('status', 'lulus')->count();
+        $lulus = MagangModel::where('status', 'lulus')->count();
         $ditolak = MagangModel::where('status', 'ditolak')->count();
-        return view('admin.kegiatan.index', ['magang' => $magang, 'proses' => $proses, 'diterima' => $diterima, 'lulus' => $Lulus, 'ditolak' => $ditolak]);
+
+        return view('admin.kegiatan.index', [
+            'magang' => $magang,
+            'proses' => $proses,
+            'diterima' => $diterima,
+            'lulus' => $lulus,
+            'ditolak' => $ditolak
+        ]);
     }
+
 
     public function getDetailkegiatan($id_magang)
     {

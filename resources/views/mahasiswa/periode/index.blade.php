@@ -56,7 +56,7 @@
     </div>
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="card-title mb-0">Admin</h5>
+            <h5 class="card-title mb-0">Lowongan Magang</h5>
             <a href="{{ url('/mahasiswa/rekomendasi') }}" class="btn btn-primary">
                 Rekomendasi
             </a>
