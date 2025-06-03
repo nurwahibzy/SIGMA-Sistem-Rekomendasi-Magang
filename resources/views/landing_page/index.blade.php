@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="tab-content" id="detailTabContent">
-        <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
+        <div class="tab-pane fade show active" id="beranda" role="tabpanel">
            @include('landing_page.beranda')
         </div>
         <div class="tab-pane fade" id="program" role="tabpanel">

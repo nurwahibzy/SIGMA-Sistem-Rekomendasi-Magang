@@ -2,7 +2,7 @@
 @section('content')
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="card-title mb-0">{{ $magang->dosen->nama }}</h5>
+           <h5 class="card-title mb-0">Dosen Pembimbing : {{ $magang->dosen->nama }}</h5>
             @if ($hasActivityToday == 0)
             <button onclick="modalAction('{{ url('/mahasiswa/aktivitas/' . $id_magang. '/tambah') }}')" class="btn btn-primary">
                 <i class="bi bi-plus"></i> Tambah Aktivitas

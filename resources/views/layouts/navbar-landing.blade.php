@@ -10,8 +10,8 @@
             <div class="d-flex justify-content-between align-items-center">
                 <ul class="nav nav-tabs w-100" id="detailTab" role="tablist">
                     <li class="menu-item me-3 ms-3">
-                        <a class="nav-link active" data-bs-toggle="tab" href="#dashboard" role="tab">
-                            <span><i class="bi bi-stack"></i> Dashboard</span></a>
+                        <a class="nav-link active" data-bs-toggle="tab" href="#beranda" role="tab">
+                            <span><i class="bi bi-stack"></i> Beranda</span></a>
                     </li>
                     <li class="menu-item me-3 ms-3">
                         <a class="nav-link" data-bs-toggle="tab" href="#program" role="tab">
