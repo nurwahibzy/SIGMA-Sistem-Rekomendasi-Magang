@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="{{ asset('template/assets/extensions/quill/quill.snow.css') }}">
+
 <form action="{{ url('/admin/lowongan/edit/' . $lowongan->id_lowongan) }}" method="POST" id="form-edit">
     @csrf
    <div id="modal-master" class="modal-dialog modal-lg" role="document">
@@ -33,8 +35,12 @@
                         <input type="text" class="form-control" id="nama" name="nama" value="{{ $lowongan->nama }}" required>
                     </div>
                     <div class="mb-3">
-                        <label for="persyaratan" class="form-label">Persyaratan</label>
-                        <textarea class="form-control" id="persyaratan" name="persyaratan" rows="3" required>{{ $lowongan->persyaratan }}</textarea>
+                        <label class="form-label">Persyaratan</label>
+                        <div id="snow">
+                            {!! htmlspecialchars_decode($lowongan->persyaratan) !!}
+                        </div>
+                        <!-- Hidden Textarea untuk submit form -->
+                        <textarea id="persyaratan" name="persyaratan" style="display: none;"></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="deskripsi" class="form-label">Deskripsi</label>
@@ -50,73 +56,101 @@
     </div>
 </form>
 
+<script src="{{ asset('template/assets/extensions/quill/quill.min.js') }}"></script>
+
 <script>
-    $(document).ready(function () {
-        $("#form-edit").validate({
-            rules: {
-                id_perusahaan: { required: true },
-                id_bidang: { required: true },
-                nama: { required: true },
-                persyaratan: { required: true },
-                deskripsi: { required: true }
-            },
-            messages: {
-                id_perusahaan: "Pilih perusahaan",
-                id_bidang: "Pilih bidang magang",
-                nama: "Nama magang wajib diisi",
-                persyaratan: "Persyaratan magang wajib diisi",
-                deskripsi: "Deskripsi magang wajib diisi"
-            },
-            submitHandler: function (form) {
-                const formData = new FormData(form);
-
-                $.ajax({
-                    url: form.action,
-                    type: form.method,
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    headers: {
-                        'X-CSRF-TOKEN': $('input[name="_token"]').val()
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil',
-                                text: 'Data berhasil disimpan.'
-                            }).then(() => {
-                                location.reload();
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal',
-                                text: response.message || 'Terjadi kesalahan saat menyimpan.'
-                            });
-                        }
-                    },
-                    error: function (xhr) {
-                        let errors = xhr.responseJSON?.errors;
-                        if (errors) {
-                            let errorList = Object.values(errors).flat().join('<br>');
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Validasi Gagal',
-                                html: errorList
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal',
-                                text: xhr.responseJSON?.message || 'Terjadi kesalahan saat menyimpan.'
-                            });
-                        }
-                    }
-                });
-
-                // return false;
-            }
-        });
+$(document).ready(function () {
+    // Inisialisasi Quill Editor
+    const quill = new Quill('#snow', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link']
+            ]
+        }
     });
+
+    // Isi awal dari database jika ada
+    @if ($lowongan->persyaratan)
+        quill.clipboard.dangerouslyPasteHTML(`{!! htmlspecialchars_decode($lowongan->persyaratan) !!}`);
+    @endif
+
+    // Sinkronkan konten Quill ke textarea sebelum validasi
+    function syncQuillToTextarea() {
+        const htmlContent = quill.root.innerHTML;
+        $('#persyaratan').val(htmlContent);
+    }
+
+    // Validasi Form
+    $("#form-edit").validate({
+        rules: {
+            id_perusahaan: { required: true },
+            id_bidang: { required: true },
+            nama: { required: true },
+            persyaratan: { required: true },
+            deskripsi: { required: true }
+        },
+        messages: {
+            id_perusahaan: "Pilih perusahaan",
+            id_bidang: "Pilih bidang magang",
+            nama: "Nama magang wajib diisi",
+            persyaratan: "Persyaratan magang wajib diisi",
+            deskripsi: "Deskripsi magang wajib diisi"
+        },
+        submitHandler: function (form) {
+            // Sinkronkan Quill ke textarea sebelum submit
+            syncQuillToTextarea();
+
+            const formData = new FormData(form);
+
+            $.ajax({
+                url: form.action,
+                type: form.method,
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('input[name="_token"]').val()
+                },
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: 'Data berhasil disimpan.'
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: response.message || 'Terjadi kesalahan saat menyimpan.'
+                        });
+                    }
+                },
+                error: function (xhr) {
+                    let errors = xhr.responseJSON?.errors;
+                    if (errors) {
+                        let errorList = Object.values(errors).flat().join('<br>');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Validasi Gagal',
+                            html: errorList
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: xhr.responseJSON?.message || 'Terjadi kesalahan saat menyimpan.'
+                        });
+                    }
+                }
+            });
+        }
+    });
+});
 </script>

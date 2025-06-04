@@ -76,7 +76,7 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">Persyaratan</label>
                             <div class="border rounded p-2">
-                                <p class="form-control-plaintext mb-0">{{ $periode->lowongan_magang->persyaratan }}</p>
+                                <p class="form-control-plaintext mb-0">{!! htmlspecialchars_decode($periode->lowongan_magang->persyaratan) !!}</p>
                             </div>
                         </div>
                     </div>
