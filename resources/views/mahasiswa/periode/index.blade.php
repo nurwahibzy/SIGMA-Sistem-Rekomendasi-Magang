@@ -57,14 +57,16 @@
     <div class="card shadow">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="card-title mb-0">Lowongan Magang</h5>
-            <button id="btn-rekomendasi" class="btn btn-primary">
-                <span id="text-rekomendasi">Rekomendasi</span>
-                <span id="spinner-rekomendasi" class="spinner-border spinner-border-sm d-none" role="status"
-                    aria-hidden="true"></span>
-            </button>
-            @if (!empty($perhitungan))
-            <button id="btn-perhitungan" class="btn btn-primary">Perhitungan</button>
-            @endif
+            <div> 
+                @if (!empty($perhitungan))
+                <button id="btn-perhitungan" class="btn btn-warning">Perhitungan</button> {{-- Pertahankan kelas btn btn-primary --}}
+                @endif
+                <button id="btn-rekomendasi" class="btn btn-primary me-2"> 
+                    <span id="text-rekomendasi">Rekomendasi</span>
+                    <span id="spinner-rekomendasi" class="spinner-border spinner-border-sm d-none" role="status"
+                        aria-hidden="true"></span>
+                </button>
+            </div>
         </div>
         <div class="card-body">
             <form method="GET" action="{{ url('/mahasiswa/periode/') }}" class="row g-3 mb-4">
