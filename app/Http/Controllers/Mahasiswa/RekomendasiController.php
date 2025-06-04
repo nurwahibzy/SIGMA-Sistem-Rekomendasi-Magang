@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Auth;
 
 class RekomendasiController extends Controller
 {
+
+    protected $prosesPerhitungan = [];
     private function idMahasiswa()
     {
         $id_mahasiswa = AkunModel::with(relations: 'mahasiswa:id_mahasiswa,id_akun')
@@ -28,13 +30,14 @@ class RekomendasiController extends Controller
     {
         $id_mahasiswa = $this->idMahasiswa();
         $mahasiswa = MahasiswaModel::with(['preferensi_lokasi_mahasiswa', 'keahlian_mahasiswa'])->findOrFail($id_mahasiswa);
-        $preferensiJenisPerusahaanMahasiswa = $mahasiswa->preferensi_perusahaan_mahasiswa->pluck('id_jenis')->toArray();
         $perusahaans = PerusahaanModel::with([
             'jenis_perusahaan',
-            'lowongan_magang.periode_magang.magang.penilaian'
+            'lowongan_magang.periode_magang.magang' => function ($q) {
+                $q->with('penilaian');
+            }
         ])->get();
 
-         $preferensiKeahlianMahasiswa = KeahlianMahasiswaModel::with(['bidang'])
+        $preferensiKeahlianMahasiswa = KeahlianMahasiswaModel::with(['bidang'])
             ->where('id_mahasiswa', $id_mahasiswa)
             ->orderBy('prioritas', 'asc')
             ->get(['id_bidang', 'prioritas']);
@@ -42,35 +45,27 @@ class RekomendasiController extends Controller
         if ($preferensiKeahlianMahasiswa->isEmpty()) {
             return redirect()->route('mahasiswa.profil')->with('error', 'Silakan atur preferensi keahlian terlebih dahulu.');
         }
-        
+
         $totalPrioritas = $preferensiKeahlianMahasiswa->count();
         $hariIni = date('Y-m-d');
-        $lowonganMagang = LowonganMagangModel::with(['periode_magang.magang'])
-            ->whereHas('periode_magang', function ($query) use ($hariIni) {
-                $query->where('tanggal_mulai', '>', $hariIni); // Belum dilaksanakan
-            })->get();
 
 
-        // dd($hariIni,$lowonganMagang);
-        // dd($preferensiKeahlianMahasiswa);
-        // return response()->json($preferensiKeahlianMahasiswa);
+        $bobot_prioritas = [];
+        foreach ($preferensiKeahlianMahasiswa as $preferensi) {
+            $bobot_prioritas[$preferensi->id_bidang] = $totalPrioritas - ($preferensi->prioritas - 1);
+        }
 
-        // $bobot_prioritas = [];
-        // for ($i = 0; $i < $totalPrioritas; $i++) {
-        //     // Mahasiswa ke-i memiliki prioritas ke-i+1
-        //     $prioritas = $preferensiKeahlianMahasiswa[$i]->prioritas;
-        //     $bobot_prioritas[$prioritas] = $totalPrioritas - $i;
-        // }
-
-        // dd($bobot_prioritas);
 
         $kriteria = [
-            (object)['id' => 'jenis_perusahaan', 'type' => 'cost'],
-            // (object)['id' => 'bidang_prioritas', 'type' => 'cost'],
+            (object)['id' => 'bidang_prioritas', 'type' => 'cost'],
             (object)['id' => 'fasilitas', 'type' => 'benefit'],
             (object)['id' => 'tugas', 'type' => 'benefit'],
-            (object)['id' => 'kedisiplinan', 'type' => 'benefit'],
+            (object)['id' => 'pembinaan', 'type' => 'benefit'],
             (object)['id' => 'jarak', 'type' => 'cost']
+        ];
+
+        $this->prosesPerhitungan = [
+            'kriteria' => $kriteria,
         ];
 
         $data_array = [];
@@ -99,7 +94,6 @@ class RekomendasiController extends Controller
                             $nilai_fasilitas = (int) $penilaian->fasilitas;
                             $nilai_tugas = (int) $penilaian->tugas;
                             $nilai_kedisiplinan = (int) $penilaian->kedisiplinan;
-                            // dd($nilai_fasilitas, $nilai_tugas, $nilai_kedisiplinan);
                             break 2; // Ambil satu penilaian pertama saja
                         }
                     }
@@ -107,17 +101,8 @@ class RekomendasiController extends Controller
 
                 $jarak = JarakController::hitungJarak($perusahaan, $mahasiswa);
 
-                // foreach ($preferensiKeahlianMahasiswa->prioritas as $bidang) {
-                //     foreach ($preferensiKeahlianMahasiswa as $preferensi) {
-                //         if ($bidang->id_bidang == $preferensi->id_bidang) {
-                //             $prioritas = $preferensi->prioritas;
-                //             $bobot_bidang = $bobot_prioritas[$prioritas] ?? 0;
-                //             break 2;
-                //         }
-                //     }
-                // }
-
-                // dd($nilai_fasilitas, $nilai_tugas, $nilai_kedisiplinan);
+                $id_bidang = $lowongan->id_bidang;
+                $bobot_bidang = $bobot_prioritas[$id_bidang] ?? ($totalPrioritas + 1); // Jika tidak ditemukan, berikan bobot default
 
                 $data_array[] = [
                     'id_perusahaan' => $perusahaan->id_perusahaan,
@@ -125,7 +110,7 @@ class RekomendasiController extends Controller
                     'jenis_perusahaan' => $perusahaan->jenis_perusahaan->id_jenis,
                     'id_lowongan' => $lowongan->id_lowongan,
                     'nama_lowongan' => $lowongan->nama,
-                    // 'prioritas_keahlian' => $bobot_bidang,
+                    'prioritas_keahlian' => $bobot_bidang,
                     'jarak' => $jarak,
                     'fasilitas' => $nilai_fasilitas,
                     'tugas' => $nilai_tugas,
@@ -140,25 +125,16 @@ class RekomendasiController extends Controller
 
         $normalisasiMatriks = $this->normalisasiMerec($matriksKeputusan, $kriteria);
 
-        // $bobot = $this->hitungBobotMerec($normalisasiMatriks, $kriteria);
-        $bobot = [
-            "jenis_perusahaan" => 0.15,
-            "fasilitas" => 0.2,
-            "tugas" => 0.2,
-            "kedisiplinan" => 0.15,
-            "jarak" => 0.3
-        ];
+        $this->hitungIntermediateMerec($normalisasiMatriks, $kriteria);
 
-        // dd($bobot);
+        $bobot = $this->hitungBobotMerec($normalisasiMatriks, $kriteria);
 
         $normalisasiAras = $this->normalisasiAras($matriksKeputusan, $kriteria);
 
+        $this->hitungIntermediateAras($normalisasiAras, $bobot, $data_array, $kriteria);
+
         $peringkat = $this->hitungAras($normalisasiAras, $bobot, $data_array, $kriteria);
 
-        // dd($data_array);
-        // dd($peringkat);
-
-        // return response()->json($peringkat);
 
         // Ambil 5 rekomendasi terbaik
         $topLowonganIds = array_column(array_slice($peringkat, 0, 5), 'id_lowongan');
@@ -173,12 +149,14 @@ class RekomendasiController extends Controller
             ->whereIn('id_lowongan', $topLowonganIds)
             ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
 
+            
         return view('mahasiswa.periode.index', [
             'periode' => $periode,
             'activeMenu' => 'dashboard',
             'jumlahPerusahaan' => $perusahaans->count(),
             'jumlahJenisPerusahaan' => $perusahaans->pluck('jenis_perusahaan.id_jenis')->unique()->count(),
             'jumlahBidang' => BidangModel::count(),
+            'perhitungan'=> true
         ]);
     }
 
@@ -192,8 +170,8 @@ class RekomendasiController extends Controller
             $matriks[$alt['id_perusahaan']][$kriteria[2]->id] = $alt['tugas'];
             $matriks[$alt['id_perusahaan']][$kriteria[3]->id] = $alt['kedisiplinan'];
             $matriks[$alt['id_perusahaan']][$kriteria[4]->id] = $alt['jarak'];
-            // $matriks[$alt['id_perusahaan']][$kriteria[5]->id] = $alt['prioritas_keahlian'];
         }
+        $this->prosesPerhitungan["matriksKeputusan"] = $matriks;
         return $matriks;
     }
 
@@ -219,8 +197,46 @@ class RekomendasiController extends Controller
                 }
             }
         }
+        $this->prosesPerhitungan["normalisasiMerec"] = $hasil;
         return $hasil;
     }
+
+    // Intermediate MEREC
+private function hitungIntermediateMerec($normal, $kriteria)
+{
+    $initial_s_j = [];
+    $s_prime_j = [];
+    $e_j = [];
+
+    // Hitung initial_s_j: Total utilitas semua alternatif dengan semua kriteria
+    foreach ($normal as $idAlt => $nilai) {
+        $initial_s_j[$idAlt] = array_sum($nilai);
+    }
+
+    // Hitung s_prime_j: total utilitas setelah penghapusan masing-masing kriteria
+    foreach ($kriteria as $krit) {
+        foreach ($normal as $idAlt => $nilai) {
+            $temp = $nilai;
+            unset($temp[$krit->id]);
+            $s_prime_j[$idAlt][$krit->id] = array_sum($temp);
+        }
+    }
+
+    // Hitung e_j: pengaruh atau selisih mutlak tiap kriteria
+    foreach ($kriteria as $krit) {
+        $selisih = 0;
+        foreach ($normal as $idAlt => $nilai) {
+            $selisih += abs($initial_s_j[$idAlt] - $s_prime_j[$idAlt][$krit->id]);
+        }
+        $e_j[$krit->id] = $selisih;
+    }
+
+    $this->prosesPerhitungan["initial_s_j"] = $initial_s_j;
+    $this->prosesPerhitungan["s_prime_j"] = $s_prime_j;
+    $this->prosesPerhitungan["e_j"] = $e_j;
+
+    return [$initial_s_j, $s_prime_j, $e_j];
+}
 
     private function hitungBobotMerec($normal, $kriteria)
     {
@@ -249,7 +265,7 @@ class RekomendasiController extends Controller
         foreach ($kriteria as $krit) {
             $bobot[$krit->id] = $totalPengaruh == 0 ? 0 : $pengaruh[$krit->id] / $totalPengaruh;
         }
-
+        $this->prosesPerhitungan["bobotMerec"] = $bobot;
         return $bobot;
     }
 
@@ -272,8 +288,54 @@ class RekomendasiController extends Controller
                 }
             }
         }
+        $this->prosesPerhitungan["normalisasiAras"] = $hasil;
         return $hasil;
     }
+
+    // Intermediate ARAS
+private function hitungIntermediateAras($normal, $bobot, $alternatif, $kriteria)
+{
+    $weighted = [];
+    $optimal = [];
+    $utility = [];
+
+    // Weighted normalized matrix
+    foreach ($normal as $idAlt => $nilai) {
+        foreach ($kriteria as $krit) {
+            $weighted[$idAlt][$krit->id] = $nilai[$krit->id] * $bobot[$krit->id];
+        }
+    }
+
+    // Optimality function (Si)
+    foreach ($alternatif as $alt) {
+        $id = $alt['id_perusahaan'];
+        $optimal[$id] = array_sum($weighted[$id]);
+    }
+
+    // Ideal solution (S0)
+    $ideal = [];
+    foreach ($kriteria as $krit) {
+        $kolom = array_column($normal, $krit->id);
+        $ideal[$krit->id] = $krit->type === 'benefit' ? max($kolom) : min($kolom);
+    }
+    $S0 = 0;
+    foreach ($kriteria as $krit) {
+        $S0 += $bobot[$krit->id] * $ideal[$krit->id];
+    }
+
+    // Utility degree (Ki)
+    foreach ($alternatif as $alt) {
+        $id = $alt['id_perusahaan'];
+        $utility[$id] = $S0 == 0 ? 0 : $optimal[$id] / $S0;
+    }
+
+    $this->prosesPerhitungan["weighted_normalized_matrix"] = $weighted;
+    $this->prosesPerhitungan["optimality_function"] = $optimal;
+    $this->prosesPerhitungan["utility_degree"] = $utility;
+
+    return [$weighted, $optimal, $utility];
+}
+
     private function hitungAras($normal, $bobot, $alternatif, $kriteria)
     {
         // Hitung nilai ideal (S0)
@@ -308,6 +370,16 @@ class RekomendasiController extends Controller
 
         // Urutkan berdasarkan skor tertinggi
         usort($hasil, fn($a, $b) => $b['skor'] <=> $a['skor']);
+
+        $this->prosesPerhitungan["hasil"] = $hasil;
         return $hasil;
+    }
+    public function prosesPerhitungan()
+    {
+        // Pastikan prosesPerhitungan sudah diisi sebelumnya
+        if (!empty($this->prosesPerhitungan)) {
+            // Kembalikan view dengan data perhitungan
+            return response()->view('mahasiswa.spk.perhitungan', $this->prosesPerhitungan);
+        }
     }
 }
