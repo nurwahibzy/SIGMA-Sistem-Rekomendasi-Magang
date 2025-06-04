@@ -160,7 +160,7 @@ class RekomendasiController extends Controller
 
         // return response()->json($peringkat);
 
-        Ambil 5 lowongan terbaik berdasarkan peringkat
+        // Ambil 5 lowongan terbaik berdasarkan peringkat
         $topLowonganIds = array_column(array_slice($peringkat, 0, 5), 'id_lowongan');
 
         // Ambil detail periode untuk lowongan terbaik
