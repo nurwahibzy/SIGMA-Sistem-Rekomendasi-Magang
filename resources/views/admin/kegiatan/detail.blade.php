@@ -20,7 +20,6 @@
                         <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#periode">Periode &
                                 Lowongan</a></li>
                     </ul>
-
                     <div class="tab-content" id="detailTabContent">
                         <div class="tab-pane fade show active" id="magang" role="tabpanel">
                             <table class="table table-borderless">
@@ -58,9 +57,18 @@
                                         @endif
                                     </td>
                                 </tr>
+
+                                <!-- Kolom Alasan Penolakan -->
+                                <tr id="alasan_penolakan_row" class="d-none">
+                                    <th>Alasan Penolakan</th>
+                                    <td>
+                                        <textarea name="alasan_penolakan" id="alasan_penolakan" class="form-control" rows="3"
+                                            placeholder="Masukkan alasan penolakan..."></textarea>
+                                        <div class="invalid-feedback">Harap masukkan alasan penolakan.</div>
+                                    </td>
+                                </tr>
                             </table>
                         </div>
-
                         <div class="tab-pane fade" id="mahasiswa" role="tabpanel">
                             <table class="table table-borderless">
                                 <tr>
@@ -89,7 +97,6 @@
                                 </tr>
                             </table>
                         </div>
-
                         <div class="tab-pane fade" id="keahlian" role="tabpanel">
                             <ul class="list-group">
                                 @foreach($magang->mahasiswa->keahlian_mahasiswa as $keahlian)
@@ -98,7 +105,6 @@
                                 @endforeach
                             </ul>
                         </div>
-
                         <div class="tab-pane fade" id="pengalaman" role="tabpanel">
                             <ul class="list-group">
                                 @foreach($magang->mahasiswa->pengalaman as $pengalaman)
@@ -106,7 +112,6 @@
                                 @endforeach
                             </ul>
                         </div>
-
                         <div class="tab-pane fade" id="periode" role="tabpanel">
                             <table class="table table-borderless">
                                 <tr>
@@ -138,7 +143,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="modal-footer flex-column align-items-stretch gap-3">
                 @if(count($activeButton))
                     <div class="w-100">
@@ -167,17 +171,23 @@
 </div>
 
 <script>
-    $('input[name="status"]').on('change', function () {
-        const selectedStatus = $(this).val();
-        if (selectedStatus === 'ditolak') {
-            $('#input-dosen').prop('disabled', true).val('');
-        } else {
-            $('#input-dosen').prop('disabled', false);
-        }
-    });
-
-    $('input[name="status"]:checked').trigger('change');
     $(document).ready(function () {
+        // Show/hide alasan penolakan and disable dosen field if status ditolak
+        $('input[name="status"]').on('change', function () {
+            const selectedStatus = $(this).val();
+            if (selectedStatus === 'ditolak') {
+                $('#input-dosen').prop('disabled', true).val('');
+                $('#alasan_penolakan_row').removeClass('d-none');
+            } else {
+                $('#input-dosen').prop('disabled', false);
+                $('#alasan_penolakan_row').addClass('d-none');
+            }
+        });
+
+        // Trigger change on load
+        $('input[name="status"]:checked').trigger('change');
+
+        // Validate form
         $("#form-status").validate({
             rules: {
                 status: { required: true },
@@ -185,91 +195,102 @@
                     id_dosen: { required: true },
                 @endif
             },
-        messages: {
-        status: { required: "Silakan pilih salah satu status." },
-        @if(!$magang->dosen)
-            id_dosen: { required: "Silakan pilih dosen pembimbing." },
-        @endif
+            messages: {
+                status: { required: "Silakan pilih salah satu status." },
+                @if(!$magang->dosen)
+                    id_dosen: { required: "Silakan pilih dosen pembimbing." },
+                @endif
             },
-        submitHandler: function (form) {
-            $.ajax({
-                url: form.action,
-                type: form.method,
-                data: $(form).serialize(),
-                success: function (response) {
-                    if (response.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil',
-                            text: 'Data berhasil disimpan.'
-                        }).then(() => {
-                            location.reload();
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal',
-                            text: response.message || 'Terjadi kesalahan saat menyimpan.'
-                        });
-                    }
-                },
-                error: function () {
-                    Swal.fire({ icon: 'error', title: 'Gagal', text: 'Terjadi kesalahan pada server.' });
-                }
-            });
-            // return false;
-        },
-        errorElement: 'span',
-        errorPlacement: function (error, element) {
-            error.addClass('invalid-feedback');
-            element.closest('.form-check, .form-select').append(error);
-        },
-        highlight: function (element) {
-            $(element).addClass('is-invalid');
-        },
-        unhighlight: function (element) {
-            $(element).removeClass('is-invalid');
-        }
-        });
+            ignore: [],
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-check, .form-select').append(error);
+            },
+            highlight: function (element) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element) {
+                $(element).removeClass('is-invalid');
+            },
+            submitHandler: function (form) {
+                // Custom validation for alasan_penolakan
+                const status = $('input[name="status"]:checked').val();
+                const alasan = $('#alasan_penolakan').val().trim();
 
-    $('#btn-hapus').click(function () {
-        Swal.fire({
-            title: 'Yakin ingin menghapus data ini?',
-            text: "Tindakan ini tidak dapat dibatalkan!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Ya, hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
+                if (status === 'ditolak' && alasan === '') {
+                    $('#alasan_penolakan').addClass('is-invalid');
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Harap masukkan alasan penolakan.' });
+                    return false;
+                }
+
+                // Submit form via AJAX
                 $.ajax({
-                    url: "{{ url('admin/kegiatan/edit/' . $magang->id_magang) }}",
-                    type: 'DELETE',
-                    data: {
-                        _token: '{{ csrf_token() }}'
-                    },
+                    url: form.action,
+                    type: form.method,
+                    data: $(form).serialize(),
                     success: function (response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil',
-                            text: 'Data berhasil dihapus.'
-                        }).then(() => {
-                            location.reload();
-                        });
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: 'Data berhasil disimpan.'
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: response.message || 'Terjadi kesalahan saat menyimpan.'
+                            });
+                        }
                     },
                     error: function () {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal',
-                            text: 'Gagal menghapus data. Silakan coba lagi.'
-                        });
+                        Swal.fire({ icon: 'error', title: 'Gagal', text: 'Terjadi kesalahan pada server.' });
                     }
                 });
             }
         });
-    });
 
+        // Delete handler
+        $('#btn-hapus').click(function () {
+            Swal.fire({
+                title: 'Yakin ingin menghapus data ini?',
+                text: "Tindakan ini tidak dapat dibatalkan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ url('admin/kegiatan/edit/' . $magang->id_magang) }}",
+                        type: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function (response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: 'Data berhasil dihapus.'
+                            }).then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: 'Gagal menghapus data. Silakan coba lagi.'
+                            });
+                        }
+                    });
+                }
+            });
+        });
     });
 </script>

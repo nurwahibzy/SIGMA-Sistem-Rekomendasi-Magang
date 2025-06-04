@@ -87,31 +87,41 @@ class MagangController extends Controller
     public function putKegiatan(Request $request, $id_magang)
     {
         if ($request->ajax() || $request->wantsJson()) {
+            // Validasi dasar status
             $validator = Validator::make($request->all(), [
                 'status' => 'required|in:proses,diterima,ditolak,lulus',
+                'alasan_penolakan' => $request->input('status') === 'ditolak' ? 'required|string|max:500' : 'nullable',
             ]);
 
             if ($validator->fails()) {
                 return response()->json(['success' => false]);
             }
 
-            $id_dosen = $request->input('id_dosen');
             $status = $request->input('status');
+            $id_dosen = $request->input('id_dosen');
+            $alasan_penolakan = $request->input('alasan_penolakan');
 
-            if ($status == 'diterima') {
-                MagangModel::where('id_magang', $id_magang)
-                    ->update([
-                        'id_dosen' => $id_dosen,
-                        'status' => $status
-                    ]);
+            $dataToUpdate = [
+                'status' => $status,
+            ];
+
+            if ($status === 'diterima' && $id_dosen) {
+                $dataToUpdate['id_dosen'] = $id_dosen;
+                $dataToUpdate['alasan_penolakan'] = null; // Reset jika diterima
+            } elseif ($status === 'ditolak') {
+                $dataToUpdate['alasan_penolakan'] = $alasan_penolakan;
+                $dataToUpdate['id_dosen'] = null; // Tidak ada dosen jika ditolak
             } else {
-                MagangModel::where('id_magang', $id_magang)
-                    ->update([
-                        'status' => $status
-                    ]);
+                $dataToUpdate['id_dosen'] = null;
+                $dataToUpdate['alasan_penolakan'] = null;
             }
+
+            MagangModel::where('id_magang', $id_magang)->update($dataToUpdate);
+
             return response()->json(['success' => true]);
         }
+
+        return response()->json(['success' => false, 'message' => 'Invalid request'], 400);
     }
 
     public function deleteKegiatan(Request $request, $id_magang)

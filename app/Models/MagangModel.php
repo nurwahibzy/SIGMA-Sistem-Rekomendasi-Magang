@@ -13,7 +13,7 @@ class MagangModel extends Model
 
     protected $table = 'magang';
     protected $primaryKey = 'id_magang';
-    protected $fillable = ['id_mahasiswa', 'id_dosen', 'id_periode', 'status', 'status_penilaian', 'tanggal_pengajuan'];
+    protected $fillable = ['id_mahasiswa', 'id_dosen', 'id_periode', 'status', 'status_penilaian', 'tanggal_pengajuan', 'alasan_penolakan'];
     public function mahasiswa(): BelongsTo
     {
         return $this->belongsTo(MahasiswaModel::class, 'id_mahasiswa', 'id_mahasiswa');
