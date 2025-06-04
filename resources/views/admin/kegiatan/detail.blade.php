@@ -139,7 +139,7 @@
                                 </tr>
                                 <tr>
                                     <th>Persyaratan</th>
-                                    <td>{{ $magang->periode_magang->lowongan_magang->persyaratan }}</td>
+                                    <td>{!! htmlspecialchars_decode($magang->periode_magang->lowongan_magang->persyaratan) !!}</td>
                                 </tr>
                             </table>
                         </div>

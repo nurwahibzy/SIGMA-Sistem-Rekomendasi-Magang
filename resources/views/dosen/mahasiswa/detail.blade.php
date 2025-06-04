@@ -245,7 +245,8 @@
                                                         <div class="border-top pt-3">
                                                             <strong>Persyaratan:</strong>
                                                             <div class="mt-2">
-                                                                {!! nl2br(e($magang->periode_magang->lowongan_magang->persyaratan)) !!}
+                                                                {{-- {!! nl2br(e($magang->periode_magang->lowongan_magang->persyaratan)) !!} --}}
+                                                                {!! htmlspecialchars_decode($magang->periode_magang->lowongan_magang->persyaratan) !!}
                                                             </div>
                                                         </div>
                                                     </div>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\JarakController;
 use App\Models\AkunModel;
 use App\Models\BidangModel;
+use App\Models\KeahlianMahasiswaModel;
 use App\Models\LowonganMagangModel;
 use App\Models\MahasiswaModel;
 use App\Models\PeriodeMagangModel;
@@ -33,8 +34,15 @@ class RekomendasiController extends Controller
             'lowongan_magang.periode_magang.magang.penilaian'
         ])->get();
 
+         $preferensiKeahlianMahasiswa = KeahlianMahasiswaModel::with(['bidang'])
+            ->where('id_mahasiswa', $id_mahasiswa)
+            ->orderBy('prioritas', 'asc')
+            ->get(['id_bidang', 'prioritas']);
 
-        $preferensiKeahlianMahasiswa = BidangModel::all();
+        if ($preferensiKeahlianMahasiswa->isEmpty()) {
+            return redirect()->route('mahasiswa.profil')->with('error', 'Silakan atur preferensi keahlian terlebih dahulu.');
+        }
+        
         $totalPrioritas = $preferensiKeahlianMahasiswa->count();
         $hariIni = date('Y-m-d');
         $lowonganMagang = LowonganMagangModel::with(['periode_magang.magang'])

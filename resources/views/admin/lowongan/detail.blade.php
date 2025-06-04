@@ -32,7 +32,9 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Persyaratan</label>
                     <div class="border rounded p-2">
-                        <p class="form-control-plaintext mb-0">{{ $lowongan->persyaratan }}</p>
+                        <div class="form-control-plaintext mb-0">
+                            {!! htmlspecialchars_decode($lowongan->persyaratan) !!}
+                        </div>
                     </div>
                 </div>
 
