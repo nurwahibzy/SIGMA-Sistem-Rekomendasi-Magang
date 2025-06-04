@@ -62,6 +62,9 @@
                 <span id="spinner-rekomendasi" class="spinner-border spinner-border-sm d-none" role="status"
                     aria-hidden="true"></span>
             </button>
+            @if (!empty($perhitungan))
+            <button id="btn-perhitungan" class="btn btn-primary">Perhitungan</button>
+            @endif
         </div>
         <div class="card-body">
             <form method="GET" action="{{ url('/mahasiswa/periode/') }}" class="row g-3 mb-4">
@@ -169,15 +172,18 @@
             const button = this;
             const text = document.getElementById('text-rekomendasi');
             const spinner = document.getElementById('spinner-rekomendasi');
-
+            
             // Tampilkan spinner dan disable tombol
             button.disabled = true;
             text.textContent = 'Memproses...';
             spinner.classList.remove('d-none');
-
+            
             setTimeout(() => {
                 window.location.href = "{{ url('/mahasiswa/rekomendasi') }}";
             }, 1500);
         });
+        document.getElementById('btn-perhitungan').addEventListener('click', function () {
+            window.location.href = "{{ url('/mahasiswa/perhitungan') }}";
+            });
     </script>
 @endpush

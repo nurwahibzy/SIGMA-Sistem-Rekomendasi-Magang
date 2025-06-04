@@ -164,7 +164,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['authorize:MHS'])->prefix('mahasiswa')->group(function () {
         Route::get('/dashboard', [PeriodeMagangControllerMahasiswa::class, 'getDashboard']);
-        Route::get('/rekomendasi', [RekomendasiController::class, 'getRekomendasi']);
+        Route::get('/rekomendasi', [RekomendasiController::class, 'tampilkanHasilRekomendasi']);
+        Route::get('/perhitungan', [RekomendasiController::class, 'prosesPerhitungan']);
         Route::post('/tes', [KeahlianMahasiswaController::class, 'postKeahlian']);
         Route::prefix('profil')->group(function () {
             Route::get('/', [AkunControllerMahasiswa::class, 'getProfil'])->name('mahasiswa.profil');
