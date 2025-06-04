@@ -51,6 +51,18 @@ class AktivitasController extends Controller
             return DB::transaction(function () use ($id_magang) {
                 $id_mahasiswa = $this->idMahasiswa();
 
+                $magang = MagangModel::with('dosen.akun')
+                    ->where('id_magang', $id_magang)
+                    ->first();
+
+                if ($magang) {
+                    if ($magang->id_mahasiswa != $id_mahasiswa || $magang->status != 'diterima') {
+                        return view('mahasiswa.aktivitas.index');
+                    }
+                } else {
+                    return view('mahasiswa.aktivitas.index');
+                }
+
                 $aktivitas = AktivitasMagangModel::with('magang')
                     ->where('id_magang', $id_magang)
                     ->whereHas('magang', function ($query) use ($id_mahasiswa) {
@@ -60,10 +72,6 @@ class AktivitasController extends Controller
                     ->get();
 
                 $today = Carbon::now()->toDateString();
-
-                $magang = MagangModel::with('dosen.akun')
-                    ->where('id_magang', $id_magang)
-                    ->first();
 
                 $hasActivityToday = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
                     ->where('id_magang', $id_magang)
@@ -305,6 +313,18 @@ class AktivitasController extends Controller
     public function getRiwayatAktivitas($id_magang)
     {
         $id_mahasiswa = $this->idMahasiswa();
+        $magang = MagangModel::with('dosen.akun')
+            ->where('id_magang', $id_magang)
+            ->first();
+
+        if ($magang) {
+            if ($magang->id_mahasiswa != $id_mahasiswa || $magang->status != 'lulus') {
+                return view('mahasiswa.aktivitas.index');
+            }
+        } else {
+            return view('mahasiswa.aktivitas.index');
+        }
+
 
         $aktivitas = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
             ->where('id_magang', $id_magang)
@@ -313,11 +333,6 @@ class AktivitasController extends Controller
             })
             ->orderByDesc('tanggal')
             ->get();
-
-        $magang = MagangModel::with('dosen.akun')
-            ->where('id_magang', $id_magang)
-            ->first();
-
 
         $evaluasi = EvaluasiMagangModel::with('magang:id_magang,id_mahasiswa')
             ->where('id_magang', $id_magang)

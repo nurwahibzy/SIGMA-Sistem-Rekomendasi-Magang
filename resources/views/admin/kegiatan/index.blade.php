@@ -114,10 +114,11 @@
                                             {{ ucfirst($item->status ?? '-') }}
                                         </span>
                                     </td>
-                                    <td class="text-center"> <button class="btn btn-sm btn-info btn-detail"
+                                    <!-- <td class="text-center"> <button class="btn btn-sm btn-info btn-detail"
                                             onclick="modalAction('{{ url('/admin/kegiatan/detail/' . $item->id_magang) }}')">
                                             Detail
-                                        </button></td>
+                                        </button></td> -->
+                                    <td class="text-center"> <a href="{{  url('/admin/kegiatan/detail/' . $item->id_magang)  }}" class="btn btn-sm btn-info btn-detail"><i class="bi bi-x-circle"></i> Riset</a></td>
                                 </tr>
                             @endforeach
                         </tbody>

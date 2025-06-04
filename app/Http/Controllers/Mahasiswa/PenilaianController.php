@@ -59,18 +59,29 @@ class PenilaianController extends Controller
             return DB::transaction(function () use ($id_magang) {
                 $id_mahasiswa = $this->idMahasiswa();
 
-                $is_magang = MagangModel::where('id_mahasiswa', $id_mahasiswa)
+                $magang = MagangModel::where('id_mahasiswa', $id_mahasiswa)
                     ->where('id_magang', $id_magang)
                     ->where('status', 'lulus')
                     ->first();
+                
+                $penilaian = PenilaianModel::where('id_magang', $id_magang)->first();
 
-                if ($is_magang) {
-                    return view('mahasiswa.penilaian.rating', [
-                        'id_magang' => $id_magang
-                    ]);
+                if ($magang) {
+                    if ($magang->id_mahasiswa != $id_mahasiswa) {
+                        return view('mahasiswa.penilaian.rating');
+                    }
                 } else {
-                    return abort(404, 'Data magang tidak ditemukan atau tidak sesuai.');
+                    return view('mahasiswa.penilaian.rating');
                 }
+
+                if ($penilaian) {
+                    return view('mahasiswa.penilaian.rating');
+                }
+
+                return view('mahasiswa.penilaian.rating', [
+                    'id_magang' => $id_magang
+                ]);
+
             });
         } catch (\Throwable $e) {
             Log::error("Gagal memberikan penilaian: " . $e->getMessage());

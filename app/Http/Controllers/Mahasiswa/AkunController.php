@@ -62,7 +62,6 @@ class AkunController extends Controller
     public function getEditProfil()
     {
         $akun = $this->allDataProfil();
-        $akun = $this->allDataProfil();
         $bidang = BidangModel::get();
         $jenis = JenisPerusahaanModel::get();
         return view(
@@ -79,18 +78,6 @@ class AkunController extends Controller
             ]
         );
     }
-    // public function updateProfil(Request $request)
-    // {
-    //     $user = Auth::user();
-
-    //     $mahasiswa = $user->mahasiswa;
-    //     $mahasiswa->nama = $request->input('nama');
-    //     $mahasiswa->alamat = $request->input('alamat');
-    //     $mahasiswa->telepon = $request->input('telepon');
-    //     $mahasiswa->save();
-
-    //     return response()->json(['status' => 'success', 'message' => 'Profil berhasil diperbarui!']);
-    // }
 
 
     private function allDataProfil()
