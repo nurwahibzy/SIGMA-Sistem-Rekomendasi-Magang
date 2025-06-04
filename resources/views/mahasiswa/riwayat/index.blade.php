@@ -50,6 +50,12 @@
                                         </span>
                                     </td>
                                     </p>
+                                    <p class="mb-1">
+                                        @if ($item->status == 'ditolak')
+                                            <strong>Alasan Penolakan:</strong> 
+                                            {{ $item->alasan_penolakan ?? '-' }}
+                                        @endif
+                                    </p>
 
                                     <div class="d-flex justify-content-between align-items-center mt-4">
                                         @if ($item->status == 'lulus')
