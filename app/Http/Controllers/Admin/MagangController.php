@@ -108,6 +108,8 @@ class MagangController extends Controller
             if ($status === 'ditolak') {
                 $dataToUpdate['alasan_penolakan'] = $alasan_penolakan;
                 $dataToUpdate['id_dosen'] = null;
+            } else if ($status === 'diterima') {
+                $dataToUpdate['id_dosen'] = $id_dosen;
             } else {
                 $dataToUpdate['alasan_penolakan'] = null;
             }
