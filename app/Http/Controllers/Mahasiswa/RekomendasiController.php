@@ -26,139 +26,143 @@ class RekomendasiController extends Controller
             ->id_mahasiswa;
         return $id_mahasiswa;
     }
-    public function getRekomendasi()
-    {
-        $id_mahasiswa = $this->idMahasiswa();
-        $mahasiswa = MahasiswaModel::with(['preferensi_lokasi_mahasiswa', 'keahlian_mahasiswa'])->findOrFail($id_mahasiswa);
-        $perusahaans = PerusahaanModel::with([
-            'jenis_perusahaan',
-            'lowongan_magang.periode_magang.magang' => function ($q) {
-                $q->with('penilaian');
-            }
-        ])->get();
 
-        $preferensiKeahlianMahasiswa = KeahlianMahasiswaModel::with(['bidang'])
-            ->where('id_mahasiswa', $id_mahasiswa)
-            ->orderBy('prioritas', 'asc')
-            ->get(['id_bidang', 'prioritas']);
+    public function hitungRekomendasiMagang()
+{
+    $id_mahasiswa = $this->idMahasiswa();
 
-        if ($preferensiKeahlianMahasiswa->isEmpty()) {
-            return redirect()->route('mahasiswa.profil')->with('error', 'Silakan atur preferensi keahlian terlebih dahulu.');
+    // Ambil data mahasiswa lengkap dengan preferensi dan keahliannya
+    $mahasiswa = MahasiswaModel::with(['preferensi_lokasi_mahasiswa', 'keahlian_mahasiswa'])->findOrFail($id_mahasiswa);
+
+    // Ambil semua data perusahaan dan lowongan yang terhubung dengan periode magang dan penilaian
+    $perusahaans = PerusahaanModel::with([
+        'jenis_perusahaan',
+        'lowongan_magang.periode_magang.magang' => function ($q) {
+            $q->with('penilaian');
         }
+    ])->get();
 
-        $totalPrioritas = $preferensiKeahlianMahasiswa->count();
-        $hariIni = date('Y-m-d');
+    // Ambil preferensi keahlian mahasiswa berdasarkan prioritas
+    $preferensiKeahlianMahasiswa = KeahlianMahasiswaModel::with(['bidang'])
+        ->where('id_mahasiswa', $id_mahasiswa)
+        ->orderBy('prioritas', 'asc')
+        ->get(['id_bidang', 'prioritas']);
 
+    // Validasi jika belum ada preferensi
+    if ($preferensiKeahlianMahasiswa->isEmpty()) {
+        return redirect()->route('mahasiswa.profil')->with('error', 'Silakan atur preferensi keahlian terlebih dahulu.');
+    }
 
-        $bobot_prioritas = [];
-        foreach ($preferensiKeahlianMahasiswa as $preferensi) {
-            $bobot_prioritas[$preferensi->id_bidang] = $totalPrioritas - ($preferensi->prioritas - 1);
-        }
+    $totalPrioritas = $preferensiKeahlianMahasiswa->count();
+    $hariIni = date('Y-m-d');
 
+    // Hitung bobot prioritas bidang
+    $bobot_prioritas = [];
+    foreach ($preferensiKeahlianMahasiswa as $preferensi) {
+        $bobot_prioritas[$preferensi->id_bidang] = $totalPrioritas - ($preferensi->prioritas - 1);
+    }
 
-        $kriteria = [
-            (object)['id' => 'bidang_prioritas', 'type' => 'cost'],
-            (object)['id' => 'fasilitas', 'type' => 'benefit'],
-            (object)['id' => 'tugas', 'type' => 'benefit'],
-            (object)['id' => 'pembinaan', 'type' => 'benefit'],
-            (object)['id' => 'jarak', 'type' => 'cost']
-        ];
+    // Definisi kriteria untuk perhitungan
+    $kriteria = [
+        (object)['id' => 'bidang_prioritas', 'type' => 'cost'],
+        (object)['id' => 'fasilitas', 'type' => 'benefit'],
+        (object)['id' => 'tugas', 'type' => 'benefit'],
+        (object)['id' => 'pembinaan', 'type' => 'benefit'],
+        (object)['id' => 'jarak', 'type' => 'cost']
+    ];
+    $this->prosesPerhitungan = ['kriteria' => $kriteria];
 
-        $this->prosesPerhitungan = [
-            'kriteria' => $kriteria,
-        ];
+    $data_array = [];
 
-        $data_array = [];
+    // Loop untuk setiap perusahaan dan lowongan
+    foreach ($perusahaans as $perusahaan) {
+        foreach ($perusahaan->lowongan_magang as $lowongan) {
 
-        foreach ($perusahaans as $perusahaan) {
-            foreach ($perusahaan->lowongan_magang as $lowongan) {
+            // Lewati jika semua periode sudah berjalan
+            $upcoming = $lowongan->periode_magang->filter(fn($periode) => $periode->tanggal_mulai > $hariIni);
+            if ($upcoming->isEmpty()) continue;
 
-                // Skip semua lowongan yang periodenya sudah dimulai
-                $upcoming = $lowongan->periode_magang->filter(function ($periode) use ($hariIni) {
-                    return $periode->tanggal_mulai > $hariIni;
-                });
-
-                if ($upcoming->isEmpty()) {
-                    continue; // Lewati lowongan yang waktu pelaksanaannya sudah dimulai
-                }
-
-                $penilaian = null;
-                $nilai_fasilitas = 0;
-                $nilai_tugas = 0;
-                $nilai_kedisiplinan = 0;
-
-                foreach ($lowongan->periode_magang as $periode) {
-                    foreach ($periode->magang as $magang) {
-                        if ($magang->penilaian) {
-                            $penilaian = $magang->penilaian;
-                            $nilai_fasilitas = (int) $penilaian->fasilitas;
-                            $nilai_tugas = (int) $penilaian->tugas;
-                            $nilai_kedisiplinan = (int) $penilaian->kedisiplinan;
-                            break 2; // Ambil satu penilaian pertama saja
-                        }
+            // Ambil penilaian dari magang pertama
+            $penilaian = null;
+            $nilai_fasilitas = 0;
+            $nilai_tugas = 0;
+            $nilai_kedisiplinan = 0;
+            foreach ($lowongan->periode_magang as $periode) {
+                foreach ($periode->magang as $magang) {
+                    if ($magang->penilaian) {
+                        $penilaian = $magang->penilaian;
+                        $nilai_fasilitas = (int) $penilaian->fasilitas;
+                        $nilai_tugas = (int) $penilaian->tugas;
+                        $nilai_kedisiplinan = (int) $penilaian->kedisiplinan;
+                        break 2;
                     }
                 }
-
-                $jarak = JarakController::hitungJarak($perusahaan, $mahasiswa);
-
-                $id_bidang = $lowongan->id_bidang;
-                $bobot_bidang = $bobot_prioritas[$id_bidang] ?? ($totalPrioritas + 1); // Jika tidak ditemukan, berikan bobot default
-
-                $data_array[] = [
-                    'id_perusahaan' => $perusahaan->id_perusahaan,
-                    'nama_perusahaan' => $perusahaan->nama,
-                    'jenis_perusahaan' => $perusahaan->jenis_perusahaan->id_jenis,
-                    'id_lowongan' => $lowongan->id_lowongan,
-                    'nama_lowongan' => $lowongan->nama,
-                    'prioritas_keahlian' => $bobot_bidang,
-                    'jarak' => $jarak,
-                    'fasilitas' => $nilai_fasilitas,
-                    'tugas' => $nilai_tugas,
-                    'kedisiplinan' => $nilai_kedisiplinan
-                ];
             }
+
+            // Hitung jarak
+            $jarak = JarakController::hitungJarak($perusahaan, $mahasiswa);
+
+            $id_bidang = $lowongan->id_bidang;
+            $bobot_bidang = $bobot_prioritas[$id_bidang] ?? ($totalPrioritas + 1);
+
+            // Simpan data
+            $data_array[] = [
+                'id_perusahaan' => $perusahaan->id_perusahaan,
+                'nama_perusahaan' => $perusahaan->nama,
+                'jenis_perusahaan' => $perusahaan->jenis_perusahaan->id_jenis,
+                'id_lowongan' => $lowongan->id_lowongan,
+                'nama_lowongan' => $lowongan->nama,
+                'prioritas_keahlian' => $bobot_bidang,
+                'jarak' => $jarak,
+                'fasilitas' => $nilai_fasilitas,
+                'tugas' => $nilai_tugas,
+                'kedisiplinan' => $nilai_kedisiplinan
+            ];
         }
-
-
-        // Bangun matriks keputusan dari data
-        $matriksKeputusan = $this->bangunMatriksKeputusan($data_array, $kriteria);
-
-        $normalisasiMatriks = $this->normalisasiMerec($matriksKeputusan, $kriteria);
-
-        $this->hitungIntermediateMerec($normalisasiMatriks, $kriteria);
-
-        $bobot = $this->hitungBobotMerec($normalisasiMatriks, $kriteria);
-
-        $normalisasiAras = $this->normalisasiAras($matriksKeputusan, $kriteria);
-
-        $this->hitungIntermediateAras($normalisasiAras, $bobot, $data_array, $kriteria);
-
-        $peringkat = $this->hitungAras($normalisasiAras, $bobot, $data_array, $kriteria);
-
-
-        // Ambil 5 rekomendasi terbaik
-        $topLowonganIds = array_column(array_slice($peringkat, 0, 5), 'id_lowongan');
-
-        // Ambil detail periode dari 5 lowongan terbaik
-        $periode = PeriodeMagangModel::with([
-            'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
-            'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama',
-            'lowongan_magang.bidang:id_bidang,nama',
-            'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
-        ])
-            ->whereIn('id_lowongan', $topLowonganIds)
-            ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
-
-            
-        return view('mahasiswa.periode.index', [
-            'periode' => $periode,
-            'activeMenu' => 'dashboard',
-            'jumlahPerusahaan' => $perusahaans->count(),
-            'jumlahJenisPerusahaan' => $perusahaans->pluck('jenis_perusahaan.id_jenis')->unique()->count(),
-            'jumlahBidang' => BidangModel::count(),
-            'perhitungan'=> true
-        ]);
     }
+
+    // Proses perhitungan keputusan MEREC & ARAS
+    $matriksKeputusan = $this->bangunMatriksKeputusan($data_array, $kriteria);
+    $normalisasiMatriks = $this->normalisasiMerec($matriksKeputusan, $kriteria);
+    $this->hitungIntermediateMerec($normalisasiMatriks, $kriteria);
+    $bobot = $this->hitungBobotMerec($normalisasiMatriks, $kriteria);
+    $normalisasiAras = $this->normalisasiAras($matriksKeputusan, $kriteria);
+    $this->hitungIntermediateAras($normalisasiAras, $bobot, $data_array, $kriteria);
+    $peringkat = $this->hitungAras($normalisasiAras, $bobot, $data_array, $kriteria);
+
+    return $peringkat;
+}
+
+    public function tampilkanHasilRekomendasi()
+{
+    $peringkat = $this->hitungRekomendasiMagang();
+
+    // Ambil 5 lowongan terbaik berdasarkan peringkat
+    $topLowonganIds = array_column(array_slice($peringkat, 0, 5), 'id_lowongan');
+
+    // Ambil detail periode untuk lowongan terbaik
+    $periode = PeriodeMagangModel::with([
+        'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
+        'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama',
+        'lowongan_magang.bidang:id_bidang,nama',
+        'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
+    ])
+        ->whereIn('id_lowongan', $topLowonganIds)
+        ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
+
+    // Hitung data statistik
+    $perusahaans = PerusahaanModel::with('jenis_perusahaan')->get();
+
+    return view('mahasiswa.periode.index', [
+        'periode' => $periode,
+        'activeMenu' => 'dashboard',
+        'jumlahPerusahaan' => $perusahaans->count(),
+        'jumlahJenisPerusahaan' => $perusahaans->pluck('jenis_perusahaan.id_jenis')->unique()->count(),
+        'jumlahBidang' => BidangModel::count(),
+        'perhitungan' => true
+    ]);
+}
+
 
     // Fungsi untuk membangun matriks keputusan dari data alternatif dan nilai kriteria
     private function bangunMatriksKeputusan($alternatif, $kriteria)
@@ -377,9 +381,11 @@ private function hitungIntermediateAras($normal, $bobot, $alternatif, $kriteria)
     public function prosesPerhitungan()
     {
         // Pastikan prosesPerhitungan sudah diisi sebelumnya
+        $this->hitungRekomendasiMagang();
         if (!empty($this->prosesPerhitungan)) {
             // Kembalikan view dengan data perhitungan
-            return response()->view('mahasiswa.spk.perhitungan', $this->prosesPerhitungan);
+            // dd($this->prosesPerhitungan);
+            return response()->view('mahasiswa.spk.perhitungan', ['data' =>$this->prosesPerhitungan]);
         }
     }
 }
