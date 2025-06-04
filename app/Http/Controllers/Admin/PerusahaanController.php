@@ -60,8 +60,12 @@ class PerusahaanController extends Controller
         return view('admin.perusahaan.detail', ['perusahaan' => $perusahaan]);
     }
 
-    private function checkTelepon( $telepon)
+    private function checkTelepon($telepon)
     {
+        $amount = PerusahaanModel::where('telepon', $telepon)->count();
+        if ($amount != 0) {
+            return true;
+        }
         $amount = AdminModel::where('telepon', $telepon)->count();
         if ($amount != 0) {
             return true;
@@ -76,58 +80,82 @@ class PerusahaanController extends Controller
         }
         return false;
     }
+
+    private function checkNama($nama)
+    {
+        $amount = PerusahaanModel::where('nama', $nama)->count();
+        if ($amount != 0) {
+            return true;
+        }
+    }
+
     public function postPerusahaan(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
+                $results = DB::transaction(
+                    function () use ($request) {
 
-                $validator = Validator::make($request->all(), [
-                    'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
-                    'id_jenis' => 'required|exists:jenis_perusahaan,id_jenis',
-                    'nama' => 'required|string|max:100',
-                    'telepon' => 'required|digits_between:1,30',
-                    'deskripsi' => 'required|string',
-                    'provinsi' => 'required|string|max:30',
-                    'daerah' => 'required|string|max:30',
-                ]);
+                        $validator = Validator::make($request->all(), [
+                            'file' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+                            'id_jenis' => 'required|exists:jenis_perusahaan,id_jenis',
+                            'nama' => 'required|string|max:100',
+                            'telepon' => 'required|digits_between:1,30',
+                            'deskripsi' => 'required|string',
+                            'provinsi' => 'required|string|max:30',
+                            'daerah' => 'required|string|max:30',
+                        ]);
 
-                if ($validator->fails()) {
-                    return response()->json(['success' => false]);
-                }
+                        if (!$request->hasFile('file')) {
+                            return ['success' => false, 'message' => 'Logo Perusahaan Harus Diisi!!!'];   
+                        }
 
-                $id_jenis = $request->input('id_jenis');
-                $nama = $request->input('nama');
-                $telepon = $request->input('telepon');
-                $deskripsi = $request->input('deskripsi');
-                $provinsi = $request->input('provinsi');
-                $daerah = $request->input('daerah');
-                $file = $request->file('file');
-                $provinsi = ucwords(strtolower($provinsi));
-                $daerah = ucwords(strtolower($daerah));
-                $slugifiedName = Str::slug($nama, '_');
-                $filename = $slugifiedName . "." . $file->getClientOriginalExtension();
+                        if ($validator->fails()) {
+                            return ['success' => false, 'message' => 'Data Tidak Valid'];
+                        }
 
-                if ($this->checkTelepon($telepon)) {
-                    return false;
-                }
+                        $id_jenis = $request->input('id_jenis');
+                        $nama = $request->input('nama');
+                        $telepon = $request->input('telepon');
+                        $deskripsi = $request->input('deskripsi');
+                        $provinsi = $request->input('provinsi');
+                        $daerah = $request->input('daerah');
+                        $file = $request->file('file');
+                        $provinsi = ucwords(strtolower($provinsi));
+                        $daerah = ucwords(strtolower($daerah));
+                        $slugifiedName = Str::slug($nama, '_');
+                        $filename = $slugifiedName . "." . $file->getClientOriginalExtension();
 
-                $lokasi = $this->latitudeLongitude($provinsi, $daerah);
+                        if ($this->checkTelepon($telepon)) {
+                            return ['success' => false, 'message' => 'Nomor Telepon Tidak Boleh Sama!!!'];
+                        }
+                        if ($this->checkNama($nama)) {
+                            return ['success' => false, 'message' => 'Nama Perusahaan Tidak Boleh Sama!!!'];
+                        }
 
-                if ($lokasi) {
-                    PerusahaanModel::create([
-                        'id_jenis' => $id_jenis,
-                        'nama' => $nama,
-                        'telepon' => $telepon,
-                        'deskripsi' => $deskripsi,
-                        'foto_path' => $filename,
-                        'provinsi' => $provinsi,
-                        'daerah' => $daerah,
-                        'latitude' => $lokasi->getCoordinates()->getLatitude(),
-                        'longitude' => $lokasi->getCoordinates()->getLongitude(),
-                    ]);
-                    $file->storeAs('public/profil/perusahaan', $filename);
-                }
-                return response()->json(['success' => true]);
+                        $lokasi = $this->latitudeLongitude($provinsi, $daerah);
+
+                        if ($lokasi) {
+                            PerusahaanModel::create([
+                                'id_jenis' => $id_jenis,
+                                'nama' => $nama,
+                                'telepon' => $telepon,
+                                'deskripsi' => $deskripsi,
+                                'foto_path' => $filename,
+                                'provinsi' => $provinsi,
+                                'daerah' => $daerah,
+                                'latitude' => $lokasi->getCoordinates()->getLatitude(),
+                                'longitude' => $lokasi->getCoordinates()->getLongitude(),
+                            ]);
+                            $file->storeAs('public/profil/perusahaan', $filename);
+
+                            return ['success' => true];
+                        } else {
+                            return ['success' => false, 'message' => 'Lokasi Tidak Diketahui'];
+                        }
+                    }
+                );
+                return response()->json($results);
             } catch (\Exception $e) {
                 Log::error("Gagal menambahkan perusahaan: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
@@ -165,7 +193,7 @@ class PerusahaanController extends Controller
                         ]);
 
                         if ($validator->fails()) {
-                            return false;
+                            return ['success' => false, 'message' => 'Data Tidak Valid'];
                         }
 
 
@@ -179,7 +207,10 @@ class PerusahaanController extends Controller
                         $daerah = ucwords(strtolower($daerah));
 
                         if ($this->checkTelepon($telepon)) {
-                            return false;
+                            return ['success' => false, 'message' => 'Nomor Telepon Tidak Boleh Sama!!!'];
+                        }
+                        if ($this->checkNama($nama)) {
+                            return ['success' => false, 'message' => 'Nama Perusahaan Tidak Boleh Sama!!!'];
                         }
 
                         $data = PerusahaanModel::where('id_perusahaan', $id_perusahaan)
@@ -213,10 +244,10 @@ class PerusahaanController extends Controller
                                 ]);
                         }
 
-                        return true;
+                        return ['success' => true];
                     }
                 );
-                return response()->json(['success' => $results]);
+                return response()->json($results);
             } catch (\Throwable $e) {
                 Log::error("Gagal update perusahaan: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);

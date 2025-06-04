@@ -142,6 +142,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('periode')->group(function () {
             Route::get('/', [PeriodeMagangControllerAdmin::class, 'getPeriode']);
+            Route::get('/filter/tanggal', [PeriodeMagangControllerAdmin::class, 'getPeriodeFilterTanggal']);
             Route::get('/tambah', [PeriodeMagangControllerAdmin::class, 'getAddPeriode']);
             Route::post('/tambah', [PeriodeMagangControllerAdmin::class, 'postPeriode']);
             Route::get('/detail/{id_periode}', [PeriodeMagangControllerAdmin::class, 'getDetailPeriode']);

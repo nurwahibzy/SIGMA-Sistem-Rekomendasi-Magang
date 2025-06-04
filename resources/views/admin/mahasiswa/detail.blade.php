@@ -2,7 +2,7 @@
     <div class="modal-content">
 
         <div class="modal-header bg-primary text-white rounded-top">
-            <h5 class="modal-title">Detail Mahasiswa</h5>
+            <h5 class="text-light">Detail Mahasiswa</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
@@ -85,7 +85,7 @@
             </button>
             <button type="button" class="btn btn-primary"
                 onclick="modalAction('{{ url('/admin/mahasiswa/edit/' . $mahasiswa->akun->id_akun) }}')">
-                Edit
+                <i class="bi bi-pencil-square"></i> Edit
             </button>
         </div>
 

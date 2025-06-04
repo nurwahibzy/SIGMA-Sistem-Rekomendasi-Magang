@@ -4,7 +4,7 @@
     <div class="modal-content shadow-sm rounded">
 
         <div class="modal-header bg-primary text-white rounded-top">
-            <h5 class="modal-title">Tambah Prodi</h5>
+            <h5 class="text-light">Tambah Prodi</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 

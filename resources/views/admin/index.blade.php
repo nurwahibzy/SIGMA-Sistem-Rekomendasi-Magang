@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="card">
+    <div class="card shadow">
         <div class="card-header">
             <h5 class="card-title">Lowongan Magang</h5>
         </div>

@@ -23,8 +23,59 @@ class PeriodeMagangController extends Controller
         $selesai = PeriodeMagangModel::where('tanggal_selesai', '<', now())->count();
         $berlangsung = PeriodeMagangModel::where('tanggal_mulai', '<', now())->where('tanggal_selesai', '>', now())->count();
         $segera = PeriodeMagangModel::where('tanggal_mulai', '>', now())->count();
-        // return response()->json($segera);
         return view('admin.periode.index', ['periode' => $periode, 'selesai' => $selesai, 'berlangsung' => $berlangsung, 'segera' => $segera]);
+    }
+
+    public function getPeriodeFilterTanggal(Request $request)
+    {
+        $tanggal_mulai = $request->input('tanggal_mulai_filter');
+        $tanggal_selesai = $request->input('tanggal_selesai_filter');
+
+
+        $selesai = PeriodeMagangModel::where('tanggal_selesai', '<=', now())->count();
+        $berlangsung = PeriodeMagangModel::where('tanggal_mulai', '<', now())->where('tanggal_selesai', '>', now())->count();
+        $segera = PeriodeMagangModel::where('tanggal_mulai', '>=', now())->count();
+
+
+        if ($tanggal_mulai != null && $tanggal_selesai != null) {
+            $periode = PeriodeMagangModel::with(
+                'lowongan_magang',
+                'lowongan_magang.perusahaan'
+            )
+                ->where('tanggal_mulai', '>=', $tanggal_mulai)
+                ->where('tanggal_selesai', '<=', $tanggal_selesai)
+                ->get();
+
+            return view('admin.periode.index', ['periode' => $periode, 'selesai' => $selesai, 'berlangsung' => $berlangsung, 'segera' => $segera, 'tanggal_mulai' => $tanggal_mulai, 'tanggal_selesai' => $tanggal_selesai]);
+        } else if ($tanggal_mulai != null) {
+            $periode = PeriodeMagangModel::with(
+                'lowongan_magang',
+                'lowongan_magang.perusahaan'
+            )
+                ->where('tanggal_mulai', '>=', $tanggal_mulai)
+                ->get();
+
+            return view('admin.periode.index', ['periode' => $periode, 'selesai' => $selesai, 'berlangsung' => $berlangsung, 'segera' => $segera, 'tanggal_mulai' => $tanggal_mulai]);
+
+        } else if ($tanggal_selesai != null) {
+            $periode = PeriodeMagangModel::with(
+                'lowongan_magang',
+                'lowongan_magang.perusahaan'
+            )
+                ->where('tanggal_selesai', '<=', $tanggal_selesai)
+                ->get();
+
+            return view('admin.periode.index', ['periode' => $periode, 'selesai' => $selesai, 'berlangsung' => $berlangsung, 'segera' => $segera, 'tanggal_selesai' => $tanggal_selesai]);
+
+        } else {
+            $periode = PeriodeMagangModel::with(
+                'lowongan_magang',
+                'lowongan_magang.perusahaan'
+            )
+                ->get();
+
+            return view('admin.periode.index', ['periode' => $periode, 'selesai' => $selesai, 'berlangsung' => $berlangsung, 'segera' => $segera]);
+        }
     }
 
     public function getAddPeriode()

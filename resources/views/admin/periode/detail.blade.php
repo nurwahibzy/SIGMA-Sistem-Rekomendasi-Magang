@@ -2,7 +2,7 @@
     <div class="modal-content">
 
         <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Detail Periode</h5>
+            <h5 class="text-light" id="exampleModalLabel">Detail Periode</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -44,7 +44,7 @@
             </button>
             <button type="button" class="btn btn-primary"
                 onclick="modalAction('{{ url('/admin/periode/edit/' . $periode->id_periode) }}')">
-                Edit
+                <i class="bi bi-pencil-square"></i> Edit
             </button>
         </div>
 

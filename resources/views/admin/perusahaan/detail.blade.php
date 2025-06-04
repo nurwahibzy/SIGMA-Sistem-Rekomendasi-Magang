@@ -2,7 +2,7 @@
     <div class="modal-content shadow-sm rounded">
 
         <div class="modal-header bg-primary text-white rounded-top">
-            <h5 class="modal-title">Detail Perusahaan</h5>
+            <h5 class="text-light">Detail Perusahaan</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -70,7 +70,7 @@
             </button>
             <button type="button" class="btn btn-primary"
                 onclick="modalAction('{{ url('/admin/perusahaan/edit/' . $perusahaan->id_perusahaan) }}')">
-                Edit
+                <i class="bi bi-pencil-square"></i> Edit
             </button>
         </div>
 

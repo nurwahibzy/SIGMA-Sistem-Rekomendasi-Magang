@@ -2,7 +2,7 @@
 @section('content')
     <div class="row">
         <div class="col-6 col-lg-3 col-md-6">
-            <div class="card">
+            <div class="card shadow">
                 <div class="card-body px-4 py-4-5">
                     <div class="row">
                         <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="col-6 col-lg-3 col-md-6">
-            <div class="card">
+            <div class="card shadow">
                 <div class="card-body px-4 py-4-5">
                     <div class="row">
                         <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
@@ -36,7 +36,7 @@
             </div>
         </div>
         <div class="col-6 col-lg-3 col-md-6">
-            <div class="card">
+            <div class="card shadow">
                 <div class="card-body px-4 py-4-5">
                     <div class="row">
                         <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
@@ -53,7 +53,7 @@
             </div>
         </div>
     </div>
-    <div class="card">
+    <div class="card shadow">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="card-title mb-0">Admin</h5>
             <button onclick="modalAction('{{ url('/admin/admin/tambah') }}')" class="btn btn-primary">
@@ -80,7 +80,7 @@
                                 <th>Telepon</th>
                                 <th>Email</th>
                                 <th>Status</th>
-                                <th>Aksi</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -90,7 +90,15 @@
                                     <td>{{ $item->nama ?? '-' }}</td>
                                     <td>{{ $item->telepon ?? '-' }}</td>
                                     <td>{{ $item->email }}</td>
-                                    <td>{{ $item->akun->status }}</td>
+                                    <td>
+                                        <span class="badge 
+                                            @if($item->akun->status == 'aktif') bg-success
+                                            @elseif($item->akun->status == 'nonaktif') bg-primary
+                                            @else bg-secondary
+                                            @endif">
+                                            {{ ucfirst($item->akun->status ?? '-') }}
+                                        </span>
+                                    </td>
                                     <td class="text-center">
                                         <button class="btn btn-sm btn-info btn-detail"
                                             onclick="modalAction('{{ url('/admin/admin/detail/' . $item->akun->id_akun) }}')">

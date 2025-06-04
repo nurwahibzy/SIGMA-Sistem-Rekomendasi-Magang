@@ -75,19 +75,53 @@ class AdminController extends Controller
         return view('admin.admin.edit', ['admin' => $admin]);
     }
 
-    private function checkEmailAndTelepon($email, $telepon)
+    private function checkTelepon($telepon)
     {
         $amount = PerusahaanModel::where('telepon', $telepon)->count();
         if ($amount != 0) {
             return true;
         }
-        $amount = MahasiswaModel::where('telepon', $telepon)
-            ->orWhere('email', $email)
+        $amount = AdminModel::where('telepon', $telepon)
             ->count();
         if ($amount != 0) {
             return true;
         }
-        $amount = DosenModel::where('telepon', $telepon)->orWhere('email', $email)
+        $amount = MahasiswaModel::where('telepon', $telepon)
+            ->count();
+        if ($amount != 0) {
+            return true;
+        }
+        $amount = DosenModel::where('telepon', $telepon)
+            ->count();
+        if ($amount != 0) {
+            return true;
+        }
+        return false;
+    }
+
+    private function checkEmail($email)
+    {
+        $amount = AdminModel::where('email', $email)
+            ->count();
+        if ($amount != 0) {
+            return true;
+        }
+        $amount = MahasiswaModel::where('email', $email)
+            ->count();
+        if ($amount != 0) {
+            return true;
+        }
+        $amount = DosenModel::where('email', $email)
+            ->count();
+        if ($amount != 0) {
+            return true;
+        }
+        return false;
+    }
+
+    private function checkId($id_user)
+    {
+        $amount = AkunModel::where('id_user', $id_user)
             ->count();
         if ($amount != 0) {
             return true;
@@ -114,7 +148,7 @@ class AdminController extends Controller
                         ]);
 
                         if ($validator->fails()) {
-                            return false;
+                            return ['success' => false, 'message' => 'Data Tidak Valid'];
                         }
 
                         $id_level = 1;
@@ -129,9 +163,19 @@ class AdminController extends Controller
                         $gender = $request->input('gender');
                         $email = $request->input('email');
 
-                        if ($this->checkEmailAndTelepon($email, $telepon)) {
-                            return false;
+                        if ($this->checkId($id_user)) {
+                            return ['success' => false, 'message' => 'NIP Tidak Boleh Sama!!!'];
                         }
+
+                        if ($this->checkEmail($email)) {
+                            return ['success' => false, 'message' => 'Email Tidak Boleh Sama!!!'];
+                        }
+
+                        if ($this->checkTelepon($telepon)) {
+                            return ['success' => false, 'message' => 'Nomor Telepon Tidak Boleh Sama!!!'];
+                        }
+
+
                         if ($request->hasFile('file')) {
                             $foto_path = $this->handleFileUpload($request, $id_user, $foto_path);
                         }
@@ -154,10 +198,10 @@ class AdminController extends Controller
                             'email' => $email
                         ]);
 
-                        return true;
+                        return ['success' => true];
                     }
                 );
-                return response()->json(['success' => $results]);
+                return response()->json($results);
             } catch (\Throwable $e) {
                 Log::error("Gagal menambah user: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
@@ -186,7 +230,7 @@ class AdminController extends Controller
                         ]);
 
                         if ($validator->fails()) {
-                            return false;
+                            return ['success' => false, 'message' => 'Data Tidak Valid'];
                         }
 
                         $id_user = $request->input('id_user');
@@ -198,8 +242,16 @@ class AdminController extends Controller
                         $gender = $request->input('gender');
                         $email = $request->input('email');
 
-                        if ($this->checkEmailAndTelepon($email, $telepon)) {
-                            return false;
+                        if ($this->checkId($id_user)) {
+                            return ['success' => false, 'message' => 'NIP Tidak Boleh Sama!!!'];
+                        }
+
+                        if ($this->checkEmail($email)) {
+                            return ['success' => false, 'message' => 'Email Tidak Boleh Sama!!!'];
+                        }
+
+                        if ($this->checkTelepon($telepon)) {
+                            return ['success' => false, 'message' => 'Nomor Telepon Tidak Boleh Sama!!!'];
                         }
 
                         $data = AkunModel::where('id_akun', $id_akun)->first();
@@ -243,10 +295,10 @@ class AdminController extends Controller
                                 'gender' => $gender,
                                 'email' => $email
                             ]);
-                        return true;
+                        return ['success' => true];
                     }
                 );
-                return response()->json(['success' => $results]);
+                return response()->json($results);
             } catch (\Throwable $e) {
                 Log::error("Gagal update user: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);

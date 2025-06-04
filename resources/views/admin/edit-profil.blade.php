@@ -7,7 +7,7 @@
     <section class="section">
         <div class="row">
             <div class="col-12 col-lg-4">
-                <div class="card">
+                <div class="card shadow">
                     <div class="card-body">
                         <div class="d-flex justify-content-center align-items-center flex-column">
                             <div class="avatar avatar-2xl mb-3">
@@ -30,7 +30,7 @@
 
             <!-- Kolom Form -->
             <div class="col-md-8">
-                <div class="card p-4">
+                <div class="card p-4 shadow">
                     <form id="form-edit-profile" action="{{ url('/admin/profil/edit/') }}" method="POST"
                         enctype="multipart/form-data" class="row g-3">
                         @csrf
@@ -81,7 +81,7 @@
                         </div>
 
                         <div class="col-12 text-end">
-                            <button type="submit" class="btn btn-outline-primary">
+                            <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-save"></i> Simpan
                             </button>
                         </div>

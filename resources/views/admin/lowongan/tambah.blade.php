@@ -1,12 +1,13 @@
 <form action="{{ url('/admin/lowongan/tambah') }}" method="POST" id="form-tambah">
     @csrf
-       <div id="modal-master" class="modal-dialog modal-lg" role="document">
-    <div class="modal-content shadow-sm rounded">
+    <div id="modal-master" class="modal-dialog modal-lg" role="document">
+        <div class="modal-content shadow-sm rounded">
 
-        <div class="modal-header bg-primary text-white rounded-top">
-            <h5 class="modal-title">Tambah Lowongan</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
+            <div class="modal-header bg-primary text-white rounded-top">
+                <h5 class="text-light">Tambah Lowongan</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
 
             <div class="modal-body">
                 <div class="container mt-4">
@@ -14,12 +15,14 @@
                         <div class="mb-3">
                             <label for="id_perusahaan" class="form-label">Perusahaan</label>
                             <div class="d-flex gap-2">
-                                <select name="id_perusahaan" id="id_perusahaan" class="form-control" required>
-                                    <option value="">Pilih Perusahaan </option>
+                                <select name="id_perusahaan" class="form-select" id="id_perusahaan"
+                                data-placeholder="Pilih satu opsi" required>
+                                <option value=""></option>
                                     @foreach ($perusahaan as $item)
                                         <option value="{{ $item->id_perusahaan }}">{{ $item->nama }}</option>
                                     @endforeach
                                 </select>
+
                                 <a href="{{ url('admin/perusahaan/') }}" class="btn btn-success">
                                     <i class="bi bi-plus-lg"></i>
                                 </a>
@@ -27,7 +30,8 @@
                         </div>
                         <div class="mb-3">
                             <label for="id_bidang" class="form-label">Bidang</label>
-                            <select name="id_bidang" id="id_bidang" class="form-control" required>
+                            <select name="id_bidang" class="form-select" id="id_bidang"
+                            data-placeholder="Pilih satu opsi" required>
                                 <option value="">Pilih Bidang </option>
                                 @foreach ($bidang as $item)
                                     <option value="{{ $item->id_bidang }}">{{ $item->nama }}</option>

@@ -4,7 +4,7 @@
         <div class="modal-content shadow-sm rounded">
 
             <div class="modal-header bg-primary text-white rounded-top">
-                <h5 class="modal-title">Tambah Perusahaan</h5>
+                <h5 class="text-light">Tambah Perusahaan</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
@@ -45,8 +45,8 @@
                             </div>
                             <div class="mt-4">
                                 <label for="nama_provinsi" class="form-label">Provinsi</label>
-                                <select name="nama_provinsi" id="nama_provinsi" class="form-select" required>
-                                    <option value="">Pilih Provinsi</option>
+                                <select name="nama_provinsi" class="form-select" id="nama_provinsi" data-placeholder="Pilih satu opsi" required>
+                                    <option value=""></option>
                                 </select>
                                 <input type="hidden" name="provinsi" id="provinsi">
                             </div>
@@ -54,8 +54,8 @@
                         <div class="w-50 ms-2">
                             <div class="mt-4">
                                 <label for="id_jenis" class="form-label">Jenis Perusahaan</label>
-                                <select name="id_jenis" id="id_jenis" class="form-select" required>
-                                    <option value="">Pilih Jenis</option>
+                                <select name="id_jenis" class="form-select" id="id_jenis" data-placeholder="Pilih satu opsi" required>
+                                    <option value=""></option>
                                     @foreach ($jenis as $item)
                                         <option value="{{ $item->id_jenis }}">{{ $item->jenis }}</option>
                                     @endforeach
@@ -63,11 +63,12 @@
                             </div>
                             <div class="mt-4">
                                 <label for="nama_daerah" class="form-label">Daerah</label>
-                                <select name="nama_daerah" id="nama_daerah" class="form-select" required>
-                                    <option value="">Pilih Daerah</option>
+                                <select name="nama_daerah" class="form-select" id="nama_daerah" data-placeholder="Pilih satu opsi" required>
+                                    <option value=""></option>
                                 </select>
                                 <input type="hidden" name="daerah" id="daerah">
                             </div>
+                            </select>
                         </div>
                     </div>
                 </div>

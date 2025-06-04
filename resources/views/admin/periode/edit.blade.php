@@ -3,7 +3,7 @@
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Edit Periode</h5>
+                <h5 class="text-light" id="exampleModalLabel">Edit Periode</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -11,8 +11,8 @@
                     <div class="tab-content" id="detailTabContent">
                         <div class="mb-3">
                             <label for="id_lowongan" class="form-label">Lowongan</label>
-                            <select name="id_lowongan" id="id_lowongan" class="form-control" required>
-                                <option value="">Pilih Lowongan</option>
+                            <select name="id_lowongan" class="form-select" id="id_lowongan" data-placeholder="Pilih satu opsi" required>
+                                <option value=""></option>
                                 @foreach ($lowongan as $item)
                                     <option value="{{ $item->id_lowongan }}" {{ $periode->id_lowongan == $item->id_lowongan ? 'selected' : '' }}>
                                         {{ $item->perusahaan->nama . ' - ' . $item->nama . ' - ' . $item->bidang->nama }}
@@ -26,32 +26,40 @@
                                 value="{{ $periode->nama }}">
                         </div>
                         <div class="mb-3">
-                            <label for="tanggal_mulai" class="form-label">Tanggal Mulai</label>
-                            <input type="date" class="form-control" id="tanggal_mulai" name="tanggal_mulai" required
+                            <label for="tanggal_mulai_modal" class="form-label">Tanggal Mulai</label>
+                            <input type="date" class="form-control" id="tanggal_mulai_modal" name="tanggal_mulai" required
                                 min="{{ $now }}" value="{{ $periode->tanggal_mulai->format('Y-m-d') }}">
                         </div>
                         <div class="mb-3">
-                            <label for="tanggal_selesai" class="form-label">Tanggal Selesai</label>
-                            <input type="date" class="form-control" id="tanggal_selesai" name="tanggal_selesai" required
+                            <label for="tanggal_mulai_modal" class="form-label">Tanggal Selesai</label>
+                            <input type="date" class="form-control" id="tanggal_mulai_modal" name="tanggal_selesai" required
                                 min="{{ $tomorrow }}" value="{{ $periode->tanggal_selesai->format('Y-m-d') }}">
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" data-bs-dismiss="modal" class="btn btn-warning">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Simpan</button>
                 </div>
             </div>
         </div>
 </form>
 <script>
     $(document).ready(function () {
-        $('#tanggal_mulai').on('change', function () {
+        $('#tanggal_mulai_modal').on('change', function () {
             const tanggalMulai = new Date($(this).val());
             tanggalMulai.setDate(tanggalMulai.getDate() + 1);
 
             const minTanggalSelesai = tanggalMulai.toISOString().split('T')[0];
-            $('#tanggal_selesai').attr('min', minTanggalSelesai);
+            $('#tanggal_selesai_modal').attr('min', minTanggalSelesai);
+        });
+
+        $('#tanggal_selesai_modal').on('change', function () {
+            const tanggalSelesai = new Date($(this).val());
+            tanggalSelesai.setDate(tanggalSelesai.getDate() - 1);
+
+            const maxTanggalMulai = tanggalSelesai.toISOString().split('T')[0];
+            $('#tanggal_mulai_modal').attr('max', maxTanggalMulai);
         });
 
         $("#form-edit").validate({

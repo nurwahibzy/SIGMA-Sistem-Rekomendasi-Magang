@@ -4,7 +4,7 @@
         <div class="modal-content shadow-sm rounded">
 
             <div class="modal-header bg-primary text-white rounded-top">
-                <h5 class="modal-title">Edit Perusahaan</h5>
+                <h5 class="text-light">Edit Perusahaan</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
@@ -45,8 +45,8 @@
                             <div class="mt-4">
                                 <label for="nama_provinsi" class="form-label">Provinsi:
                                     {{ $perusahaan->provinsi }}</label>
-                                <select name="nama_provinsi" id="nama_provinsi" class="form-control">
-                                    <option value="">Perbarui Provinsi</option>
+                                <select name="nama_provinsi" class="form-select" id="nama_provinsi" data-placeholder="Perbarui Provinsi">
+                                    <option value=""></option>
                                 </select>
                                 <input type="hidden" name="provinsi" id="provinsi" value="{{ $perusahaan->provinsi }}">
                             </div>
@@ -54,8 +54,8 @@
                         <div class="w-50 ms-2">
                             <div>
                                 <label for="id_jenis" class="form-label">Jenis Perusahaan</label>
-                                <select name="id_jenis" id="id_jenis" class="form-control" required>
-                                    <option value="">Pilih Jenis</option>
+                                <select name="id_jenis" class="form-select" id="id_jenis" data-placeholder="Pilih satu opsi" required>
+                                    <option value=""></option>
                                     @foreach ($jenis as $item)
                                         <option value="{{ $item->id_jenis }}" {{ $perusahaan->id_jenis == $item->id_jenis ? 'selected' : '' }}>{{ $item->jenis }}</option>
                                     @endforeach
@@ -63,8 +63,8 @@
                             </div>
                             <div class="mt-4">
                                 <label for="nama_daerah" class="form-label">Daerah: {{ $perusahaan->daerah }}</label>
-                                <select name="nama_daerah" id="nama_daerah" class="form-control">
-                                    <option value="">Perbarui Daerah</option>
+                                <select name="nama_daerah" class="form-select" id="nama_daerah" data-placeholder="Perbarui Daerah">
+                                    <option value=""></option>
                                 </select>
                                 <input type="hidden" name="daerah" id="daerah" value="{{ $perusahaan->daerah }}">
                             </div>
@@ -82,7 +82,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-warning"
                     onclick="modalAction('{{ url('/admin/perusahaan/detail/' . $perusahaan->id_perusahaan) }}')">Batal</button>
-                <button type="submit" class="btn btn-primary">Simpan</button>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Simpan</button>
             </div>
         </div>
     </div>

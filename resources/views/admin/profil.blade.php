@@ -8,7 +8,7 @@
         <div class="row">
             <!-- Kolom Foto -->
             <div class="col-12 col-lg-4">
-                <div class="card">
+                <div class="card shadow">
                     <div class="card-body">
                         <div class="d-flex justify-content-center align-items-center flex-column">
                             <div class="avatar avatar-2xl mb-3">
@@ -30,7 +30,7 @@
 
             <!-- Kolom Form -->
             <div class="col-md-8">
-                <div class="card p-4">
+                <div class="card p-4 shadow">
                     <form id="form-profile" class="row g-3">
                         @csrf
 

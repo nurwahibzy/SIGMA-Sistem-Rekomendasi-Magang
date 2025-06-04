@@ -3,7 +3,7 @@
 @section('content')
 <div class="row">
                 <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card"> 
+                    <div class="card shadow"> 
                         <div class="card-body px-4 py-4-5">
                             <div class="row">
                                 <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
+                    <div class="card shadow">
                         <div class="card-body px-4 py-4-5">
                             <div class="row">
                                 <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
@@ -37,7 +37,7 @@
                     </div>
                 </div>
                 <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
+                    <div class="card shadow">
                         <div class="card-body px-4 py-4-5">
                             <div class="row">
                                 <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
@@ -55,7 +55,7 @@
                 </div>
                
             </div>
-    <div class="card">
+    <div class="card shadow">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="card-title mb-0">Mahasiswa</h5>
             <button onclick="modalAction('{{ url('/admin/mahasiswa/tambah') }}')" class="btn btn-primary"><i
@@ -123,11 +123,23 @@
 @push('css')
 @endpush
 @push('js')
-    <script src="{{ asset('template/assets/static/js/components/dark.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+
     <script>
         function modalAction(url = '') {
             $('#myModal').load(url, function () {
                 $('#myModal').modal('show');
+
+                $('#myModal').find('#id_prodi').select2({
+                    theme: 'bootstrap-5',
+                    dropdownParent: $('#myModal'),
+                    placeholder: $('#id_prodi').data('placeholder'),
+                    width: '100%'
+                });
             });
         }
     </script>

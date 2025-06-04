@@ -2,7 +2,7 @@
 @section('content')
     <div class="row">
         <div class="col-6 col-lg-3 col-md-6">
-            <div class="card">
+            <div class="card shadow">
                 <div class="card-body px-4 py-4-5">
                     <div class="row">
                         <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="col-6 col-lg-3 col-md-6">
-            <div class="card">
+            <div class="card shadow">
                 <div class="card-body px-4 py-4-5">
                     <div class="row">
                         <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
@@ -36,7 +36,7 @@
             </div>
         </div>
         <div class="col-6 col-lg-3 col-md-6">
-            <div class="card">
+            <div class="card shadow">
                 <div class="card-body px-4 py-4-5">
                     <div class="row">
                         <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
@@ -54,7 +54,7 @@
         </div>
         @if (count($dosen))
         <div class="col-6 col-lg-3 col-md-6">
-            <div class="card">
+            <div class="card shadow">
                 <div class="card-body px-4 py-4-5">
                     <div class="row">
                         <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
@@ -76,7 +76,7 @@
         @endif
     </div>
 
-    <div class="card">
+    <div class="card shadow">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="card-title mb-0">Dosen</h5>
             <button onclick="modalAction('{{ url('/admin/dosen/tambah') }}')" class="btn btn-primary">
@@ -102,7 +102,7 @@
                                 <th>Telepon</th>
                                 <th>Email</th>
                                 <th>Status</th>
-                                <th>Aksi</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>

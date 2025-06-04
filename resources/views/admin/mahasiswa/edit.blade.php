@@ -3,7 +3,7 @@
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white rounded-top">
-                <h5 class="modal-title">Edit Mahasiswa</h5>
+                <h5 class="text-light">Edit Mahasiswa</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
@@ -53,8 +53,8 @@
                         <div class="w-50 me-2">
                             <div>
                                 <label for="id_prodi" class="form-label">Program Studi</label>
-                                <select name="id_prodi" id="id_prodi" class="form-select" required>
-                                    <option value="">Pilih Prodi</option>
+                                <select name="id_prodi" class="form-select" id="id_prodi" data-placeholder="Pilih satu opsi" required>
+                                    <option value=""></option>
                                     @foreach ($prodi as $item)
                                         <option value="{{ $item->id_prodi }}" {{ $mahasiswa->id_prodi == $item->id_prodi ? 'selected' : ''  }}>{{ $item->nama_prodi }}</option>
                                     @endforeach
@@ -118,7 +118,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" data-bs-dismiss="modal" class="btn btn-warning">Batal</button>
-                <button type="submit" class="btn btn-primary">Simpan</button>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Simpan</button>
             </div>
         </div>
     </div>
