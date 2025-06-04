@@ -61,9 +61,9 @@ class AktivitasController extends Controller
 
                 $today = Carbon::now()->toDateString();
 
-                $magang = MagangModel::with('dosen')
-                ->where('id_magang', $id_magang)
-                ->first();
+                $magang = MagangModel::with('dosen.akun')
+                    ->where('id_magang', $id_magang)
+                    ->first();
 
                 $hasActivityToday = AktivitasMagangModel::with('magang:id_magang,id_mahasiswa')
                     ->where('id_magang', $id_magang)
@@ -89,11 +89,11 @@ class AktivitasController extends Controller
     }
 
 
-    public function getDetailAktivitas($id_magang ,$id_aktivitas)
+    public function getDetailAktivitas($id_magang, $id_aktivitas)
     {
         $aktivitas = AktivitasMagangModel::where('id_magang', $id_magang)
-        ->where('id_aktivitas', $id_aktivitas)
-        ->first();
+            ->where('id_aktivitas', $id_aktivitas)
+            ->first();
 
         return view('mahasiswa.aktivitas.detail', ['aktivitas' => $aktivitas]);
     }
@@ -314,6 +314,10 @@ class AktivitasController extends Controller
             ->orderByDesc('tanggal')
             ->get();
 
+        $magang = MagangModel::with('dosen.akun')
+            ->where('id_magang', $id_magang)
+            ->first();
+
 
         $evaluasi = EvaluasiMagangModel::with('magang:id_magang,id_mahasiswa')
             ->where('id_magang', $id_magang)
@@ -322,7 +326,9 @@ class AktivitasController extends Controller
             })
             ->first();
 
-        return view('mahasiswa.riwayat.index-aktivitas', ['aktivitas' => $aktivitas, 'evaluasi' => $evaluasi]);
+        return view('mahasiswa.riwayat.index-aktivitas', ['aktivitas' => $aktivitas, 'evaluasi' => $evaluasi, 'magang' => $magang]);
+
+        // return response()->json($magang);
     }
     public function getRiwayatDetailAktivitas($id_magang, $id_aktivitas)
     {

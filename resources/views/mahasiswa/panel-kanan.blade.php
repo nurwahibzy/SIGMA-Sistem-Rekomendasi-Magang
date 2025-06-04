@@ -7,7 +7,7 @@
             <div class="col-md-8">
                 <h4 class="fw-bold text-primary mb-3">
                     Tarik perhatian rekruter dengan <br>
-                    <span class="text-light">Profil Anda</span>
+                    <span >Profil Anda</span>
                 </h4>
                 <p class="text-muted">
                     Buat profil dan bantu perusahaan mengenal Anda lebih mudah.
@@ -39,7 +39,7 @@
             </li>
         </ul>
 
-        <a href="{{ url('mahasiswa/profil/edit') }}" class="btn-edit-section btn btn-outline-primary">
+        <a href="{{ url('mahasiswa/profil/edit') }}" class="btn-edit-section btn btn-primary">
             <i class="bi bi-pencil-square"></i> Edit
         </a>
     </div>
@@ -58,7 +58,7 @@
                 @if (count($keahlian))
                     @foreach ($keahlian as $item)
                         <div class="card mb-4">
-                            <div class="card-body">
+                            <div class="card-body shadow">
                                 <div class="d-flex mb-3">
                                     <div class="d-inline-block me-2 fw-bold">
                                         <h5>{{ $item->prioritas }}</h5>
@@ -114,7 +114,7 @@
                     Preferensi lokasi magang.
                 </p>
                 @if (!empty($preferensi_lokasi))
-                    <div class="card mb-4">
+                    <div class="card mb-4 shadow">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6 mb-3 mb-md-0">
@@ -149,7 +149,7 @@
                     <fieldset class="form-section" id="section-pengalaman" disabled>
                         <div id="pengalaman-container">
                             @foreach ($pengalaman as $item)
-                                <div class="card mb-4">
+                                <div class="card mb-4 shadow">
                                     <div class="card-body">
                                         <div>
                                             <div class="px-3 py-1 rounded d-inline-block">
@@ -173,7 +173,7 @@
                 @if (count($dokumen))
                     <div id="dokumen-container">
                         @foreach ($dokumen as $item)
-                            <div class="card mb-4">
+                            <div class="card mb-4 shadow">
                                 <div class="card-body">
                                     <div class="bg-primary bg-opacity-10 px-3 py-1 rounded d-inline-block  mb-4">
                                         {{  $item->nama }}

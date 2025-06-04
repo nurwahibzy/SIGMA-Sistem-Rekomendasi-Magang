@@ -3,14 +3,14 @@
     <div class="section-wrapper mb-4">
         <div class="d-flex justify-content-between align-items-center mb-2">
             <h5 class="fw-bold mb-0">Preferensi Perusahaan</h5>
-            <button type="submit" class="btn btn-outline-success">
+            <button type="submit" class="btn btn-success">
                 <i class="bi bi-save"></i> Simpan
             </button>
         </div>
 
         <p class="text-muted mb-3">Preferensi perusahaan magang.</p>
 
-        <div class="card mb-4">
+        <div class="card mb-4 shadow">
             <div class="card-body">
                 @forelse($jenis as $item)   
                     @php

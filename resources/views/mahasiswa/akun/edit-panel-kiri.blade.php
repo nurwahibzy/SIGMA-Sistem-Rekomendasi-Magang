@@ -1,6 +1,6 @@
 <div class="col-md-4">
     <div class="position-sticky" style="top: 90px;">
-        <div class="card p-4 text-center">
+        <div class="card p-4 text-center shadow">
 
             <form id="form-tambah" action="{{ url('/mahasiswa/profil/edit/') }}" method="POST" class="text-start mt-3">
                 @csrf
@@ -54,7 +54,7 @@
                     <input type="email" class="form-control" id="email" name="email" required
                         value="{{ Auth::user()->mahasiswa->email }}">
                 </div>
-                <button type="submit" id="btn-edit-profile" class="btn btn-outline-primary mt-2 w-100">
+                <button type="submit" id="btn-edit-profile" class="btn btn-primary mt-2 w-100">
                     <i class="bi bi-pencil-square"></i> Simpan
                 </button>
             </form>

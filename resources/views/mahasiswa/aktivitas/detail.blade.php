@@ -12,7 +12,7 @@
                             <img id="preview" src="{{ asset('storage/aktivitas/' . $aktivitas->foto_path) }}"
                                 alt="Profile Picture" class="img-fluid rounded w-50 h-50"
                                 style="width: 120px; height: 120px; border: 5px solid blue; object-fit: cover; cursor: pointer;"
-                                onclick="showImagePopup(this.src)" />
+                                onclick="showDosenImagePopup(this.src)" />
                         </div>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
 </div>
 
 <script>
-    function showImagePopup(src) {
+    function showDosenImagePopup(src) {
         const popup = document.getElementById('image-popup');
         const popupImg = document.getElementById('popup-img');
         popupImg.src = src;

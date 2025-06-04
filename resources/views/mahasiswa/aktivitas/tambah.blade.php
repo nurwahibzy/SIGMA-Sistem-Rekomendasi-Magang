@@ -13,7 +13,7 @@
                         <div class="avatar avatar-2xl mb-3">
                             <label for="file" style="cursor: pointer;">
                                 <img id="preview" src="{{ asset('template/assets/images/mhs.jpeg') }}"
-                                    alt="Profile Picture" class="img-fluid rounded w-100 h-100"
+                                    alt="Profile Picture" class="img-fluid rounded"
                                     style="width: 120px; height: 120px; border: 5px solid blue; object-fit: cover;">
                             </label>
                         </div>
@@ -47,6 +47,7 @@
             document.getElementById('preview').src = reader.result;
         };
         reader.readAsDataURL(event.target.files[0]);
+        document.getElementById('preview').classList.add('w-100', 'h-100');
         document.getElementById('tombolBatal').style.visibility = 'visible';
     }
 

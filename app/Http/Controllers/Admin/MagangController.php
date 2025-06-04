@@ -105,14 +105,10 @@ class MagangController extends Controller
                 'status' => $status,
             ];
 
-            if ($status === 'diterima' && $id_dosen) {
-                $dataToUpdate['id_dosen'] = $id_dosen;
-                $dataToUpdate['alasan_penolakan'] = null; // Reset jika diterima
-            } elseif ($status === 'ditolak') {
+            if ($status === 'ditolak') {
                 $dataToUpdate['alasan_penolakan'] = $alasan_penolakan;
-                $dataToUpdate['id_dosen'] = null; // Tidak ada dosen jika ditolak
-            } else {
                 $dataToUpdate['id_dosen'] = null;
+            } else {
                 $dataToUpdate['alasan_penolakan'] = null;
             }
 

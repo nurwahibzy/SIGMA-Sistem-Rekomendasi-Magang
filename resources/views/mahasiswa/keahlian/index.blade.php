@@ -3,7 +3,7 @@
     <div class="d-flex justify-content-between align-items-center mb-2">
         <h5 class="fw-bold mb-0">Keahlian</h5>
         @if (count($keahlian) != count($bidang))
-            <button type="button" class="btn-edit-section btn btn-outline-success"
+            <button type="button" class="btn-edit-section btn btn-success"
                 onclick="modalAction('{{ url('/mahasiswa/profil/edit/keahlian/tambah') }}')">
                 <i class="bi bi-plus"></i> Tambah
             </button>
@@ -14,7 +14,7 @@
 
     @if (count($keahlian))
         @foreach ($keahlian as $item)
-            <div class="card mb-4">
+            <div class="card mb-4 shadow">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
@@ -26,12 +26,12 @@
                             </div>
                         </div>
                         <div>
-                            <button type="button" class="btn-edit-section btn btn-outline-primary me-2"
+                            <button type="button" class="btn-edit-section btn btn-primary me-2"
                                 onclick="modalAction('{{ url('/mahasiswa/profil/edit/keahlian/edit/' . $item->id_keahlian_mahasiswa) }}')">
                                 <i class="bi bi-pencil-square"></i>
                             </button>
 
-                            <button type="button" class="btn-delete-keahlian btn btn-outline-danger"
+                            <button type="button" class="btn-delete-keahlian btn btn-danger"
                                 data-url="{{ url('/mahasiswa/profil/edit/keahlian/' . $item->id_keahlian_mahasiswa . '/' . $item->prioritas) }}">
                                 <i class="bi bi-trash"></i>
                             </button>

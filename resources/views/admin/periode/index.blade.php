@@ -62,7 +62,7 @@
                 Periode</button>
         </div>
         <div class="card-body">
-            <form method="GET" action="{{ url('/admin/periode/filter/tanggal') }}" class="row g-3 mb-4">
+            <form method="GET" action="{{ url('/admin/periode/') }}" class="row g-3 mb-4">
                 <div class="col-md-2">
                     <label for="tanggal_mulai_filter" class="form-label">Tanggal Mulai</label>
                     <input type="date" id="tanggal_mulai_filter" name="tanggal_mulai_filter" class="form-control" value="{{ $tanggal_mulai ?? '' }}">

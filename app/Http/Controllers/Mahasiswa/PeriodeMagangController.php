@@ -24,19 +24,51 @@ class PeriodeMagangController extends Controller
     {
         return redirect('/mahasiswa/periode');
     }
-    public function getPeriode()
+    public function getPeriode(Request $request)
     {
-        // Ambil semua periode magang yang tanggal_mulai masih di masa depan
-        $periode = PeriodeMagangModel::with([
-            'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
-            'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama',
-            'lowongan_magang.bidang:id_bidang,nama',
-            'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
-        ])
-            ->where('tanggal_mulai', '>', now())
-            ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
+        $tanggal_mulai = $request->input('tanggal_mulai_filter');
+        $tanggal_selesai = $request->input('tanggal_selesai_filter');
 
-        // Kumpulkan ID unik dari relasi yang terkait hanya untuk periode mendatang
+        if ($tanggal_mulai != null && $tanggal_selesai != null) {
+            $periode = PeriodeMagangModel::with([
+                'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
+                'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama,provinsi,daerah',
+                'lowongan_magang.bidang:id_bidang,nama',
+                'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
+            ])
+                ->where('tanggal_mulai', '>=', $tanggal_mulai)
+                ->where('tanggal_selesai', '<=', $tanggal_selesai)
+                ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
+        } else if ($tanggal_mulai != null) {
+            $periode = PeriodeMagangModel::with([
+                'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
+                'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama,provinsi,daerah',
+                'lowongan_magang.bidang:id_bidang,nama',
+                'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
+            ])
+                ->where('tanggal_mulai', '>=', $tanggal_mulai)
+                ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
+        } else if ($tanggal_selesai != null) {
+            $periode = PeriodeMagangModel::with([
+                'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
+                'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama,provinsi,daerah',
+                'lowongan_magang.bidang:id_bidang,nama',
+                'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
+            ])
+                ->where('tanggal_selesai', '<=', $tanggal_selesai)
+                ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
+        } else {
+            $periode = PeriodeMagangModel::with([
+                'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
+                'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama,provinsi,daerah',
+                'lowongan_magang.bidang:id_bidang,nama',
+                'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
+            ])
+                ->where('tanggal_mulai', '>', now())
+                ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
+        }
+
+
         $idPerusahaan = collect();
         $idJenisPerusahaan = collect();
         $idBidang = collect();
@@ -59,7 +91,6 @@ class PeriodeMagangController extends Controller
             }
         }
 
-        // Hitung jumlah unik
         $jumlahPerusahaan = $idPerusahaan->unique()->count();
         $jumlahJenisPerusahaan = $idJenisPerusahaan->unique()->count();
         $jumlahBidang = $idBidang->unique()->count();
@@ -70,6 +101,8 @@ class PeriodeMagangController extends Controller
             'jumlahPerusahaan' => $jumlahPerusahaan,
             'jumlahJenisPerusahaan' => $jumlahJenisPerusahaan,
             'jumlahBidang' => $jumlahBidang,
+            'tanggal_mulai' => $tanggal_mulai,
+            'tanggal_selesai' => $tanggal_selesai
         ]);
     }
 

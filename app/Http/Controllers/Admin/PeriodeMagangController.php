@@ -13,20 +13,7 @@ use Validator;
 
 class PeriodeMagangController extends Controller
 {
-    public function getPeriode()
-    {
-        $periode = PeriodeMagangModel::with(
-            'lowongan_magang',
-            'lowongan_magang.perusahaan'
-        )
-            ->get();
-        $selesai = PeriodeMagangModel::where('tanggal_selesai', '<', now())->count();
-        $berlangsung = PeriodeMagangModel::where('tanggal_mulai', '<', now())->where('tanggal_selesai', '>', now())->count();
-        $segera = PeriodeMagangModel::where('tanggal_mulai', '>', now())->count();
-        return view('admin.periode.index', ['periode' => $periode, 'selesai' => $selesai, 'berlangsung' => $berlangsung, 'segera' => $segera]);
-    }
-
-    public function getPeriodeFilterTanggal(Request $request)
+    public function getPeriode(Request $request)
     {
         $tanggal_mulai = $request->input('tanggal_mulai_filter');
         $tanggal_selesai = $request->input('tanggal_selesai_filter');

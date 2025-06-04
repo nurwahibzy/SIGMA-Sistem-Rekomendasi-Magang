@@ -1,7 +1,7 @@
 <div class="section-wrapper mb-4">
     <div class="d-flex justify-content-between align-items-center mb-2">
         <h5 class="fw-bold mb-0">Dokumen</h5>
-        <button type="button" class="btn-edit-section btn btn-outline-success"
+        <button type="button" class="btn-edit-section btn btn-success"
             onclick="modalAction('{{ url('/mahasiswa/profil/edit/dokumen/tambah') }}')">
             <i class="bi bi-plus"></i> Tambah
         </button>
@@ -9,7 +9,7 @@
     @if (count($dokumen))
         <div id="dokumen-container">
             @foreach ($dokumen as $item)
-                <div class="card mb-4">
+                <div class="card mb-4 shadow">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
@@ -18,12 +18,12 @@
                                 </div>
                             </div>
                             <div>
-                                <button type="button" class="btn-edit-section btn btn-outline-primary me-2"
+                                <button type="button" class="btn-edit-section btn btn-primary me-2"
                                     onclick="modalAction('{{ url('/mahasiswa/profil/edit/dokumen/edit/' . $item->id_dokumen) }}')">
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
 
-                                <button type="button" class="btn-delete-dokumen btn btn-outline-danger"
+                                <button type="button" class="btn-delete-dokumen btn btn-danger"
                                     data-url="{{ url('/mahasiswa/profil/edit/dokumen/' . $item->id_dokumen) }}">
                                     <i class="bi bi-trash"></i>
                                 </button>

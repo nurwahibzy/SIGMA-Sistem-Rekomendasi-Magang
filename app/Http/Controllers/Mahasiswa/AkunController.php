@@ -110,50 +110,6 @@ class AkunController extends Controller
             ->first(['id_akun', 'id_user']);
         return $akun;
     }
-
-    // crud akun
-
-    // public function putAkun(Request $request)
-    // {
-    //     if ($request->ajax() || $request->wantsJson()) {
-            // try {
-            //     DB::transaction(function () use ($request) {
-            //         $id_mahasiswa = $this->idMahasiswa();
-            //         $nama = $request->input('nama');
-            //         $alamat = $request->input('alamat');
-            //         $telepon = $request->input('telepon');
-            //         $tanggal_lahir = $request->input('tanggal_lahir');
-            //         $email = $request->input('email');
-
-            //         if ($request->filled('password')) {
-            //             $password = $request->input('password');
-            //             AkunModel::with('mahasiswa:id_akun,id_mahasiswa')
-            //                 ->whereHas('mahasiswa', function ($query) use ($id_mahasiswa) {
-            //                     $query->where('id_mahasiswa', $id_mahasiswa);
-            //                 })
-            //                 ->update([
-            //                     'password' => Hash::make($password)
-            //                 ]);
-            //         }
-
-            //         MahasiswaModel::where('id_mahasiswa', $id_mahasiswa)
-            //             ->update([
-            //                 'nama' => $nama,
-            //                 'alamat' => $alamat,
-            //                 'telepon' => $telepon,
-            //                 'tanggal_lahir' => $tanggal_lahir,
-            //                 'email' => $email
-            //             ]);
-            //     });
-            //     return response()->json(['success' => true]);
-            // } catch (\Exception $e) {
-            //     Log::error("Gagal update profil: " . $e->getMessage());
-            //     return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
-            // }
-    //         return response()->json($request->all());
-    //     }
-    // }
-
     public function putAkun(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {

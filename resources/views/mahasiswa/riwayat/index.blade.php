@@ -11,7 +11,7 @@
             <div class="row">
                     @foreach($magang as $item)
                         <div class="col-md-6 col-xl-4">
-                            <div class="card shadow-sm border-0 mb-4">
+                            <div class="card shadow border-0 mb-4">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center mb-3">
                                         <div class="avatar bg-light-primary me-3">

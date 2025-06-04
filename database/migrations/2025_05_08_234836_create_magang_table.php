@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -16,6 +15,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_mahasiswa')->index();
             $table->unsignedBigInteger('id_dosen')->nullable()->index();
             $table->unsignedBigInteger('id_periode')->index();
+            $table->text('alasan_penolakan')->nullable();
             $table->enum('status', ['proses', 'diterima', 'ditolak', 'lulus'])->default('proses');
             $table->dateTime('tanggal_pengajuan');
             $table->timestamps();

@@ -1,6 +1,6 @@
 <div class="col-md-4">
     <div class="position-sticky" style="top: 90px;">
-        <div class="card p-4 text-center">
+        <div class="card p-4 text-center shadow">
             <div class="d-flex justify-content-center align-items-center flex-column">
                 <div class="avatar avatar-2xl mb-3">
                     <img id="preview" src="{{ Storage::exists('public/profil/akun/' . Auth::user()->foto_path)

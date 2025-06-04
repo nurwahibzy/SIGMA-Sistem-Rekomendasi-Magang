@@ -32,9 +32,6 @@ class AktivitasController extends Controller
         return view('dosen.monitoring.index', compact('magang'));
     }
 
-    // public function getAktivitas($id_magang){
-        
-    // }
     public function getAktivitas($id_magang)
     {
         $id_dosen = $this->idDosen();

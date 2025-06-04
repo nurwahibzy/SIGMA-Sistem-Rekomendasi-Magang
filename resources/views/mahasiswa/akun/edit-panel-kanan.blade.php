@@ -7,7 +7,7 @@
             <div class="col-md-8">
                 <h4 class="fw-bold text-primary mb-3">
                     Tarik perhatian rekruter dengan <br>
-                    <span class="text-light">Profil Anda</span>
+                    <span>Profil Anda</span>
                 </h4>
                 <p class="text-muted">
                     Buat profil dan bantu perusahaan mengenal Anda lebih mudah.
@@ -39,7 +39,7 @@
             </li>
         </ul>
 
-        <a href="{{ url('mahasiswa/profil/') }}" class="btn-edit-section btn btn-outline-danger">
+        <a href="{{ url('mahasiswa/profil/') }}" class="btn-edit-section btn btn-danger">
             <i class="bi bi-box-arrow-left"></i> Kembali
         </a>
 
