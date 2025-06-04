@@ -166,7 +166,7 @@ class RekomendasiController extends Controller
         // Ambil detail periode untuk lowongan terbaik
         $periode = PeriodeMagangModel::with([
             'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
-            'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama',
+            'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama,provinsi,daerah',
             'lowongan_magang.bidang:id_bidang,nama',
             'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
         ])
