@@ -11,11 +11,11 @@
                 <ul class="nav nav-tabs w-100" id="detailTab" role="tablist">
                     <li class="menu-item me-3 ms-3">
                         <a class="nav-link active" data-bs-toggle="tab" href="#beranda" role="tab">
-                            <span><i class="bi bi-stack"></i> Beranda</span></a>
+                            <span><i class="bi bi-house-door-fill"></i> Beranda</span></a>
                     </li>
                     <li class="menu-item me-3 ms-3">
                         <a class="nav-link" data-bs-toggle="tab" href="#program" role="tab">
-                            <span><i class="bi bi-stack"></i> Program Magang</span>
+                            <span><i class="bi bi-briefcase-fill"></i> Program Magang</span>
                         </a>
                     </li>
                 </ul>
