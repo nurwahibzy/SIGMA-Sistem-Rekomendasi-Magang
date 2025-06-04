@@ -60,15 +60,10 @@ class EvaluasiController extends Controller
                     $id_dosen = $this->idDosen();
                     $feedback = $request->input('feedback');
 
-                    EvaluasiMagangModel::with('magang:id_magang,id_dosen')
-                        ->where('id_magang', $id_magang)
-                        ->whereHas('magang', function ($query) use ($id_dosen) {
-                            $query->where('id_dosen', $id_dosen);
-                        })
-                        ->insert([
-                            'id_magang' => $id_magang,
-                            'feedback' => $feedback
-                        ]);
+                    $evaluasi = new EvaluasiMagangModel();
+                    $evaluasi->id_magang = $id_magang;
+                    $evaluasi->feedback = $feedback;
+                    $evaluasi->save();
                 });
                 return response()->json(['success' => true]);
             } catch (\Exception $e) {
