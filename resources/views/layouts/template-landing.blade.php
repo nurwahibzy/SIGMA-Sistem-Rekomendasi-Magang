@@ -34,9 +34,9 @@
                     </div>
                 </div>
 
-                <footer class="card bg-primary text-center text-lg-start border-top mt-5">
-                    <div class="container p-4">
-                        <p class="text-light">
+                <footer class="footer text-center border-top pt-4 pb-3 mt-5">
+                    <div class="container">
+                        <p class="mb-0 text-muted small">
                             &copy; {{ date('Y') }} <strong>SIGMA</strong> - Sistem Informasi Magang Mahasiswa. All
                             rights reserved.
                         </p>
@@ -55,6 +55,27 @@
     <script src="{{ asset('template/assets/static/js/pages/dashboard.js') }}"></script>
     @stack('scripts')
     @stack('js')
+
+    <style>
+        .footer {
+            background-color: #f8f9fa;
+            /* Warna latar abu-abu muda */
+            color: #6c757d;
+            /* Abu-abu terang untuk teks */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .footer .text-muted {
+            color: #6c757d !important;
+        }
+
+        .footer strong {
+            color: #343a40;
+            /* Hitam lembut untuk SIGMA */
+            font-weight: 600;
+        }
+    </style>
+
 </body>
 
 </html>
