@@ -57,10 +57,13 @@
                                         @endif
                                     </td>
                                 </tr>
+                                <tr>
+                                    <th>Alasan Penolakan</th>
+                                    <td>{{ $magang->alasan_penolakan }}</td>
+                                </tr>
 
                                 <!-- Kolom Alasan Penolakan -->
                                 <tr id="alasan_penolakan_row" class="d-none">
-                                    <th>Alasan Penolakan</th>
                                     <td>
                                         <textarea name="alasan_penolakan" id="alasan_penolakan" class="form-control" rows="3"
                                             placeholder="Masukkan alasan penolakan..."></textarea>
