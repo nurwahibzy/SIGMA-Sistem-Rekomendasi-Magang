@@ -357,12 +357,29 @@
             </thead>
             <tbody>
                 @if (isset($data['optimality_function']))
-                    @foreach ($data['optimality_function'] as $alternative_id => $k_j_value)
-                        <tr>
-                            <td>{{ $alternative_id }}</td>
-                            <td>{{ number_format($k_j_value, 4) }}</td>
-                        </tr>
+                    @foreach ([0, 1] as $pass)
+                        @foreach ($data['optimality_function'] as $alternative_id => $k_j_value)
+                        @if (($pass === 0 && $alternative_id == 0) || ($pass === 1 && $alternative_id != 0))
+                            <tr>
+                                <td>{{ $alternative_id }}</td>
+                                <td>{{ number_format($k_j_value, 4) }}</td>
+                            </tr>
+                            @endif
+                        @endforeach
                     @endforeach
+
+                    <!-- @foreach ([0, 1] as $pass)
+                        @foreach ($data['weighted_normalized_matrix'] as $alternative_id => $values)
+                            @if (($pass === 0 && $alternative_id == 0) || ($pass === 1 && $alternative_id != 0))
+                                <tr>
+                                    <td>{{ $alternative_id }}</td>
+                                    @foreach (array_column($data['kriteria'], 'id') as $criterion_id)
+                                        <td>{{ $values[$criterion_id] ?? 'N/A' }}</td>
+                                    @endforeach
+                                </tr>
+                            @endif
+                        @endforeach
+                    @endforeach -->
                 @else
                     <tr>
                         <td colspan="2">Data Fungsi Optimalitas ($K_j$) tidak tersedia di JSON yang diberikan.</td>

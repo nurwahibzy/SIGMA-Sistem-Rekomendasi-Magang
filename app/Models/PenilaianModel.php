@@ -12,7 +12,7 @@ class PenilaianModel extends Model
 
     protected $table = 'penilaian';
     protected $primaryKey = 'id_penilaian';
-    protected $fillable = ['id_magang', 'fasilitas', 'tugas', 'kedisiplinan'];
+    protected $fillable = ['id_magang', 'fasilitas', 'tugas', 'pembinaan'];
     public function magang(): BelongsTo
     {
         return $this->belongsTo(MagangModel::class, 'id_magang', 'id_magang');

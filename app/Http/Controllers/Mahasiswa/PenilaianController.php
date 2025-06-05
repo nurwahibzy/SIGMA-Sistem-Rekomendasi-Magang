@@ -97,13 +97,13 @@ class PenilaianController extends Controller
                 $request->validate([
                     'fasilitas' => 'required|numeric|min:1|max:5',
                     'tugas' => 'required|numeric|min:1|max:5',
-                    'kedisiplinan' => 'required|numeric|min:1|max:5',
+                    'pembinaan' => 'required|numeric|min:1|max:5',
                 ]);
                 PenilaianModel::create([
                     'id_magang' => $id_magang,
                     'fasilitas' => $request->fasilitas,
                     'tugas' => $request->tugas,
-                    'kedisiplinan' => $request->kedisiplinan,
+                    'pembinaan' => $request->pembinaan,
                 ]);
                 return response()->json(['success' => true]);
             } catch (\Exception $e) {
