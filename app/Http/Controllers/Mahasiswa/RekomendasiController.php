@@ -426,7 +426,7 @@ class RekomendasiController extends Controller
         }
 
         $this->prosesPerhitungan["weighted_normalized_matrix"] = $weighted;
-        $this->prosesPerhitungan["optimality_function"] = $utility;
+        $this->prosesPerhitungan["optimality_function"] = $optimal;
         $this->prosesPerhitungan["utility_degree"] = $utility;
 
         return [$weighted, $optimal, $utility];
