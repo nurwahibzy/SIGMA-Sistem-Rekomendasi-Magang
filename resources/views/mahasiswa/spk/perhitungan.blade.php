@@ -249,22 +249,27 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($data['matriksKeputusan'] as $alternative_id => $values)
-                    <tr>
-                        <td>{{ $alternative_id }}</td>
-                        @foreach (array_column($data['kriteria'], 'id') as $criterion_id)
-                            <td>{{ $values[$criterion_id] ?? 'N/A' }}</td>
-                        @endforeach
-                    </tr>
+                @foreach ([0, 1] as $pass)
+                    @foreach ($data['matriksKeputusanAras'] as $alternative_id => $values)
+                        @if (($pass === 0 && $alternative_id == 0) || ($pass === 1 && $alternative_id != 0))
+                            <tr>
+                                <td>{{ $alternative_id }}</td>
+                                @foreach (array_column($data['kriteria'], 'id') as $criterion_id)
+                                    <td>{{ $values[$criterion_id] ?? 'N/A' }}</td>
+                                @endforeach
+                            </tr>
+                        @endif
+                    @endforeach
                 @endforeach
-                @if (isset($data['matriksOptimal']))
+
+                <!-- @if (isset($data['matriksOptimal']))
                     <tr>
                         <td>Optimal</td>
                         @foreach (array_column($data['kriteria'], 'id') as $criterion_id)
                             <td>{{ $data['matriksOptimal'][$criterion_id] ?? 'N/A' }}</td>
                         @endforeach
                     </tr>
-                @endif
+                @endif -->
             </tbody>
         </table>
     </div>
@@ -285,13 +290,17 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($data['normalisasiAras'] as $alternative_id => $values)
-                    <tr>
-                        <td>{{ $alternative_id }}</td>
-                        @foreach (array_column($data['kriteria'], 'id') as $criterion_id)
-                            <td>{{ number_format($values[$criterion_id] ?? 0, 4) }}</td>
-                        @endforeach
-                    </tr>
+                @foreach ([0, 1] as $pass)
+                    @foreach ($data['normalisasiAras'] as $alternative_id => $values)
+                        @if (($pass === 0 && $alternative_id == 0) || ($pass === 1 && $alternative_id != 0))
+                            <tr>
+                                <td>{{ $alternative_id }}</td>
+                                @foreach (array_column($data['kriteria'], 'id') as $criterion_id)
+                                    <td>{{ $values[$criterion_id] ?? 'N/A' }}</td>
+                                @endforeach
+                            </tr>
+                        @endif
+                    @endforeach
                 @endforeach
             </tbody>
         </table>
@@ -312,13 +321,17 @@
             </thead>
             <tbody>
                 @if (isset($data['weighted_normalized_matrix']) && !empty($data['weighted_normalized_matrix']))
-                    @foreach ($data['weighted_normalized_matrix'] as $alternative_id => $values)
-                        <tr>
-                            <td>{{ $alternative_id }}</td>
-                            @foreach (array_column($data['kriteria'], 'id') as $criterion_id)
-                                <td>{{ number_format($values[$criterion_id] ?? 0, 4) }}</td>
-                            @endforeach
-                        </tr>
+                    @foreach ([0, 1] as $pass)
+                        @foreach ($data['weighted_normalized_matrix'] as $alternative_id => $values)
+                            @if (($pass === 0 && $alternative_id == 0) || ($pass === 1 && $alternative_id != 0))
+                                <tr>
+                                    <td>{{ $alternative_id }}</td>
+                                    @foreach (array_column($data['kriteria'], 'id') as $criterion_id)
+                                        <td>{{ $values[$criterion_id] ?? 'N/A' }}</td>
+                                    @endforeach
+                                </tr>
+                            @endif
+                        @endforeach
                     @endforeach
                 @else
                     <tr>

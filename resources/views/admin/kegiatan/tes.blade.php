@@ -87,73 +87,53 @@
                     </div>
                     <div class="col-md-5">
                         <div class="card shadow p-4">
-                            <div class="row">
-                                <div class="col-md-3 text-center mb-3 mb-md-0">
-                                    <img src="{{ Storage::exists('public/profil/perusahaan/' . $magang->periode_magang->lowongan_magang->perusahaan->foto_path)
-        ? asset('storage/profil/perusahaan/' . $magang->periode_magang->lowongan_magang->perusahaan->foto_path)
-        : asset('template/assets/images/mhs.jpeg') }}" alt="Profile Picture" class="img-fluid rounded"
-                                        style="width: 200px; height: 200px; border: 2px solid blue; object-fit: cover; cursor: pointer;"
-                                        onclick="showImagePopup(this.src)" />
+                                @if(count($activeButton))
+                                    <div class="w-100">
+                                        <label class="form-label fw-bold mb-2">Status:</label>
+                                        <div class="d-flex flex-wrap gap-3 ms-2">
+                                            @foreach ($activeButton as $status)
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="status" value="{{ $status }}"
+                                                        id="status_{{ $status }}">
+                                                    <label class="form-check-label"
+                                                        for="status_{{ $status }}">{{ ucfirst($status) }}</label>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        <div id="status-error" class="text-danger mt-2 d-none">Silakan pilih salah satu status.
+                                        </div>
+                                    </div>
+                                @endif
+
+                                @if($magang->dosen)
+                                    {{ $magang->dosen->nama }}
+                                @elseif($magang->status == 'ditolak')
+                                    -
+                                @else
+                                    <select name="id_dosen" class="form-select" id="input-dosen" required>
+                                        <option value="">Pilih Dosen Pembimbing</option>
+                                        @foreach($dosen as $d)
+                                            <option value="{{ $d['id_dosen'] }}">{{ $d['nama'] }}</option>
+                                        @endforeach
+                                    </select>
+                                @endif
+
+                                <div id="alasan_penolakan_row" class="d-none">
+                                    <textarea name="alasan_penolakan" id="alasan_penolakan" class="form-control" rows="3"
+                                        placeholder="Masukkan alasan penolakan..."></textarea>
+                                    <div class="invalid-feedback">Harap masukkan alasan penolakan.</div>
+
                                 </div>
 
-                                <div class="col-md-9">
-                                    <div class="company-info">
-                                        <table style="width: 100%; border-collapse: collapse;">
-                                            <tr>
-                                                <td style="padding-bottom: 8px; vertical-align: top;">
-                                                    <h4 class="fw-bold mb-1">
-                                                        <i class="fas fa-building me-2"></i>
-                                                    </h4>
-                                                </td>
-                                                <td style="padding-bottom: 8px; vertical-align: top;">
-                                                    <h4 class="fw-bold mb-1">
-                                                        {{ $magang->periode_magang->lowongan_magang->perusahaan->nama }}
-                                                    </h4>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding-bottom: 8px; vertical-align: top;">
-                                                    <p class="fw-bold mb-1">
-                                                        <i class="fas fa-map-marker-alt me-2"></i>
-                                                    </p>
-                                                </td>
-                                                <td style="padding-bottom: 8px; vertical-align: top;">
-                                                    <p class="fw-bold mb-1">
-                                                        {{ $magang->periode_magang->lowongan_magang->perusahaan->daerah }},
-                                                        {{ $magang->periode_magang->lowongan_magang->perusahaan->provinsi }}
-                                                    </p>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding-bottom: 8px; vertical-align: top;">
-                                                    <p class="fw-bold mb-1">
-                                                        <i class="fas fa-industry me-2"></i>
-                                                    </p>
-                                                </td>
-                                                <td style="padding-bottom: 8px; vertical-align: top;">
-                                                    <p class="fw-bold mb-1">
-                                                        {{ $magang->periode_magang->lowongan_magang->perusahaan->jenis_perusahaan->jenis }}
-                                                    </p>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding-bottom: 8px; vertical-align: top;">
-                                                    <p class="fw-bold mb-0">
-                                                        <i class="fas fa-info-circle me-2"></i>
-                                                    </p>
-                                                </td>
-                                                <td style="padding-bottom: 8px; vertical-align: top;">
-                                                    <p class="fw-bold mb-0">
-                                                        {{ $magang->periode_magang->lowongan_magang->perusahaan->deskripsi }}
-                                                    </p>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </div>
+
+                                <div class="w-100 d-flex justify-content-end gap-2 mt-2">
+                                    <button type="button" class="btn btn-danger" id="btn-hapus">
+                                        <i class="bi bi-trash"></i> Hapus
+                                    </button>
+                                    <button type="submit" class="btn btn-info"><i class="bi bi-save"></i> Simpan</button>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </div>  
                 </div>
                 <div class="card">
                     <div class="row">
@@ -224,75 +204,54 @@
                 </div>
 
                 <!-- <table class="table table-borderless">
-                                                        <tr>
-                                                            <th>Status</th>
-                                                            <td>
-                                                                <span class="badge 
-                                                                                                @if($magang->status == 'diterima') bg-warning
-                                                                                                @elseif($magang->status == 'lulus') bg-success
-                                                                                                @elseif($magang->status == 'ditolak') bg-danger
-                                                                                                    @else bg-secondary
-                                                                                                @endif">
-                                                                    {{ ucfirst($magang->status ?? '-') }}
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Tanggal Pengajuan</th>
-                                                            <td>{{ $magang->tanggal_pengajuan }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Dosen Pembimbing</th>
-                                                            <td>
-                                                                @if($magang->dosen)
-                                                                    {{ $magang->dosen->nama }}
-                                                                @elseif($magang->status == 'ditolak')
-                                                                    -
-                                                                @else
-                                                                    <select name="id_dosen" class="form-select" id="input-dosen" required>
-                                                                        <option value="">Pilih Dosen Pembimbing</option>
-                                                                        @foreach($dosen as $d)
-                                                                            <option value="{{ $d['id_dosen'] }}">{{ $d['nama'] }}</option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                @endif
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Alasan Penolakan</th>
-                                                            <td>{{ $magang->alasan_penolakan }}</td>
-                                                        </tr>
+                                                                                <tr>
+                                                                                    <th>Status</th>
+                                                                                    <td>
+                                                                                        <span class="badge 
+                                                                                                                        @if($magang->status == 'diterima') bg-warning
+                                                                                                                        @elseif($magang->status == 'lulus') bg-success
+                                                                                                                        @elseif($magang->status == 'ditolak') bg-danger
+                                                                                                                            @else bg-secondary
+                                                                                                                        @endif">
+                                                                                            {{ ucfirst($magang->status ?? '-') }}
+                                                                                        </span>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <th>Tanggal Pengajuan</th>
+                                                                                    <td>{{ $magang->tanggal_pengajuan }}</td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <th>Dosen Pembimbing</th>
+                                                                                    <td>
+                                                                                        @if($magang->dosen)
+                                                                                            {{ $magang->dosen->nama }}
+                                                                                        @elseif($magang->status == 'ditolak')
+                                                                                            -
+                                                                                        @else
+                                                                                            <select name="id_dosen" class="form-select" id="input-dosen" required>
+                                                                                                <option value="">Pilih Dosen Pembimbing</option>
+                                                                                                @foreach($dosen as $d)
+                                                                                                    <option value="{{ $d['id_dosen'] }}">{{ $d['nama'] }}</option>
+                                                                                                @endforeach
+                                                                                            </select>
+                                                                                        @endif
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <th>Alasan Penolakan</th>
+                                                                                    <td>{{ $magang->alasan_penolakan }}</td>
+                                                                                </tr>
 
-                                                        <tr id="alasan_penolakan_row" class="d-none">
-                                                            <td>
-                                                                <textarea name="alasan_penolakan" id="alasan_penolakan" class="form-control" rows="3"
-                                                                    placeholder="Masukkan alasan penolakan..."></textarea>
-                                                                <div class="invalid-feedback">Harap masukkan alasan penolakan.</div>
-                                                            </td>
-                                                        </tr>
-                                                    </table> -->
+                                                                                <tr id="alasan_penolakan_row" class="d-none">
+                                                                                    <td>
+                                                                                        <textarea name="alasan_penolakan" id="alasan_penolakan" class="form-control" rows="3"
+                                                                                            placeholder="Masukkan alasan penolakan..."></textarea>
+                                                                                        <div class="invalid-feedback">Harap masukkan alasan penolakan.</div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </table> -->
 
-                <!-- @if(count($activeButton))
-                                                        <div class="w-100">
-                                                            <label class="form-label fw-bold mb-2">Status:</label>
-                                                            <div class="d-flex flex-wrap gap-3 ms-2">
-                                                                @foreach ($activeButton as $status)
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="radio" name="status" value="{{ $status }}"
-                                                                            id="status_{{ $status }}">
-                                                                        <label class="form-check-label" for="status_{{ $status }}">{{ ucfirst($status) }}</label>
-                                                                    </div>
-                                                                @endforeach
-                                                            </div>
-                                                            <div id="status-error" class="text-danger mt-2 d-none">Silakan pilih salah satu status.</div>
-                                                        </div>
-                                                    @endif -->
-                <!-- <div class="w-100 d-flex justify-content-end gap-2 mt-2">
-                                                        <button type="button" class="btn btn-danger" id="btn-hapus">
-                                                            <i class="bi bi-trash"></i> Hapus
-                                                        </button>
-                                                        <button type="submit" class="btn btn-info"><i class="bi bi-save"></i> Simpan</button>
-                                                    </div> -->
             </form>
         </div>
         <div class="tab-pane fade" id="profil" role="tabpanel">
@@ -520,30 +479,30 @@
     </div>
 
     <div id="image-popup" style="
-                                                            display: none;
-                                                            position: fixed;
-                                                            top: 0; left: 0;
-                                                            width: 100vw; height: 100vh;
-                                                            background-color: rgba(0,0,0,0.8);
-                                                            z-index: 1050;
-                                                            justify-content: center;
-                                                            align-items: center;
-                                                        ">
+                                                                                    display: none;
+                                                                                    position: fixed;
+                                                                                    top: 0; left: 0;
+                                                                                    width: 100vw; height: 100vh;
+                                                                                    background-color: rgba(0,0,0,0.8);
+                                                                                    z-index: 1050;
+                                                                                    justify-content: center;
+                                                                                    align-items: center;
+                                                                                ">
         <span id="close-popup" style="
-                                                                position: absolute;
-                                                                top: 20px; right: 30px;
-                                                                font-size: 30px;
-                                                                color: white;
-                                                                cursor: pointer;
-                                                                z-index: 1060;
-                                                            ">&times;</span>
+                                                                                        position: absolute;
+                                                                                        top: 20px; right: 30px;
+                                                                                        font-size: 30px;
+                                                                                        color: white;
+                                                                                        cursor: pointer;
+                                                                                        z-index: 1060;
+                                                                                    ">&times;</span>
         <img id="popup-img" src="" alt="Full Image" style="
-                                                                max-width: 90vw;
-                                                                max-height: 90vh;
-                                                                border-radius: 10px;
-                                                                box-shadow: 0 0 10px #000;
-                                                                object-fit: contain;
-                                                            ">
+                                                                                        max-width: 90vw;
+                                                                                        max-height: 90vh;
+                                                                                        border-radius: 10px;
+                                                                                        box-shadow: 0 0 10px #000;
+                                                                                        object-fit: contain;
+                                                                                    ">
     </div>
     <script>
         function showImagePopup(src) {
@@ -594,13 +553,13 @@
                     @if(!$magang->dosen)
                         id_dosen: { required: true },
                     @endif
-                                                        },
+                                                                                },
             messages: {
             status: { required: "Silakan pilih salah satu status." },
             @if(!$magang->dosen)
                 id_dosen: { required: "Silakan pilih dosen pembimbing." },
             @endif
-                                                        },
+                                                                                },
             ignore: [],
             errorElement: 'span',
             errorPlacement: function (error, element) {
@@ -651,7 +610,7 @@
                     }
                 });
             }
-                                                    });
+                                                                            });
 
         // Delete handler
         $('#btn-hapus').click(function () {
@@ -692,6 +651,6 @@
                 }
             });
         });
-                                                });
+                                                                        });
     </script>
 @endpush

@@ -127,7 +127,7 @@ class RekomendasiController extends Controller
                     'nama_perusahaan' => $perusahaan->nama,
                     'jenis_perusahaan' => $perusahaan->jenis_perusahaan->id_jenis,
                     'id_lowongan' => $lowongan->id_lowongan,
-                    'nama_lowongan' => $lowongan->nama,
+                    'bidang' => $lowongan->bidang->nama,
                     'prioritas_keahlian' => $bobot_bidang,
                     'jarak' => $jarak,
                     'fasilitas' => $rata_fasilitas,
@@ -137,7 +137,7 @@ class RekomendasiController extends Controller
             }
         }
 
-        // $data_array = array_slice($data_array, 0, 8);
+        $data_array = array_slice($data_array, 0, 8);
         // Proses perhitungan keputusan MEREC & ARAS
         $matriksKeputusan = $this->bangunMatriksKeputusan($data_array, $kriteria);
 
@@ -161,7 +161,7 @@ class RekomendasiController extends Controller
         // return response()->json($peringkat);
 
         // Ambil 5 lowongan terbaik berdasarkan peringkat
-        $topLowonganIds = array_column(array_slice($peringkat, 0, 5), 'id_lowongan');
+        $topLowonganIds = array_column(array_slice($peringkat, 0, 8), 'id_lowongan');
 
         // Ambil detail periode untuk lowongan terbaik
         $periode = PeriodeMagangModel::with([
@@ -171,17 +171,44 @@ class RekomendasiController extends Controller
             'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
         ])
             ->whereIn('id_lowongan', $topLowonganIds)
+            ->orderByRaw('FIELD(id_lowongan, ' . implode(',', $topLowonganIds) . ')')
             ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
 
         // Hitung data statistik
-        $perusahaans = PerusahaanModel::with('jenis_perusahaan')->get();
+        // $perusahaans = PerusahaanModel::with('jenis_perusahaan')->get();
+
+        $idPerusahaan = collect();
+        $idJenisPerusahaan = collect();
+        $idBidang = collect();
+
+        foreach ($periode as $p) {
+            if ($p->lowongan_magang) {
+                $perusahaan = $p->lowongan_magang->perusahaan;
+                $bidang = $p->lowongan_magang->bidang;
+
+                if ($perusahaan) {
+                    $idPerusahaan->push($perusahaan->id_perusahaan);
+                    if ($perusahaan->jenis_perusahaan) {
+                        $idJenisPerusahaan->push($perusahaan->jenis_perusahaan->id_jenis);
+                    }
+                }
+
+                if ($bidang) {
+                    $idBidang->push($bidang->id_bidang);
+                }
+            }
+        }
+
+        $jumlahPerusahaan = $idPerusahaan->unique()->count();
+        $jumlahJenisPerusahaan = $idJenisPerusahaan->unique()->count();
+        $jumlahBidang = $idBidang->unique()->count();
 
         return view('mahasiswa.periode.index', [
             'periode' => $periode,
             'activeMenu' => 'dashboard',
-            'jumlahPerusahaan' => $perusahaans->count(),
-            'jumlahJenisPerusahaan' => $perusahaans->pluck('jenis_perusahaan.id_jenis')->unique()->count(),
-            'jumlahBidang' => BidangModel::count(),
+            'jumlahPerusahaan' => $jumlahPerusahaan,
+            'jumlahJenisPerusahaan' => $jumlahJenisPerusahaan,
+            'jumlahBidang' => $jumlahBidang,
             'perhitungan' => true
         ]);
     }
@@ -213,11 +240,11 @@ class RekomendasiController extends Controller
 
             foreach ($matriks as $idAlt => $nilai) {
                 $v = $nilai[$krit->id];
-                if ($max == $min ) {
+                if ($max == $min) {
                     $hasil[$idAlt][$krit->id] = 0;
                 } else {
                     if ($krit->type === 'benefit') {
-                        $hasil[$idAlt][$krit->id] = $max == 0 ? 0 : $v / $max  ;
+                        $hasil[$idAlt][$krit->id] = $max == 0 ? 0 : $v / $max;
                     } else {
                         $hasil[$idAlt][$krit->id] = $v == 0 ? 0 : $min / $v;
                     }
@@ -306,20 +333,29 @@ class RekomendasiController extends Controller
             // dd($min);
             $max = max($kolomNilai);
 
+            if ($krit->type == 'benefit') {
+                $matriks[0][$krit->id] = $max;
+            } else {
+                $matriks[0][$krit->id] = $min;
+            }
+            $kolomNilai = array_column($matriks, $krit->id);
+
             foreach ($matriks as $idAlt => $nilai) {
 
                 $v = $nilai[$krit->id];
-                if ($max == $min ) {
+                if ($max == $min) {
                     $hasil[$idAlt][$krit->id] = 0;
                 } else {
                     if ($krit->type === 'benefit') {
-                        $hasil[$idAlt][$krit->id] = $max == 0 ? 0 : $v / $max  ;
+                        $hasil[$idAlt][$krit->id] = $max == 0 ? 0 : $v / array_sum($kolomNilai);
                     } else {
-                        $hasil[$idAlt][$krit->id] = $v == 0 ? 0 : $min / $v;
+                        $pembalik = array_map(fn($x) => $x == 0 ? 0 : 1 / $x, $kolomNilai);
+                        $hasil[$idAlt][$krit->id] = $v == 0 ? 0 : (1 / $v) / array_sum($pembalik);
                     }
                 }
             }
         }
+        $this->prosesPerhitungan["matriksKeputusanAras"] = $matriks;
         $this->prosesPerhitungan["normalisasiAras"] = $hasil;
         return $hasil;
     }
@@ -339,22 +375,22 @@ class RekomendasiController extends Controller
         }
 
         // Optimality function (Si)
-        foreach ($alternatif as $alt) {
-            $id = $alt['id_lowongan'];
+        foreach ($normal as $key => $value) {
+            $id = $key;
             $optimal[$id] = array_sum($weighted[$id]);
         }
 
-        // Ideal solution (S0)
-        $ideal = [];
-        foreach ($kriteria as $krit) {
-            $kolom = array_column($normal, $krit->id);
-            $max = max($kolom);
+        // // Ideal solution (S0)
+        // $ideal = [];
+        // foreach ($kriteria as $krit) {
+        //     $kolom = array_column($normal, $krit->id);
+        //     $max = max($kolom);
 
-            $ideal[$krit->id] =  $max == 0 ? 0 : 1;
-        }
+        //     $ideal[$krit->id] = $max == 0 ? 0 : 1;
+        // }
         $S0 = 0;
         foreach ($kriteria as $krit) {
-            $S0 += $bobot[$krit->id] * $ideal[$krit->id];
+            $S0 += $bobot[$krit->id] * $normal[0][$krit->id];
         }
 
         // Utility degree (Ki)
@@ -364,7 +400,7 @@ class RekomendasiController extends Controller
         }
 
         $this->prosesPerhitungan["weighted_normalized_matrix"] = $weighted;
-        $this->prosesPerhitungan["optimality_function"] = $optimal;
+        $this->prosesPerhitungan["optimality_function"] = $utility;
         $this->prosesPerhitungan["utility_degree"] = $utility;
 
         return [$weighted, $optimal, $utility];
@@ -373,18 +409,18 @@ class RekomendasiController extends Controller
     private function hitungAras($normal, $bobot, $alternatif, $kriteria)
     {
         // Hitung nilai ideal (S0)
-        $ideal = [];
-        foreach ($kriteria as $krit) {
-            $kolom = array_column($normal, $krit->id);
-            $max = max($kolom);
+        // $ideal = [];
+        // foreach ($kriteria as $krit) {
+        //     $kolom = array_column($normal, $krit->id);
+        //     $max = max($kolom);
 
-            $ideal[$krit->id] =  $max == 0 ? 0 : 1;
-        }
+        //     $ideal[$krit->id] = $max == 0 ? 0 : 1;
+        // }
 
         // Hitung skor ideal (S0)
         $S0 = 0;
         foreach ($kriteria as $krit) {
-            $S0 += $bobot[$krit->id] * $ideal[$krit->id];
+            $S0 += $bobot[$krit->id] * $normal[0][$krit->id];
         }
 
         // Hitung skor utilitas tiap alternatif (Ki)
@@ -399,7 +435,7 @@ class RekomendasiController extends Controller
 
             $hasil[] = [
                 'id_lowongan' => $alt['id_lowongan'],
-                'alternatif' => $alt['nama_perusahaan'] . '-' . $alt['nama_lowongan'],
+                'alternatif' => $alt['nama_perusahaan'] . ' - ' . $alt['bidang'],
                 'skor' => round($Ki, 4)
             ];
         }

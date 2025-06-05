@@ -64,7 +64,6 @@ class PeriodeMagangController extends Controller
                 'lowongan_magang.bidang:id_bidang,nama',
                 'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
             ])
-                ->where('tanggal_mulai', '>', now())
                 ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
         }
 
