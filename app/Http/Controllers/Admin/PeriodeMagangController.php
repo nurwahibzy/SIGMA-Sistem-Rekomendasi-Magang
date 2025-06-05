@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use Log;
+use Storage;
 use Validator;
 
 class PeriodeMagangController extends Controller
@@ -175,6 +176,21 @@ class PeriodeMagangController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
+
+                $periode = PeriodeMagangModel::with('magang.aktivitas_magang')
+                    ->where('id_periode', $id_periode)
+                    ->first();
+
+                foreach ($periode->magang as $magang) {
+                    foreach ($magang->aktivitas_magang as $aktivitas) {
+                        $foto_path = $aktivitas->foto_path;
+
+                        if (Storage::disk('public')->exists("aktivitas/$foto_path")) {
+                            Storage::disk('public')->delete("aktivitas/$foto_path");
+                        }
+                    }
+                }
+
                 PeriodeMagangModel::where('id_periode', $id_periode)
                     ->delete();
 

@@ -415,32 +415,34 @@
             </div>
         </div>
 
-        <div id="image-popup" style="
-                                                                                                                            display: none;
-                                                                                                                            position: fixed;
-                                                                                                                            top: 0; left: 0;
-                                                                                                                            width: 100vw; height: 100vh;
-                                                                                                                            background-color: rgba(0,0,0,0.8);
-                                                                                                                            z-index: 1050;
-                                                                                                                            justify-content: center;
-                                                                                                                            align-items: center;
-                                                                                                                        ">
+        <div id="image-popup"
+            style="
+                                                                                                                                    display: none;
+                                                                                                                                    position: fixed;
+                                                                                                                                    top: 0; left: 0;
+                                                                                                                                    width: 100vw; height: 100vh;
+                                                                                                                                    background-color: rgba(0,0,0,0.8);
+                                                                                                                                    z-index: 1050;
+                                                                                                                                    justify-content: center;
+                                                                                                                                    align-items: center;
+                                                                                                                                ">
             <span id="close-popup"
                 style="
-                                                                                                                                position: absolute;
-                                                                                                                                top: 20px; right: 30px;
-                                                                                                                                font-size: 30px;
-                                                                                                                                color: white;
-                                                                                                                                cursor: pointer;
-                                                                                                                                z-index: 1060;
-                                                                                                                            ">&times;</span>
-            <img id="popup-img" src="" alt="Full Image" style="
-                                                                                                                                max-width: 90vw;
-                                                                                                                                max-height: 90vh;
-                                                                                                                                border-radius: 10px;
-                                                                                                                                box-shadow: 0 0 10px #000;
-                                                                                                                                object-fit: contain;
-                                                                                                                            ">
+                                                                                                                                        position: absolute;
+                                                                                                                                        top: 20px; right: 30px;
+                                                                                                                                        font-size: 30px;
+                                                                                                                                        color: white;
+                                                                                                                                        cursor: pointer;
+                                                                                                                                        z-index: 1060;
+                                                                                                                                    ">&times;</span>
+            <img id="popup-img" src="" alt="Full Image"
+                style="
+                                                                                                                                        max-width: 90vw;
+                                                                                                                                        max-height: 90vh;
+                                                                                                                                        border-radius: 10px;
+                                                                                                                                        box-shadow: 0 0 10px #000;
+                                                                                                                                        object-fit: contain;
+                                                                                                                                    ">
         </div>
         <script>
             function showImagePopup(src) {
@@ -490,10 +492,10 @@
                         $('#input-dosen').removeClass('d-none');;
                         $('#alasan_penolakan_row').addClass('d-none');
                         $('#input-dosen').select2({
-                theme: "bootstrap-5",
-                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-                placeholder: $(this).data('placeholder'),
-            });
+                            theme: "bootstrap-5",
+                            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+                            placeholder: $(this).data('placeholder'),
+                        });
 
                     }
                 });
@@ -506,13 +508,13 @@
                         @if(!$magang->dosen)
                             id_dosen: { required: true },
                         @endif
-                        },
+                                },
                 messages: {
                 status: { required: "Silakan pilih salah satu status." },
                 @if(!$magang->dosen)
                     id_dosen: { required: "Silakan pilih dosen pembimbing." },
                 @endif
-                            },
+                                    },
                 ignore: [],
                 errorElement: 'span',
                 errorPlacement: function (error, element) {
@@ -563,7 +565,7 @@
                         }
                     });
                 }
-                                                                                                                    });
+                                                                                                                            });
 
             // Delete handler
             $('#btn-hapus').click(function () {
@@ -585,13 +587,21 @@
                                 _token: '{{ csrf_token() }}'
                             },
                             success: function (response) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Berhasil',
-                                    text: 'Data berhasil dihapus.'
-                                }).then(() => {
-                                    window.location.href = '{{ url("admin/kegiatan") }}';
-                                });
+                                if (response.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Berhasil',
+                                        text: 'Data berhasil dihapus.'
+                                    }).then(() => {
+                                        window.location.href = '{{ url("admin/kegiatan") }}';
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Gagal',
+                                        text: response.message || 'Terjadi kesalahan saat menyimpan.'
+                                    });
+                                }
                             },
                             error: function () {
                                 Swal.fire({
@@ -604,7 +614,7 @@
                     }
                 });
             });
-                                                                                                                });
+                                                                                                                        });
         </script>
 
     @endif

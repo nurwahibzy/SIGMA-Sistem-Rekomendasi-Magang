@@ -11,6 +11,7 @@ use App\Models\MagangModel;
 use Auth;
 use DB;
 use Illuminate\Http\Request;
+use Storage;
 use Validator;
 
 class MagangController extends Controller
@@ -202,6 +203,24 @@ class MagangController extends Controller
 
     public function deleteKegiatan(Request $request, $id_magang)
     {
+        $magang = MagangModel::with('aktivitas_magang')
+            ->where('id_magang', $id_magang)
+            ->first();
+
+        if ($magang) {
+            if ($magang->status == 'proses' || $magang->status == 'diterima') {
+                return response()->json(['success' => false]);
+            }
+        }
+
+        foreach ($magang->aktivitas_magang as $aktivitas) {
+            $foto_path = $aktivitas->foto_path;
+
+            if (Storage::disk('public')->exists("aktivitas/$foto_path")) {
+                Storage::disk('public')->delete("aktivitas/$foto_path");
+            }
+        }
+
         MagangModel::where('id_magang', $id_magang)->delete();
         return response()->json(['success' => true]);
     }

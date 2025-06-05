@@ -308,10 +308,27 @@ class PerusahaanController extends Controller
                 DB::transaction(
                     function () use ($request, $id_perusahaan) {
 
-                        $dokumen = PerusahaanModel::where('id_perusahaan', $id_perusahaan)
-                            ->first(['foto_path']);
+                        $perusahaan = PerusahaanModel::with('lowongan_magang.periode_magang.magang.aktivitas_magang')
+                        ->where('id_perusahaan', $id_perusahaan)
+                            ->first();
 
-                        $foto_path = $dokumen->foto_path;
+                        $foto_path = $perusahaan->foto_path;
+
+                        foreach ($perusahaan->lowongan_magang as $lowongan) {
+                            foreach ($lowongan->periode_magang as $periode) {
+                                foreach ($periode->magang as $magang) {
+                                    foreach ($magang->aktivitas_magang as $aktivitas){
+                                        $foto_path = $aktivitas->foto_path;
+
+                                        if (Storage::disk('public')->exists("aktivitas/$foto_path")) {
+                                            Storage::disk('public')->delete("aktivitas/$foto_path");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        return response()->json($perusahaan);
 
                         if (Storage::disk('public')->exists("profil/perusahaan/$foto_path")) {
                             Storage::disk('public')->delete("profil/perusahaan/$foto_path");

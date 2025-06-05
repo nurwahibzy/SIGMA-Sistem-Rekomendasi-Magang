@@ -49,8 +49,10 @@ class RekomendasiController extends Controller
             ->get(['id_bidang', 'prioritas']);
 
         // Validasi jika belum ada preferensi
-        if ($preferensiKeahlianMahasiswa->isEmpty()) {
-            return redirect()->route('mahasiswa.profil')->with('error', 'Silakan atur preferensi keahlian terlebih dahulu.');
+        if (!count($preferensiKeahlianMahasiswa)) {
+            // return redirect()->route('mahasiswa.profil')->with('error', 'Silakan atur preferensi keahlian terlebih dahulu.');
+            // return response(url('/mahasiswa/periode'));
+            return false;
         }
 
         $totalPrioritas = $preferensiKeahlianMahasiswa->count();
@@ -183,10 +185,11 @@ class RekomendasiController extends Controller
     {
         $peringkat = $this->hitungRekomendasiMagang();
 
-        // return response()->json($peringkat);
+        if ($peringkat == false) {
+            // return response(url('/mahasiswa/periode'));
+            return redirect('/mahasiswa/profil')->with('error', 'Silakan atur preferensi keahlian terlebih dahulu.');
+        }
 
-        // Ambil 5 lowongan terbaik berdasarkan peringkat
-        // $topLowonganIds = array_column(array_slice($peringkat, 0, 8), 'id_lowongan');
         $topLowonganIds = array_column($peringkat, 'id_lowongan');
 
         // Ambil detail periode untuk lowongan terbaik

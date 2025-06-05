@@ -9,6 +9,7 @@ use App\Models\PerusahaanModel;
 use DB;
 use Illuminate\Http\Request;
 use Log;
+use Storage;
 use Validator;
 
 class LowonganMagangController extends Controller
@@ -150,6 +151,23 @@ class LowonganMagangController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
+
+                $lowongan = LowonganMagangModel::with('periode_magang.magang.aktivitas_magang')
+                    ->where('id_lowongan', $id_lowongan)
+                    ->first();
+
+                foreach ($lowongan->periode_magang as $periode) {
+                    foreach ($periode->magang as $magang) {
+                        foreach ($magang->aktivitas_magang as $aktivitas) {
+                            $foto_path = $aktivitas->foto_path;
+
+                            if (Storage::disk('public')->exists("aktivitas/$foto_path")) {
+                                Storage::disk('public')->delete("aktivitas/$foto_path");
+                            }
+                        }
+                    }
+                }
+
                 LowonganMagangModel::where('id_lowongan', $id_lowongan)
                     ->delete();
 
