@@ -408,6 +408,7 @@
             <thead>
                 <tr>
                     <th>Peringkat</th>
+                    <th>id_Alternatif</th>
                     <th>Alternatif</th>
                     <th>Skor</th>
                 </tr>
@@ -424,6 +425,7 @@
                 @foreach ($ranked_results as $result)
                     <tr>
                         <td>{{ $rank++ }}</td>
+                        <td>{{ $result['id_lowongan'] }}</td>
                         <td>{{ $result['alternatif'] }}</td>
                         <td>{{ number_format($result['skor'], 4) }}</td>
                     </tr>
