@@ -118,7 +118,7 @@
                                             onclick="modalAction('{{ url('/admin/kegiatan/detail/' . $item->id_magang) }}')">
                                             Detail
                                         </button></td> -->
-                                    <td class="text-center"> <a href="{{  url('/admin/kegiatan/detail/' . $item->id_magang)  }}" class="btn btn-sm btn-info btn-detail"><i class="bi bi-x-circle"></i> Riset</a></td>
+                                    <td class="text-center"> <a href="{{  url('/admin/kegiatan/detail/' . $item->id_magang)  }}" class="btn btn-sm btn-info btn-detail">Detail</a></td>
                                 </tr>
                             @endforeach
                         </tbody>

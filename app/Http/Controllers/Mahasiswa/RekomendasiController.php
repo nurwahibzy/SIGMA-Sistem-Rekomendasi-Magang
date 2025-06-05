@@ -106,6 +106,9 @@ class RekomendasiController extends Controller
                 $rata_kedisiplinan = $total_kedisiplinan / $total_penilaian;
             }
 
+            $rata_fasilitas = $rata_fasilitas == 0 ? 2.5 : $rata_fasilitas;
+            $rata_tugas = $rata_tugas == 0 ? 2.5 : $rata_tugas;
+            $rata_kedisiplinan = $rata_kedisiplinan == 0 ? 2.5 : $rata_kedisiplinan;
 
             foreach ($perusahaan->lowongan_magang as $lowongan) {
 
@@ -137,7 +140,7 @@ class RekomendasiController extends Controller
             }
         }
 
-        $data_array = array_slice($data_array, 0, 8);
+        // $data_array = array_slice($data_array, 0, 8);
         // Proses perhitungan keputusan MEREC & ARAS
         $matriksKeputusan = $this->bangunMatriksKeputusan($data_array, $kriteria);
 
@@ -161,7 +164,8 @@ class RekomendasiController extends Controller
         // return response()->json($peringkat);
 
         // Ambil 5 lowongan terbaik berdasarkan peringkat
-        $topLowonganIds = array_column(array_slice($peringkat, 0, 8), 'id_lowongan');
+        // $topLowonganIds = array_column(array_slice($peringkat, 0, 8), 'id_lowongan');
+        $topLowonganIds = array_column($peringkat, 'id_lowongan');
 
         // Ambil detail periode untuk lowongan terbaik
         $periode = PeriodeMagangModel::with([

@@ -111,6 +111,13 @@ class MagangController extends Controller
         $magang = MagangModel::with('mahasiswa.akun')
             ->where('id_magang', $id_magang)
             ->first();
+
+        if (!$magang) {
+            return view(
+                'admin.kegiatan.detail'
+            );
+        }
+
         $id_akun = $magang->mahasiswa->akun->id_akun;
         $akun = $this->allDataProfil($id_akun);
         $bidang = BidangModel::get();
@@ -137,7 +144,7 @@ class MagangController extends Controller
             $activeButton = ['lulus'];
         }
         return view(
-            'admin.kegiatan.tes',
+            'admin.kegiatan.detail',
             [
                 'dosen' => $dosen,
                 'activeButton' => $activeButton,
