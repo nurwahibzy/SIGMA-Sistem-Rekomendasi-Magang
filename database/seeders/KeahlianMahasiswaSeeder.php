@@ -22,6 +22,9 @@ class KeahlianMahasiswaSeeder extends Seeder
             [1, 6, '4', 'Berpengalaman dalam mendesain antarmuka pengguna menggunakan tools seperti Figma dan Adobe XD.'], 
             [1, 7, '6', 'Pernah melakukan penetration testing dan audit keamanan aplikasi menggunakan tools seperti Kali Linux.'], 
             [1, 8, '8', 'Membangun aplikasi mobile menggunakan React Native untuk platform Android dan iOS.'],
+            [2, 6, '2', 'Berpengalaman dalam mendesain antarmuka pengguna menggunakan tools seperti Figma dan Adobe XD.'], 
+            [2, 7, '3', 'Pernah melakukan penetration testing dan audit keamanan aplikasi menggunakan tools seperti Kali Linux.'], 
+            [2, 8, '1', 'Membangun aplikasi mobile menggunakan React Native untuk platform Android dan iOS.'],
         ];
 
         foreach ($keahlianMahasiswa as $keahlian) {

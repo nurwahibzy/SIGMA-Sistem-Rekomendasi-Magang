@@ -17,7 +17,7 @@ class PeriodeMagangSeeder extends Seeder
         $startMonth = 6; // Mulai dari bulan Juni
         $year = 2025;
 
-        for ($i = 1; $i <= 50; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
             $bulanMulai = $startMonth + ($i % 3); // Rotasi antara bulan 6, 7, 8
             $tanggalMulai = Carbon::createFromDate($year, $bulanMulai, 1);
             $tanggalSelesai = $tanggalMulai->copy()->addMonths(2)->endOfMonth(); // 3 bulan periode

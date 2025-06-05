@@ -32,6 +32,18 @@ class PreferensiPerusahaanMahasiswaSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'id_mahasiswa' => 2,
+                'id_jenis' => 4,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id_mahasiswa' => 2,
+                'id_jenis' => 6,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
         ];
         DB::table('preferensi_perusahaan_mahasiswa')->insert($data);
     }

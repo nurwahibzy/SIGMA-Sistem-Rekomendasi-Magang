@@ -21,6 +21,38 @@ class PenilaianSeeder extends Seeder
                 'kedisiplinan' => 4,
                 'created_at' => now(),
                 'updated_at' => now(),
+            ],
+            [
+                'id_magang' => '4',
+                'fasilitas' => '5',  
+                'tugas' => '4',      
+                'kedisiplinan' => 5,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id_magang' => '5',
+                'fasilitas' => '3',  
+                'tugas' => '4',      
+                'kedisiplinan' => 3,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id_magang' => '6',
+                'fasilitas' => '4',  
+                'tugas' => '5',      
+                'kedisiplinan' => 4,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id_magang' => '8',
+                'fasilitas' => '4',  
+                'tugas' => '5',      
+                'kedisiplinan' => 4,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]
         ];
 
