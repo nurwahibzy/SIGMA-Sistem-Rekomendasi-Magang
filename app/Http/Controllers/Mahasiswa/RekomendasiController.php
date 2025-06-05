@@ -77,12 +77,46 @@ class RekomendasiController extends Controller
         // Loop untuk setiap perusahaan dan lowongan
         foreach ($perusahaans as $perusahaan) {
             // Hitung rata-rata penilaian dari seluruh magang
-            $total_fasilitas = 0;
-            $total_tugas = 0;
-            $total_kedisiplinan = 0;
-            $total_penilaian = 0;
+            // $total_fasilitas = 0;
+            // $total_penilaian = 0;
+
+            // foreach ($perusahaan->lowongan_magang as $lowongan) {
+            //     foreach ($lowongan->periode_magang as $periode) {
+            //         foreach ($periode->magang as $magang) {
+            //             if ($magang->penilaian) {
+            //                 $total_fasilitas += (int) $magang->penilaian->fasilitas;
+            //                 $total_penilaian++;
+            //             }
+            //         }
+            //     }
+            // }
+
+            // // Inisialisasi nilai rata-rata
+            // $rata_fasilitas = 0;
+
+            // if ($total_penilaian > 0) {
+            //     $rata_fasilitas = $total_fasilitas / $total_penilaian;
+            // }
+
+            // $rata_fasilitas = $rata_fasilitas == 0 ? 2.5 : $rata_fasilitas;
+
+
+            // Hitung jarak
+            $jarak = JarakController::hitungJarak($perusahaan, $mahasiswa);
 
             foreach ($perusahaan->lowongan_magang as $lowongan) {
+
+                // Lewati jika semua periode sudah berjalan
+                $upcoming = $lowongan->periode_magang->filter(fn($periode) => $periode->tanggal_mulai > $hariIni);
+                if ($upcoming->isEmpty())
+                    continue;
+
+
+                $total_fasilitas = 0;
+                $total_tugas = 0;
+                $total_kedisiplinan = 0;
+                $total_penilaian = 0;
+
                 foreach ($lowongan->periode_magang as $periode) {
                     foreach ($periode->magang as $magang) {
                         if ($magang->penilaian) {
@@ -93,33 +127,21 @@ class RekomendasiController extends Controller
                         }
                     }
                 }
-            }
 
-            // Inisialisasi nilai rata-rata
-            $rata_fasilitas = 0;
-            $rata_tugas = 0;
-            $rata_kedisiplinan = 0;
+                // Inisialisasi nilai rata-rata
+                $rata_fasilitas = 0;
+                $rata_tugas = 0;
+                $rata_kedisiplinan = 0;
 
-            if ($total_penilaian > 0) {
-                $rata_fasilitas = $total_fasilitas / $total_penilaian;
-                $rata_tugas = $total_tugas / $total_penilaian;
-                $rata_kedisiplinan = $total_kedisiplinan / $total_penilaian;
-            }
+                if ($total_penilaian > 0) {
+                    $rata_fasilitas = $total_fasilitas / $total_penilaian;
+                    $rata_tugas = $total_tugas / $total_penilaian;
+                    $rata_kedisiplinan = $total_kedisiplinan / $total_penilaian;
+                }
 
-            $rata_fasilitas = $rata_fasilitas == 0 ? 2.5 : $rata_fasilitas;
-            $rata_tugas = $rata_tugas == 0 ? 2.5 : $rata_tugas;
-            $rata_kedisiplinan = $rata_kedisiplinan == 0 ? 2.5 : $rata_kedisiplinan;
-
-            foreach ($perusahaan->lowongan_magang as $lowongan) {
-
-                // Lewati jika semua periode sudah berjalan
-                $upcoming = $lowongan->periode_magang->filter(fn($periode) => $periode->tanggal_mulai > $hariIni);
-                if ($upcoming->isEmpty())
-                    continue;
-
-
-                // Hitung jarak
-                $jarak = JarakController::hitungJarak($perusahaan, $mahasiswa);
+                $rata_fasilitas = $rata_fasilitas == 0 ? 2.5 : $rata_fasilitas;
+                $rata_tugas = $rata_tugas == 0 ? 2.5 : $rata_tugas;
+                $rata_kedisiplinan = $rata_kedisiplinan == 0 ? 2.5 : $rata_kedisiplinan;
 
                 $id_bidang = $lowongan->id_bidang;
                 $bobot_bidang = $bobot_prioritas[$id_bidang] ?? ($totalPrioritas + 1);
