@@ -45,21 +45,21 @@
                                 </div>
                             </div>
 
-                            <!-- Kedisiplinan -->
+                            <!-- Pembinaan -->
                             <div class="form-group mb-4">
-                                <label class="form-label">Kedisiplinan</label>
+                                <label class="form-label">Pembinaan</label>
                                 <div class="rating d-flex gap-3 align-items-center">
-                                    <input type="radio" required name="kedisiplinan" value="1" id="kedisiplinan-1">
-                                    <input type="radio" name="kedisiplinan" value="2" id="kedisiplinan-2">
-                                    <input type="radio" name="kedisiplinan" value="3" id="kedisiplinan-3">
-                                    <input type="radio" name="kedisiplinan" value="4" id="kedisiplinan-4">
-                                    <input type="radio" name="kedisiplinan" value="5" id="kedisiplinan-5">
+                                    <input type="radio" required name="pembinaan" value="1" id="pembinaan-1">
+                                    <input type="radio" name="pembinaan" value="2" id="pembinaan-2">
+                                    <input type="radio" name="pembinaan" value="3" id="pembinaan-3">
+                                    <input type="radio" name="pembinaan" value="4" id="pembinaan-4">
+                                    <input type="radio" name="pembinaan" value="5" id="pembinaan-5">
                                 </div>
                                 <div class="mt-2">
-                                    <span id="kedisiplinan-rating-value">1</span> Sampai 5
+                                    <span id="pembinaan-rating-value">1</span> Sampai 5
                                 </div>
                                 <div class="mt-1 text-muted">
-                                    <small>1 = Sangat Tidak Disiplin, 5 = Sangat Disiplin</small>
+                                    <small>1 = Sangat Tidak Dibina, 5 = Sangat Dibina</small>
                                 </div>
                             </div>
 
