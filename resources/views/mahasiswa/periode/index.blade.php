@@ -90,7 +90,7 @@
                 <div class="table-responsive">
                     <table class="table" id="table1">
                         <colgroup>
-                            <col style="width: 10px;">
+                            <!-- <col style="width: 10px;"> -->
                             <col style="width: 100px;">
                             <col style="width: 100px;">
                             <col style="width: 100px;">
@@ -100,7 +100,7 @@
                         </colgroup>
                         <thead>
                             <tr>
-                                <th>No</th>
+                                <th class="d-none">No</th>
                                 <th>Nama Lowongan</th>
                                 <th>Perusahaan</th>
                                 <th>Bidang</th>
@@ -112,7 +112,7 @@
                         <tbody>
                             @foreach ($periode as $i => $item)
                                 <tr>
-                                    <td>{{ $i+1 ?? '-' }}</td>
+                                    <td class="d-none">{{ $i+1 ?? '-' }}</td>
                                     <td>{{ $item->lowongan_magang->nama ?? '-' }}</td>
                                     <td>{{ $item->lowongan_magang->perusahaan->nama ?? '-' }}</td>
                                     <td>{{ $item->lowongan_magang->bidang->nama ?? '-' }}</td>

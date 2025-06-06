@@ -17,7 +17,7 @@
                                     style="width: 120px; height: 120px; border: 5px solid blue; object-fit: cover;">
                             </label>
                         </div>
-                        <small class="text-muted text-center">Tekan gambar untuk menambahkan</small>
+                        <small class="text-muted text-center">Tekan gambar untuk menambahkan foto kegiatan</small>
                         <input type="file" id="file" name="file" accept="image/*" onchange="previewImage(event)"
                             style="display: none;" required>
                         <button type="button" id="tombolBatal" class="btn btn-sm btn-primary mt-2"

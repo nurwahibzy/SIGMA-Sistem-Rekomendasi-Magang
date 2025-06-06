@@ -38,6 +38,7 @@ class PeriodeMagangController extends Controller
             ])
                 ->where('tanggal_mulai', '>=', $tanggal_mulai)
                 ->where('tanggal_selesai', '<=', $tanggal_selesai)
+                ->orderBy('tanggal_mulai')
                 ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
         } else if ($tanggal_mulai != null) {
             $periode = PeriodeMagangModel::with([
@@ -47,6 +48,7 @@ class PeriodeMagangController extends Controller
                 'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
             ])
                 ->where('tanggal_mulai', '>=', $tanggal_mulai)
+                ->orderBy('tanggal_mulai')
                 ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
         } else if ($tanggal_selesai != null) {
             $periode = PeriodeMagangModel::with([
@@ -56,6 +58,7 @@ class PeriodeMagangController extends Controller
                 'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
             ])
                 ->where('tanggal_selesai', '<=', $tanggal_selesai)
+                ->orderBy('tanggal_mulai')
                 ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
         } else {
             $periode = PeriodeMagangModel::with([
@@ -64,6 +67,8 @@ class PeriodeMagangController extends Controller
                 'lowongan_magang.bidang:id_bidang,nama',
                 'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
             ])
+            ->where('tanggal_mulai', '>=', now())
+            ->orderBy('tanggal_mulai')
                 ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
         }
 
@@ -120,7 +125,7 @@ class PeriodeMagangController extends Controller
             'lowongan_magang.bidang'
         )
             ->where('id_periode', $id_periode)
-            ->where('tanggal_mulai', '>', now())
+            // ->where('tanggal_mulai', '>', now())
             ->first();
 
         $status = MagangModel::where('id_mahasiswa', $id_mahasiswa)

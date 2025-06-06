@@ -81,6 +81,7 @@
                 <div class="table-responsive">
                     <table class="table" id="table1">
                         <colgroup>
+                            <!-- <col style="width: 10px;"> -->
                             <col style="width: 100px;">
                             <col style="width: 100px;">
                             <col style="width: 100px;">
@@ -88,6 +89,7 @@
                         </colgroup>
                         <thead>
                             <tr>
+                                <th class="d-none">No</th>
                                 <th>Perusahaan</th>
                                 <th>Lowongan</th>
                                 <th>Waktu</th>
@@ -95,8 +97,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($periode as $item)
+                            @foreach ($periode as $i => $item)
                                 <tr>
+                                    <td class="d-none">{{ $i + 1 }}</td>
                                     <td>{{ $item->lowongan_magang->perusahaan->nama ?? '-' }}</td>
                                     <td>{{ $item->lowongan_magang->nama . ' - ' . $item->nama ?? '-' }}</td>
                                     <td>{{ $item->tanggal_mulai->format('d M Y') }} - {{ $item->tanggal_selesai->format('d M Y') }}

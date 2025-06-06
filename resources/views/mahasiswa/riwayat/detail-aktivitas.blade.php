@@ -7,27 +7,28 @@
         </div>
 
         <div class="modal-body">
+            @if (Storage::exists('public/aktivitas/' . $aktivitas->foto_path))
+                <div class="container mt-4">
+                    <div class="d-flex justify-content-center align-items-center flex-column">
+                        <div class="avatar avatar-2xl mb-3">
+                            <img id="preview" src="{{ asset('storage/aktivitas/' . $aktivitas->foto_path) }}"
+                                alt="Profile Picture" class="img-fluid rounded w-50 h-50"
+                                style="width: 120px; height: 120px; border: 5px solid blue; object-fit: cover; cursor: pointer;"
+                                onclick="showDosenImagePopup(this.src)" />
+                        </div>
+                    </div>
+                </div>
+            @else
+                <div class="alert alert-warning text-center">
+                    Tidak ada foto.
+                </div>
+            @endif
+
             <div class="container mt-4">
-
                 <div class="mb-3">
-                    <h5>File:</h5>
-                    @if($aktivitas->foto_path)
-                        <img src="{{ asset('storage/aktivitas/' . $aktivitas->foto_path) }}" alt="Foto Aktivitas"
-                            class="img-thumbnail mt-2" style="max-width: 300px; height: auto;" onclick="showImagePopup(this.src)">
-                    @else
-                        <span class="text-muted">Tidak ada file</span>
-                    @endif
-
-                </div>
-
-                <div class="mb-3">
-                    <h5>Tanggal:</h5>
-                    <p>{{ \Carbon\Carbon::parse($aktivitas->tanggal)->format('d M Y') }}</p>
-                </div>
-
-                <div class="mb-3">
-                    <h5>Deskripsi:</h5>
-                    <p>{{ $aktivitas->keterangan }}</p>
+                    <label for="keterangan" class="form-label">Kenterangan</label>
+                    <textarea class="form-control" id="keterangan" name="keterangan" rows="3"
+                        required>{{  $aktivitas->keterangan }}</textarea>
                 </div>
             </div>
         </div>

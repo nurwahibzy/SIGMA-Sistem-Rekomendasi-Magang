@@ -12,31 +12,36 @@
                     Belum ada magang yang diterima.
                 </div>
             @else
-                <div class="col-md-6 col-xl-4">
-                    <div class="card shadow border-0 mb-4">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="avatar bg-light-primary me-3">
-                                    <i class="bi bi-building fs-4 text-primary"></i>
+                <div class="row d-flex align-items-stretch">
+                    <div class="col-md-6 col-xl-4">
+                        <div class="card shadow border-0 mb-4 h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="avatar bg-light-primary me-3">
+                                        <i class="bi bi-building fs-4 text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="card-title mb-0">{{ $magang->periode_magang->lowongan_magang->nama ?? '-' }}
+                                        </h5>
+                                        <small
+                                            class="text-muted">{{ $magang->periode_magang->lowongan_magang->perusahaan->nama ?? '-' }}</small>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h5 class="card-title mb-0">{{ $magang->periode_magang->lowongan_magang->nama ?? '-' }}</h5>
-                                    <small
-                                        class="text-muted">{{ $magang->periode_magang->lowongan_magang->perusahaan->nama ?? '-' }}</small>
+
+                                <p class="mb-1"><strong>Bidang:</strong>
+                                    {{ $magang->periode_magang->lowongan_magang->bidang->nama ?? '-' }}</p>
+                                <p class="mb-1">
+                                    <strong>Periode:</strong>
+                                    {{ \Carbon\Carbon::parse($magang->periode_magang->tanggal_mulai)->format('d M Y') ?? '-' }}
+                                    s/d
+                                    {{ \Carbon\Carbon::parse($magang->periode_magang->tanggal_selesai)->format('d M Y') ?? '-' }}
+                                </p>
+                                <div class="mt-4">
+                                <a href="{{ url('mahasiswa/aktivitas/' . $magang->id_magang) }}" class="btn btn-primary">
+                                    Lihat Aktivitas
+                                </a>
                                 </div>
                             </div>
-
-                            <p class="mb-1"><strong>Bidang:</strong>
-                                {{ $magang->periode_magang->lowongan_magang->bidang->nama ?? '-' }}</p>
-                            <p class="mb-1">
-                                <strong>Periode:</strong>
-                                {{ \Carbon\Carbon::parse($magang->periode_magang->tanggal_mulai)->format('d M Y') ?? '-' }} s/d
-                                {{ \Carbon\Carbon::parse($magang->periode_magang->tanggal_selesai)->format('d M Y') ?? '-' }}
-                            </p>
-
-                            <a href="{{ url('mahasiswa/aktivitas/' . $magang->id_magang) }}" class="btn btn-primary">
-                                Lihat Aktivitas
-                            </a>
                         </div>
                     </div>
                 </div>

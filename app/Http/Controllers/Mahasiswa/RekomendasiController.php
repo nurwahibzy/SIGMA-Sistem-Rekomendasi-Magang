@@ -32,15 +32,24 @@ class RekomendasiController extends Controller
         $id_mahasiswa = $this->idMahasiswa();
 
         // Ambil data mahasiswa lengkap dengan preferensi dan keahliannya
-        $mahasiswa = MahasiswaModel::with(['preferensi_lokasi_mahasiswa', 'keahlian_mahasiswa'])->findOrFail($id_mahasiswa);
+        $mahasiswa = MahasiswaModel::with(['preferensi_lokasi_mahasiswa', 'keahlian_mahasiswa', 'preferensi_perusahaan_mahasiswa'])->findOrFail($id_mahasiswa);
+
+        if (!count($mahasiswa->preferensi_perusahaan_mahasiswa)) {
+            return false;
+        }
 
         // Ambil semua data perusahaan dan lowongan yang terhubung dengan periode magang dan penilaian
+        $preferensiPerusahaanMahasiswa = $mahasiswa->preferensi_perusahaan_mahasiswa;
+        $idJenisArray = $preferensiPerusahaanMahasiswa->pluck('id_jenis')->toArray();
         $perusahaans = PerusahaanModel::with([
             'jenis_perusahaan',
-            'lowongan_magang.periode_magang.magang' => function ($q) {
-                $q->with('penilaian');
-            }
-        ])->get();
+            'lowongan_magang.periode_magang.magang.penilaian'
+        ])
+        ->whereHas('jenis_perusahaan', function ($query) use ($idJenisArray) {
+            $query->whereIn('id_jenis', $idJenisArray);
+        })
+        ->get();
+        
 
         // Ambil preferensi keahlian mahasiswa berdasarkan prioritas
         $preferensiKeahlianMahasiswa = KeahlianMahasiswaModel::with(['bidang'])
@@ -50,13 +59,11 @@ class RekomendasiController extends Controller
 
         // Validasi jika belum ada preferensi
         if (!count($preferensiKeahlianMahasiswa)) {
-            // return redirect()->route('mahasiswa.profil')->with('error', 'Silakan atur preferensi keahlian terlebih dahulu.');
-            // return response(url('/mahasiswa/periode'));
             return false;
         }
 
         $totalPrioritas = $preferensiKeahlianMahasiswa->count();
-        $hariIni = date('Y-m-d');
+        $hariIni = now();
 
         // Hitung bobot prioritas bidang
         $bobot_prioritas = [];
@@ -78,38 +85,13 @@ class RekomendasiController extends Controller
 
         // Loop untuk setiap perusahaan dan lowongan
         foreach ($perusahaans as $perusahaan) {
-            // Hitung rata-rata penilaian dari seluruh magang
-            // $total_fasilitas = 0;
-            // $total_penilaian = 0;
-
-            // foreach ($perusahaan->lowongan_magang as $lowongan) {
-            //     foreach ($lowongan->periode_magang as $periode) {
-            //         foreach ($periode->magang as $magang) {
-            //             if ($magang->penilaian) {
-            //                 $total_fasilitas += (int) $magang->penilaian->fasilitas;
-            //                 $total_penilaian++;
-            //             }
-            //         }
-            //     }
-            // }
-
-            // // Inisialisasi nilai rata-rata
-            // $rata_fasilitas = 0;
-
-            // if ($total_penilaian > 0) {
-            //     $rata_fasilitas = $total_fasilitas / $total_penilaian;
-            // }
-
-            // $rata_fasilitas = $rata_fasilitas == 0 ? 2.5 : $rata_fasilitas;
-
-
             // Hitung jarak
             $jarak = JarakController::hitungJarak($perusahaan, $mahasiswa);
 
             foreach ($perusahaan->lowongan_magang as $lowongan) {
 
                 // Lewati jika semua periode sudah berjalan
-                $upcoming = $lowongan->periode_magang->filter(fn($periode) => $periode->tanggal_mulai > $hariIni);
+                $upcoming = $lowongan->periode_magang->filter(fn($periode) => $periode->tanggal_mulai >= $hariIni);
                 if ($upcoming->isEmpty())
                     continue;
 
@@ -185,9 +167,11 @@ class RekomendasiController extends Controller
     {
         $peringkat = $this->hitungRekomendasiMagang();
 
+        // return response()->json($peringkat);
+
         if ($peringkat == false) {
             // return response(url('/mahasiswa/periode'));
-            return redirect('/mahasiswa/profil')->with('error', 'Silakan atur preferensi keahlian terlebih dahulu.');
+            return redirect('/mahasiswa/profil')->with('error', 'Silakan isi keahlian dan preferensi perusahaan terlebih dahulu.');
         }
 
         $topLowonganIds = array_column($peringkat, 'id_lowongan');
@@ -200,6 +184,7 @@ class RekomendasiController extends Controller
             'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
         ])
             ->whereIn('id_lowongan', $topLowonganIds)
+            ->where('tanggal_mulai', '>=', now())
             ->orderByRaw('FIELD(id_lowongan, ' . implode(',', $topLowonganIds) . ')')
             ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
 

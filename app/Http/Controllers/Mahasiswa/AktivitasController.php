@@ -146,8 +146,13 @@ class AktivitasController extends Controller
                     'file' => 'required|file|mimes:jpg,jpeg,png|max:2048',
                     'keterangan' => 'required'
                 ]);
+
+                if (!$request->hasFile('file')) {
+                    return ['success' => false, 'message' => 'Foto kegiatan Harus Diisi!!!'];   
+                }
+
                 if ($validator->fails()) {
-                    return response()->json($validator->errors(), 422);
+                    return response()->json(['success' => false]);
                 }
                 $keterangan = $request->input('keterangan');
                 $date = Carbon::parse(now())->toDateString();
@@ -319,10 +324,10 @@ class AktivitasController extends Controller
 
         if ($magang) {
             if ($magang->id_mahasiswa != $id_mahasiswa || $magang->status != 'lulus') {
-                return view('mahasiswa.aktivitas.index');
+                return view('mahasiswa.riwayat.index-aktivitas');
             }
         } else {
-            return view('mahasiswa.aktivitas.index');
+            return view('mahasiswa.riwayat.index-aktivitas');
         }
 
 

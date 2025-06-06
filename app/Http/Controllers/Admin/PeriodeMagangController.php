@@ -32,6 +32,7 @@ class PeriodeMagangController extends Controller
             )
                 ->where('tanggal_mulai', '>=', $tanggal_mulai)
                 ->where('tanggal_selesai', '<=', $tanggal_selesai)
+                ->orderBy('created_at')
                 ->get();
 
             return view('admin.periode.index', ['periode' => $periode, 'selesai' => $selesai, 'berlangsung' => $berlangsung, 'segera' => $segera, 'tanggal_mulai' => $tanggal_mulai, 'tanggal_selesai' => $tanggal_selesai]);
@@ -41,6 +42,7 @@ class PeriodeMagangController extends Controller
                 'lowongan_magang.perusahaan'
             )
                 ->where('tanggal_mulai', '>=', $tanggal_mulai)
+                ->orderBy('created_at')
                 ->get();
 
             return view('admin.periode.index', ['periode' => $periode, 'selesai' => $selesai, 'berlangsung' => $berlangsung, 'segera' => $segera, 'tanggal_mulai' => $tanggal_mulai]);
@@ -51,6 +53,7 @@ class PeriodeMagangController extends Controller
                 'lowongan_magang.perusahaan'
             )
                 ->where('tanggal_selesai', '<=', $tanggal_selesai)
+                ->orderBy('created_at')
                 ->get();
 
             return view('admin.periode.index', ['periode' => $periode, 'selesai' => $selesai, 'berlangsung' => $berlangsung, 'segera' => $segera, 'tanggal_selesai' => $tanggal_selesai]);
@@ -60,6 +63,7 @@ class PeriodeMagangController extends Controller
                 'lowongan_magang',
                 'lowongan_magang.perusahaan'
             )
+            ->orderBy('created_at')
                 ->get();
 
             return view('admin.periode.index', ['periode' => $periode, 'selesai' => $selesai, 'berlangsung' => $berlangsung, 'segera' => $segera]);

@@ -38,6 +38,7 @@ class PenilaianController extends Controller
                         'periode_magang.lowongan_magang.bidang:id_bidang,nama',
                         'periode_magang.lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
                     ])
+                    ->orderByDesc('tanggal_pengajuan')
                     ->get();
 
                 return view('mahasiswa.penilaian.index', [

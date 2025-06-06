@@ -27,47 +27,7 @@ class MagangController extends Controller
             ->id_mahasiswa;
         return $id_mahasiswa;
     }
-    //   public function getDashboard()
-    // {
-    //     $magang = PeriodeMagangModel::with(
-    //         'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
-    //         'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama',
-    //         'lowongan_magang.bidang:id_bidang,nama',
-    //         'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
-    //     )
-    //         ->where('tanggal_mulai', '>', now())
-    //         ->get(['id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
 
-    //         return view('mahasiswa.index', [
-    //             'magang' => $magang,
-    //             'activeMenu' => 'dashboard'
-    //         ]);
-
-
-    // }
-
-
-    //     public function getMagang($id_periode)
-    //     {
-    //         $id_mahasiswa = $this->idMahasiswa();
-    //         $magang = PeriodeMagangModel::with(
-    //             'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama,persyaratan,deskripsi',
-    //             'lowongan_magang.periode_magang:id_lowongan,nama,tanggal_mulai,tanggal_selesai',
-    //             'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama,provinsi,daerah',
-    //             'lowongan_magang.bidang:id_bidang,nama',
-    //             'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
-    //         )
-    //             ->where('id_periode', $id_periode)
-    //             ->where('tanggal_mulai', '>', now())
-    //             ->get();
-    //         $status = MagangModel::where('id_mahasiswa', $id_mahasiswa)
-    //             ->whereIn('status', ['diterima', 'lulus'])
-    //             ->first();
-
-    //         // $status = $status == null ? true : false;
-    //         // return response()->json($status == null);
-    //         return response()->json($magang);
-    //     }
 
     public function postMagang($id_periode)
     {
@@ -82,28 +42,6 @@ class MagangController extends Controller
         ]);
 
         return response()->json(['success' => true]);
-    }
-
-    public function getPerusahaan($id_magang)
-    {
-        $magang = PeriodeMagangModel::with(
-            'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama,persyaratan,deskripsi',
-            'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama,telepon,deskripsi,foto_path,provinsi,daerah',
-            'lowongan_magang.bidang:id_bidang,nama',
-            'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
-        )
-            ->get();
-        return response()->json($magang);
-    }
-
-    public function getRiwayatAktivitas($id_magang)
-    {
-        // $id_mahasiswa = $this->idMahasiswa();
-        // $magang = MagangModel::where('id_mahasiswa', $id_mahasiswa)
-        //     ->where('id_magang', $id_magang)
-        //     ->with('aktivitas_magang')
-        //     ->first();
-        // return response()->json($magang);
     }
 
     public function indexRiwayat()
@@ -121,6 +59,7 @@ class MagangController extends Controller
                         'periode_magang.lowongan_magang.bidang:id_bidang,nama',
                         'periode_magang.lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
                     ])
+                    ->orderByDesc('tanggal_pengajuan')
                     ->get();
 
                 return view('mahasiswa.riwayat.index', [

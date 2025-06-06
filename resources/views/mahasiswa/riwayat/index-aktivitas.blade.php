@@ -82,7 +82,7 @@
                                                             </td>
                                                             <td class="text-center">
                                                                 <button class="btn btn-sm btn-info btn-detail"
-                                                                    onclick="modalAction('{{ url('/mahasiswa/aktivitas/' . $item->id_magang . '/detail/' . $item->id_aktivitas) }}')">
+                                                                    onclick="modalAction('{{ url('/mahasiswa/riwayat/aktivitas/' . $item->id_magang . '/detail/' . $item->id_aktivitas) }}')">
                                                                     Detail
                                                                 </button>
                                                             </td>

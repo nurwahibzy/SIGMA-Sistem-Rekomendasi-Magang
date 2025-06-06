@@ -142,7 +142,7 @@
         </div>
 
         <div class="modal-footer">
-            @if ($status == 0)
+            @if ($status == 0 && $periode->tanggal_mulai >= now())
                 <button type="button" class="btn btn-primary" id="btn-daftar">
                     <i class="bi bi-journal-plus"></i> Daftar
                 </button>
