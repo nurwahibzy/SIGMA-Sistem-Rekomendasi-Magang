@@ -18,9 +18,11 @@
                             <col style="width: 100px;">
                             <col style="width: 100px;">
                             <col style="width: 100px;">
+                            <col style="width: 100px;">
                         </colgroup>
                         <thead>
                             <tr>
+                                <th>Lowongan</th>
                                 <th>Perusahaan</th>
                                 <th>Bidang</th>
                                 <th>Provinsi</th>
@@ -31,6 +33,7 @@
                         <tbody>
                             @foreach ($lowongan as $item)
                                 <tr>
+                                    <td>{{ $item->nama ?? '-' }}</td>
                                     <td>{{ $item->perusahaan->nama ?? '-' }}</td>
                                     <td>{{ $item->bidang->nama ?? '-' }}</td>
                                     <td>{{ $item->perusahaan->provinsi ?? '-' }}</td>

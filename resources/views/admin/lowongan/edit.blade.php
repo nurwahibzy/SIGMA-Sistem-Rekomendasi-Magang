@@ -14,7 +14,7 @@
                 <div class="container mt-4">
                     <div class="mb-3">
                         <label for="id_perusahaan" class="form-label">Perusahaan</label>
-                        <select name="id_perusahaan" class="form-select" id="id_perusahaan" data-placeholder="Pilih satu opsi" required>
+                        <select name="id_perusahaan" class="form-select" id="id_perusahaan" data-placeholder="Pilih Perusahaan" required>
                             <option value=""></option>
                             @foreach ($perusahaan as $item)
                                 <option value="{{ $item->id_perusahaan }}" {{ $lowongan->id_perusahaan == $item->id_perusahaan ? 'selected' : '' }}>{{ $item->nama }}</option>
@@ -23,7 +23,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="id_bidang" class="form-label">Bidang</label>
-                        <select name="id_bidang" class="form-select" id="id_bidang" data-placeholder="Pilih satu opsi" required>
+                        <select name="id_bidang" class="form-select" id="id_bidang" data-placeholder="Pilih Bidang" required>
                             <option value=""></option>
                             @foreach ($bidang as $item)
                                 <option value="{{ $item->id_bidang }}" {{ $lowongan->id_bidang == $item->id_bidang ? 'selected' : '' }}>{{ $item->nama }}</option>

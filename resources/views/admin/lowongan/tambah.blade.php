@@ -18,7 +18,7 @@
                             <label for="id_perusahaan" class="form-label">Perusahaan</label>
                             <div class="d-flex gap-2">
                                 <select name="id_perusahaan" class="form-select" id="id_perusahaan"
-                                data-placeholder="Pilih satu opsi" required>
+                                data-placeholder="Pilih Perusahaan" required>
                                 <option value=""></option>
                                     @foreach ($perusahaan as $item)
                                         <option value="{{ $item->id_perusahaan }}">{{ $item->nama }}</option>
@@ -33,7 +33,7 @@
                         <div class="mb-3">
                             <label for="id_bidang" class="form-label">Bidang</label>
                             <select name="id_bidang" class="form-select" id="id_bidang"
-                            data-placeholder="Pilih satu opsi" required>
+                            data-placeholder="Pilih Bidang" required>
                                 <option value="">Pilih Bidang </option>
                                 @foreach ($bidang as $item)
                                     <option value="{{ $item->id_bidang }}">{{ $item->nama }}</option>

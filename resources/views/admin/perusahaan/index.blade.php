@@ -21,7 +21,7 @@
                         </colgroup>
                         <thead>
                             <tr>
-                                <th>Nama</th>
+                                <th>Perusahaan</th>
                                 <th>Telepon</th>
                                 <th>Provinsi</th>
                                 <th>Daerah</th>

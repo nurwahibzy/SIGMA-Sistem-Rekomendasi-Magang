@@ -54,7 +54,7 @@
                         <div class="w-50 ms-2">
                             <div>
                                 <label for="id_jenis" class="form-label">Jenis Perusahaan</label>
-                                <select name="id_jenis" class="form-select" id="id_jenis" data-placeholder="Pilih satu opsi" required>
+                                <select name="id_jenis" class="form-select" id="id_jenis" data-placeholder="Pilih Jenis Perusahaan" required>
                                     <option value=""></option>
                                     @foreach ($jenis as $item)
                                         <option value="{{ $item->id_jenis }}" {{ $perusahaan->id_jenis == $item->id_jenis ? 'selected' : '' }}>{{ $item->jenis }}</option>

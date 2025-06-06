@@ -53,7 +53,7 @@
                         <div class="w-50 me-2">
                             <div>
                                 <label for="id_prodi" class="form-label">Program Studi</label>
-                                <select name="id_prodi" class="form-select" id="id_prodi" data-placeholder="Pilih satu opsi" required>
+                                <select name="id_prodi" class="form-select" id="id_prodi" data-placeholder="Pilih Program Studi" required>
                                     <option value=""></option>
                                     @foreach ($prodi as $item)
                                         <option value="{{ $item->id_prodi }}" {{ $mahasiswa->id_prodi == $item->id_prodi ? 'selected' : ''  }}>{{ $item->nama_prodi }}</option>
