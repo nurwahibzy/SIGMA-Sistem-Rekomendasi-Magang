@@ -2,7 +2,7 @@
 @section('content')
     <div class="page-heading d-flex justify-content-between align-items-center">
         <h3>Profil Saya</h3>
-        <a href="{{ url('dosen/profil/edit') }}" id="btn-edit-profile" class="btn btn-outline-primary">
+        <a href="{{ url('dosen/profil/edit') }}" id="btn-edit-profile" class="btn btn-primary">
             <i class="bi bi-pencil-square"></i> Edit
         </a>
     </div>

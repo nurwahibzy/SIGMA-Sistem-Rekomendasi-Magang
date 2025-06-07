@@ -3,7 +3,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
     <div class="page-heading d-flex justify-content-between align-items-center">
         <h3>Profil Saya</h3>
-        <a href="{{ url('dosen/profil/') }}" id="btn-edit-profile" class="btn-edit-section btn btn-outline-danger">
+        <a href="{{ url('dosen/profil/') }}" id="btn-edit-profile" class="btn-edit-section btn btn-danger">
             <i class="bi bi-box-arrow-left"></i> Kembali
         </a>
     </div>
@@ -62,7 +62,7 @@
                                 <input type="email" class="form-control" id="email" name="email" required
                                     value="{{ Auth::user()->dosen->email }}">
                             </div>
-                            <button type="submit" id="btn-edit-profile" class="btn btn-outline-primary mt-2 w-100">
+                            <button type="submit" id="btn-edit-profile" class="btn btn-primary mt-2 w-100">
                                 <i class="bi bi-pencil-square"></i> Simpan
                             </button>
                         </form>
@@ -280,10 +280,10 @@ function displayKeahlian(keahlianList) {
             html += '<small class="text-muted">' + item.bidang.nama + '</small>';
             html += '</div>';
             html += '<div class="btn-group btn-group-sm">';
-            html += '<button class="btn btn-outline-primary btn-edit-keahlian" data-id="' + item.id_keahlian_dosen + '">';
+            html += '<button class="btn btn-primary me-2 btn-edit-keahlian" data-id="' + item.id_keahlian_dosen + '">';
             html += '<i class="bi bi-pencil"></i>';
             html += '</button>';
-            html += '<button class="btn btn-outline-danger btn-delete-keahlian" data-id="' + item.id_keahlian_dosen + '">';
+            html += '<button class="btn btn-danger btn-delete-keahlian" data-id="' + item.id_keahlian_dosen + '">';
             html += '<i class="bi bi-trash"></i>';
             html += '</button>';
             html += '</div>';
