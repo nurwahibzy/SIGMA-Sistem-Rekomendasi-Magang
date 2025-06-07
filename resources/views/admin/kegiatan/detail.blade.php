@@ -23,7 +23,7 @@
                                     <div class="col-md-3 text-center mb-3 mb-md-0">
                                         <img src="{{ Storage::exists('public/profil/perusahaan/' . $magang->periode_magang->lowongan_magang->perusahaan->foto_path)
                 ? asset('storage/profil/perusahaan/' . $magang->periode_magang->lowongan_magang->perusahaan->foto_path)
-                : asset('template/assets/images/mhs.jpeg') }}" alt="Profile Picture" class="img-fluid rounded"
+                : asset('template/assets/images/mhs.jpeg') }}" alt="Profile Picture" class="img-fluid rounded w-100 h-100"
                                             style="width: 200px; height: 200px; border: 2px solid blue; object-fit: cover; cursor: pointer;"
                                             onclick="showImagePopup(this.src)" />
                                     </div>

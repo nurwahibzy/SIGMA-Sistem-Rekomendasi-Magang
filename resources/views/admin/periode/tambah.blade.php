@@ -2,27 +2,45 @@
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-primary text-white rounded-top">
                 <h5 class="modal-title">Tambah Periode</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="container mt-4">
                     <div class="tab-content" id="detailTabContent">
                         <div class="mb-3">
-                            <label for="id_lowongan" class="form-label">Pilih Lowongan</label>
-                            <select name="id_lowongan" class="form-select" id="id_lowongan"
-                                data-placeholder="Pilih satu opsi" required>
+                            <label for="id_perusahaan" class="form-label">Perusahaan</label>
+                            <select name="id_perusahaan" class="form-select" id="id_perusahaan"
+                                data-placeholder="Pilih Perusahaan">
                                 <option value=""></option>
-                                @foreach ($lowongan as $item)
-                                    <option value="{{ $item->id_lowongan }}">
-                                        {{ $item->perusahaan->nama . ' - ' . $item->nama . ' - ' . $item->bidang->nama }}
+                                @foreach ($perusahaan as $item)
+                                    <option value="{{ $item->id_perusahaan }}">
+                                        {{ $item->nama }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="nama" class="form-label">Nama</label>
+                            <label for="id_bidang" class="form-label">Bidang</label>
+                            <select name="id_bidang" class="form-select" id="id_bidang" data-placeholder="Pilih Bidang">
+                                <option value=""></option>
+                                @foreach ($bidang as $item)
+                                    <option value="{{ $item->id_bidang }}">
+                                        {{$item->nama }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_lowongan" class="form-label">Lowongan</label>
+                            <select name="id_lowongan" class="form-select" id="id_lowongan"
+                                data-placeholder="Pilih Lowongan" required>
+                                <option value=""></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nama" class="form-label">Nama Periode</label>
                             <input type="text" class="form-control" id="nama" name="nama" required>
                         </div>
                         <div class="mb-3">
@@ -47,6 +65,42 @@
 </form>
 <script>
     $(document).ready(function () {
+
+        $('#id_perusahaan').on('change', function () {
+            const perusahaanId = $(this).val();
+            const BidangId = $('#id_bidang').val()
+
+            if (BidangId != '') {
+                $('#id_lowongan').empty().append('<option value="">Pilih Lowongan</option>')
+                $.get(`{{ url('admin/periode/lowongan') }}/` + perusahaanId + '/' + BidangId, function (data) {
+                    data.forEach(function (lowongan) {
+                        $('#id_lowongan').append($('<option>', {
+                            value: lowongan.id_lowongan,
+                            text: lowongan.nama
+                        }));
+                    });
+                });
+            }
+        });
+
+        $('#id_bidang').on('change', function () {
+            const BidangId = $(this).val();
+            const perusahaanId = $('#id_perusahaan').val()
+
+            if (perusahaanId != '') {
+                $('#id_lowongan').empty().append('<option value="">Pilih Lowongan</option>')
+                $.get(`{{ url('admin/periode/lowongan') }}/` + perusahaanId + '/' + BidangId, function (data) {
+                    data.forEach(function (lowongan) {
+                        $('#id_lowongan').append($('<option>', {
+                            value: lowongan.id_lowongan,
+                            text: lowongan.nama
+                        }));
+                    });
+                });
+            }
+        });
+
+
         $('#tanggal_mulai_modal').on('change', function () {
             const tanggalMulai = new Date($(this).val());
             tanggalMulai.setDate(tanggalMulai.getDate() + 1);
@@ -70,7 +124,7 @@
                 tanggal_selesai: { required: true, date: true }
             },
             messages: {
-                id_lowongan: "Pilih lowongan",
+                id_lowongan: "Pilih Lowongan ",
                 nama: "Nama periode wajib diisi",
                 tanggal_mulai: "Tanggal mulai wajib diisi",
                 tanggal_selesai: "Tanggal selesai wajib diisi"

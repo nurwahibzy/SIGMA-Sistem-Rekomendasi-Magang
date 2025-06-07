@@ -154,6 +154,18 @@
             $('#myModal').load(url, function () {
                 $('#myModal').modal('show');
 
+                $('#myModal').find('#id_perusahaan').select2({
+                    theme: 'bootstrap-5',
+                    dropdownParent: $('#myModal'),
+                    placeholder: $('#id_perusahaan').data('placeholder'),
+                    width: '100%'
+                });
+                $('#myModal').find('#id_bidang').select2({
+                    theme: 'bootstrap-5',
+                    dropdownParent: $('#myModal'),
+                    placeholder: $('#id_bidang').data('placeholder'),
+                    width: '100%'
+                });
                 $('#myModal').find('#id_lowongan').select2({
                     theme: 'bootstrap-5',
                     dropdownParent: $('#myModal'),

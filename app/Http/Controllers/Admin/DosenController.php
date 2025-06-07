@@ -115,56 +115,125 @@ class DosenController extends Controller
         return view('admin.dosen.edit', ['dosen' => $dosen]);
     }
 
-    private function checkTelepon($telepon)
+    private function checkTelepon($telepon, $id_akun = false)
     {
-        $amount = PerusahaanModel::where('telepon', $telepon)->count();
-        if ($amount != 0) {
-            return true;
-        }
-        $amount = AdminModel::where('telepon', $telepon)
-            ->count();
-        if ($amount != 0) {
-            return true;
-        }
-        $amount = MahasiswaModel::where('telepon', $telepon)
-            ->count();
-        if ($amount != 0) {
-            return true;
-        }
-        $amount = DosenModel::where('telepon', $telepon)
-            ->count();
-        if ($amount != 0) {
-            return true;
+        if ($id_akun) {
+            $amount = PerusahaanModel::where('telepon', $telepon)
+                ->count();
+            if ($amount != 0) {
+                return true;
+            }
+            $amount = AdminModel::where('telepon', $telepon)
+                ->whereHas('akun', function ($query) use ($id_akun) {
+                    $query->where('id_akun', '!=', $id_akun);
+                })
+                ->count();
+            if ($amount != 0) {
+                return true;
+            }
+            $amount = MahasiswaModel::where('telepon', $telepon)
+                ->whereHas('akun', function ($query) use ($id_akun) {
+                    $query->where('id_akun', '!=', $id_akun);
+                })
+                ->count();
+            if ($amount != 0) {
+                return true;
+            }
+            $amount = DosenModel::where('telepon', $telepon)
+                ->whereHas('akun', function ($query) use ($id_akun) {
+                    $query->where('id_akun', '!=', $id_akun);
+                })
+                ->count();
+            if ($amount != 0) {
+                return true;
+            }
+        } else {
+
+            $amount = PerusahaanModel::where('telepon', $telepon)->count();
+            if ($amount != 0) {
+                return true;
+            }
+            $amount = AdminModel::where('telepon', $telepon)
+                ->count();
+            if ($amount != 0) {
+                return true;
+            }
+            $amount = MahasiswaModel::where('telepon', $telepon)
+                ->count();
+            if ($amount != 0) {
+                return true;
+            }
+            $amount = DosenModel::where('telepon', $telepon)
+                ->count();
+            if ($amount != 0) {
+                return true;
+            }
         }
         return false;
     }
 
-    private function checkEmail($email)
+    private function checkEmail($email, $id_akun = false)
     {
-        $amount = AdminModel::where('email', $email)
-            ->count();
-        if ($amount != 0) {
-            return true;
-        }
-        $amount = MahasiswaModel::where('email', $email)
-            ->count();
-        if ($amount != 0) {
-            return true;
-        }
-        $amount = DosenModel::where('email', $email)
-            ->count();
-        if ($amount != 0) {
-            return true;
+        if ($id_akun) {
+            $amount = AdminModel::where('email', $email)
+                ->whereHas('akun', function ($query) use ($id_akun) {
+                    $query->where('id_akun', '!=', $id_akun);
+                })
+                ->count();
+            if ($amount != 0) {
+                return true;
+            }
+            $amount = MahasiswaModel::where('email', $email)
+                ->whereHas('akun', function ($query) use ($id_akun) {
+                    $query->where('id_akun', '!=', $id_akun);
+                })
+                ->count();
+            if ($amount != 0) {
+                return true;
+            }
+            $amount = DosenModel::where('email', $email)
+                ->whereHas('akun', function ($query) use ($id_akun) {
+                    $query->where('id_akun', '!=', $id_akun);
+                })
+                ->count();
+            if ($amount != 0) {
+                return true;
+            }
+        } else {
+            $amount = AdminModel::where('email', $email)
+                ->count();
+            if ($amount != 0) {
+                return true;
+            }
+            $amount = MahasiswaModel::where('email', $email)
+                ->count();
+            if ($amount != 0) {
+                return true;
+            }
+            $amount = DosenModel::where('email', $email)
+                ->count();
+            if ($amount != 0) {
+                return true;
+            }
         }
         return false;
     }
 
-    private function checkId($id_user)
+    private function checkId($id_user, $id_akun = false)
     {
-        $amount = AkunModel::where('id_user', $id_user)
-            ->count();
-        if ($amount != 0) {
-            return true;
+        if ($id_akun) {
+            $amount = AkunModel::where('id_user', $id_user)
+                ->where('id_akun', '!=', $id_akun)
+                ->count();
+            if ($amount != 0) {
+                return true;
+            }
+        } else {
+            $amount = AkunModel::where('id_user', $id_user)
+                ->count();
+            if ($amount != 0) {
+                return true;
+            }
         }
         return false;
     }
@@ -282,15 +351,15 @@ class DosenController extends Controller
                         $gender = $request->input('gender');
                         $email = $request->input('email');
 
-                        if ($this->checkId($id_user)) {
+                        if ($this->checkId($id_user, $id_akun)) {
                             return ['success' => false, 'message' => 'NIP Tidak Boleh Sama!!!'];
                         }
 
-                        if ($this->checkEmail($email)) {
+                        if ($this->checkEmail($email,  $id_akun)) {
                             return ['success' => false, 'message' => 'Email Tidak Boleh Sama!!!'];
                         }
 
-                        if ($this->checkTelepon($telepon)) {
+                        if ($this->checkTelepon($telepon,  $id_akun)) {
                             return ['success' => false, 'message' => 'Nomor Telepon Tidak Boleh Sama!!!'];
                         }
 

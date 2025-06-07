@@ -123,7 +123,9 @@
                 status: { required: true },
                 nama: { required: true },
                 alamat: { required: true },
-                telepon: { required: true, digits: true },
+                telepon: { required: true,
+                    digits: true,
+                    minlength: 8 },
                 tanggal_lahir: { required: true, date: true },
                 email: { required: true, email: true }
             },
@@ -132,7 +134,11 @@
                 status: "Status wajib diisi dan numerik",
                 nama: "Nama wajib diisi",
                 alamat: "Alamat wajib diisi",
-                telepon: "Nomor telepon wajib diisi dan numerik",
+                telepon: {
+                    required: "Telepon wajib diisi",
+                    digits: "Hanya angka yang diperbolehkan",
+                    minlength: "Minimal 8 digit"
+                },
                 tanggal_lahir: "Tanggal lahir wajib diisi",
                 email: "Email wajib diisi dan harus valid"
             },

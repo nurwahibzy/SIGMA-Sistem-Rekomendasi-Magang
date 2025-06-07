@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\BidangModel;
 use App\Models\LowonganMagangModel;
 use App\Models\PeriodeMagangModel;
+use App\Models\PerusahaanModel;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
@@ -70,6 +72,14 @@ class PeriodeMagangController extends Controller
         }
     }
 
+    public function getPeriodeLowongan($id_perusahaan, $id_bidang){
+        $lowongan = LowonganMagangModel::where('id_perusahaan', $id_perusahaan)
+        ->where('id_bidang', $id_bidang)
+        ->get();
+
+        return response()->json($lowongan);
+    }
+
     public function getAddPeriode()
     {
         $lowongan = LowonganMagangModel::with(
@@ -77,19 +87,25 @@ class PeriodeMagangController extends Controller
             'bidang'
         )
             ->get();
-        return view('admin.periode.tambah', ['lowongan' => $lowongan, 'now' => Carbon::now()->toDateString(), 'tomorrow' => Carbon::tomorrow()->toDateString()]);
+
+        $perusahaan = PerusahaanModel::get();
+        $bidang = BidangModel::get();
+        return view('admin.periode.tambah', ['lowongan' => $lowongan, 'perusahaan' => $perusahaan, 'bidang' => $bidang, 'now' => Carbon::now()->toDateString(), 'tomorrow' => Carbon::tomorrow()->toDateString()]);
     }
 
     public function getEditPeriode($id_periode)
     {
         $data = DB::transaction(function () use ($id_periode) {
-            $lowongan = LowonganMagangModel::with('perusahaan', 'bidang')->get();
+            $perusahaan = PerusahaanModel::get();
+            $bidang = BidangModel::get();
 
-            $periode = PeriodeMagangModel::where('id_periode', $id_periode)->firstOrFail(); // agar error kalau tidak ada
+            $periode = PeriodeMagangModel::with('lowongan_magang')
+            ->where('id_periode', $id_periode)->firstOrFail(); 
 
             return [
                 'periode' => $periode,
-                'lowongan' => $lowongan,
+                'perusahaan' => $perusahaan,
+                'bidang' => $bidang,
                 'now' => Carbon::now()->toDateString(),
                 'tomorrow' => Carbon::tomorrow()->toDateString(),
             ];

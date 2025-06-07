@@ -14,7 +14,7 @@
                         <tr>
                             <th>Jurusan</th>
                             <th>Prodi</th>
-                            <th class="text-center">Aksi</th>
+                            <th class="text-center"></th>
                         </tr>
                     </thead>
                     <tbody>

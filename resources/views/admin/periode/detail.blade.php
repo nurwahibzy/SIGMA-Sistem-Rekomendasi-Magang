@@ -1,9 +1,9 @@
 <div id="modal-master" class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
 
-        <div class="modal-header">
+        <div class="modal-header bg-primary text-white rounded-top">
             <h5 class="text-light" id="exampleModalLabel">Detail Periode</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
             <div class="container mt-4">

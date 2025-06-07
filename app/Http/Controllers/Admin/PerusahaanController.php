@@ -60,11 +60,20 @@ class PerusahaanController extends Controller
         return view('admin.perusahaan.detail', ['perusahaan' => $perusahaan]);
     }
 
-    private function checkTelepon($telepon)
+    private function checkTelepon($telepon, $id_perusahaan = false)
     {
-        $amount = PerusahaanModel::where('telepon', $telepon)->count();
-        if ($amount != 0) {
-            return true;
+        if ($id_perusahaan) {
+            $amount = PerusahaanModel::where('telepon', $telepon)
+                ->whereNot('id_perusahaan', $id_perusahaan)
+                ->count();
+            if ($amount != 0) {
+                return true;
+            }
+        } else {
+            $amount = PerusahaanModel::where('telepon', $telepon)->count();
+            if ($amount != 0) {
+                return true;
+            }
         }
         $amount = AdminModel::where('telepon', $telepon)->count();
         if ($amount != 0) {
@@ -81,12 +90,22 @@ class PerusahaanController extends Controller
         return false;
     }
 
-    private function checkNama($nama)
+    private function checkNama($nama, $id_perusahaan = false)
     {
-        $amount = PerusahaanModel::where('nama', $nama)->count();
-        if ($amount != 0) {
-            return true;
+        if ($id_perusahaan) {
+            $amount = PerusahaanModel::where('nama', $nama)
+            ->whereNot('id_perusahaan', $id_perusahaan)
+            ->count();
+            if ($amount != 0) {
+                return true;
+            }
+        } else {
+            $amount = PerusahaanModel::where('nama', $nama)->count();
+            if ($amount != 0) {
+                return true;
+            }
         }
+        return false;
     }
 
     public function postPerusahaan(Request $request)
@@ -107,7 +126,7 @@ class PerusahaanController extends Controller
                         ]);
 
                         if (!$request->hasFile('file')) {
-                            return ['success' => false, 'message' => 'Logo Perusahaan Harus Diisi!!!'];   
+                            return ['success' => false, 'message' => 'Logo Perusahaan Harus Diisi!!!'];
                         }
 
                         if ($validator->fails()) {
@@ -206,10 +225,10 @@ class PerusahaanController extends Controller
                         $provinsi = ucwords(strtolower($provinsi));
                         $daerah = ucwords(strtolower($daerah));
 
-                        if ($this->checkTelepon($telepon)) {
+                        if ($this->checkTelepon($telepon, $id_perusahaan)) {
                             return ['success' => false, 'message' => 'Nomor Telepon Tidak Boleh Sama!!!'];
                         }
-                        if ($this->checkNama($nama)) {
+                        if ($this->checkNama($nama, $id_perusahaan)) {
                             return ['success' => false, 'message' => 'Nama Perusahaan Tidak Boleh Sama!!!'];
                         }
 
@@ -309,7 +328,7 @@ class PerusahaanController extends Controller
                     function () use ($request, $id_perusahaan) {
 
                         $perusahaan = PerusahaanModel::with('lowongan_magang.periode_magang.magang.aktivitas_magang')
-                        ->where('id_perusahaan', $id_perusahaan)
+                            ->where('id_perusahaan', $id_perusahaan)
                             ->first();
 
                         $foto_path = $perusahaan->foto_path;
@@ -317,7 +336,7 @@ class PerusahaanController extends Controller
                         foreach ($perusahaan->lowongan_magang as $lowongan) {
                             foreach ($lowongan->periode_magang as $periode) {
                                 foreach ($periode->magang as $magang) {
-                                    foreach ($magang->aktivitas_magang as $aktivitas){
+                                    foreach ($magang->aktivitas_magang as $aktivitas) {
                                         $foto_path = $aktivitas->foto_path;
 
                                         if (Storage::disk('public')->exists("aktivitas/$foto_path")) {
