@@ -95,6 +95,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [MahasiswaController::class, 'getMahasiswa']);
             Route::get('/tambah', [MahasiswaController::class, 'getAddMahasiswa']);
             Route::post('/tambah', [MahasiswaController::class, 'postMahasiswa']);
+            Route::get('/tambah/excel', [MahasiswaController::class, 'getAddExcelMahasiswa']);
+            Route::get('/unduh/excel', [MahasiswaController::class, 'getUnduhExcelMahasiswa']);
+            Route::post('/tambah/excel', [MahasiswaController::class, 'postAddExcelMahasiswa']);
             Route::get('/detail/{id_akun}', [MahasiswaController::class, 'getDetailMahasiswa']);
             Route::get('/edit/{id_akun}', [MahasiswaController::class, 'getEditMahasiswa']);
             Route::post('/edit/{id_akun}', [MahasiswaController::class, 'putMahasiswa']);

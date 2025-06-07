@@ -8,6 +8,10 @@
                     aria-label="Close"></button>
             </div>
             <div class="modal-body">
+            <button type="button" class="btn btn-primary"
+                onclick="modalAction('{{ url('/admin/mahasiswa/tambah/excel') }}')">
+                <i class="fa fa-file-excel"></i> Gunakan Excel
+            </button>
                 <div class="container mt-4">
                     <div class="d-flex justify-content-center align-items-center flex-column">
                         <div class="avatar avatar-2xl mb-3">
@@ -139,6 +143,16 @@
             },
             submitHandler: function (form) {
                 const formData = new FormData(form);
+                Swal.fire({
+                    title: 'Menyimpan...',
+                    text: 'Sedang memproses data',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                
                 $.ajax({
                     url: form.action,
                     type: form.method,

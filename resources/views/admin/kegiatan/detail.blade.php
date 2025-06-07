@@ -23,7 +23,8 @@
                                     <div class="col-md-3 text-center mb-3 mb-md-0">
                                         <img src="{{ Storage::exists('public/profil/perusahaan/' . $magang->periode_magang->lowongan_magang->perusahaan->foto_path)
                 ? asset('storage/profil/perusahaan/' . $magang->periode_magang->lowongan_magang->perusahaan->foto_path)
-                : asset('template/assets/images/mhs.jpeg') }}" alt="Profile Picture" class="img-fluid rounded w-100 h-100"
+                : asset('template/assets/images/mhs.jpeg') }}" alt="Profile Picture"
+                                            class="img-fluid rounded w-100 h-100"
                                             style="width: 200px; height: 200px; border: 2px solid blue; object-fit: cover; cursor: pointer;"
                                             onclick="showImagePopup(this.src)" />
                                     </div>
@@ -141,15 +142,15 @@
                                 <div class="mb-4">
                                     <label class="form-label fw-bold">Status:</label>
                                     <div class="d-flex flex-wrap gap-3 ms-1">
-                                        @foreach ($activeButton as $status)
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="status" value="{{ $status }}"
-                                                    id="status_{{ $status }}">
-                                                <label class="form-check-label" for="status_{{ $status }}">
-                                                    {{ ucfirst($status) }}
-                                                </label>
-                                            </div>
-                                        @endforeach
+                                    @foreach ($activeButton as $status)
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="status" value="{{ $status }}"
+            id="status_{{ $status }}" style="transform: scale(1.5); margin-right: 8px;">
+        <label class="form-check-label fs-5" for="status_{{ $status }}">
+            {{ ucfirst($status) }}
+        </label>
+    </div>
+@endforeach
                                     </div>
                                     <div id="status-error" class="text-danger mt-2 d-none">Silakan pilih salah satu status.</div>
                                 </div>
@@ -162,7 +163,7 @@
                                 @elseif($magang->status == 'ditolak')
                                     <div class="form-control bg-light">-</div>
                                 @else
-                                    <select name="id_dosen" class="form-select d-none" id="input-dosen">
+                                    <select name="id_dosen" class="form-select d-none" data-placeholder="Pilih Dosen Pembimbing" id="input-dosen">
                                         <option value=""></option>
                                         @foreach($dosen as $d)
                                             <option value="{{ $d['id_dosen'] }}">{{ $d['nama'] }}</option>
@@ -417,32 +418,32 @@
 
         <div id="image-popup"
             style="
-                                                                                                                                            display: none;
-                                                                                                                                            position: fixed;
-                                                                                                                                            top: 0; left: 0;
-                                                                                                                                            width: 100vw; height: 100vh;
-                                                                                                                                            background-color: rgba(0,0,0,0.8);
-                                                                                                                                            z-index: 1050;
-                                                                                                                                            justify-content: center;
-                                                                                                                                            align-items: center;
-                                                                                                                                        ">
+                                                                                                                                                    display: none;
+                                                                                                                                                    position: fixed;
+                                                                                                                                                    top: 0; left: 0;
+                                                                                                                                                    width: 100vw; height: 100vh;
+                                                                                                                                                    background-color: rgba(0,0,0,0.8);
+                                                                                                                                                    z-index: 1050;
+                                                                                                                                                    justify-content: center;
+                                                                                                                                                    align-items: center;
+                                                                                                                                                ">
             <span id="close-popup"
                 style="
-                                                                                                                                                position: absolute;
-                                                                                                                                                top: 20px; right: 30px;
-                                                                                                                                                font-size: 30px;
-                                                                                                                                                color: white;
-                                                                                                                                                cursor: pointer;
-                                                                                                                                                z-index: 1060;
-                                                                                                                                            ">&times;</span>
+                                                                                                                                                        position: absolute;
+                                                                                                                                                        top: 20px; right: 30px;
+                                                                                                                                                        font-size: 30px;
+                                                                                                                                                        color: white;
+                                                                                                                                                        cursor: pointer;
+                                                                                                                                                        z-index: 1060;
+                                                                                                                                                    ">&times;</span>
             <img id="popup-img" src="" alt="Full Image"
                 style="
-                                                                                                                                                max-width: 90vw;
-                                                                                                                                                max-height: 90vh;
-                                                                                                                                                border-radius: 10px;
-                                                                                                                                                box-shadow: 0 0 10px #000;
-                                                                                                                                                object-fit: contain;
-                                                                                                                                            ">
+                                                                                                                                                        max-width: 90vw;
+                                                                                                                                                        max-height: 90vh;
+                                                                                                                                                        border-radius: 10px;
+                                                                                                                                                        box-shadow: 0 0 10px #000;
+                                                                                                                                                        object-fit: contain;
+                                                                                                                                                    ">
         </div>
         <script>
             function showImagePopup(src) {
@@ -508,13 +509,13 @@
                         @if(!$magang->dosen)
                             id_dosen: { required: true },
                         @endif
-                                        },
+                                                },
                 messages: {
                 status: { required: "Silakan pilih salah satu status." },
                 @if(!$magang->dosen)
                     id_dosen: { required: "Silakan pilih dosen pembimbing." },
                 @endif
-                                            },
+                                                    },
                 ignore: [],
                 errorElement: 'span',
                 errorPlacement: function (error, element) {
@@ -537,6 +538,16 @@
                         Swal.fire({ icon: 'error', title: 'Error', text: 'Harap masukkan alasan penolakan.' });
                         return false;
                     }
+
+                    Swal.fire({
+                        title: 'Menyimpan...',
+                        text: 'Sedang memproses data',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        willOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
 
                     // Submit form via AJAX
                     $.ajax({
@@ -565,7 +576,7 @@
                         }
                     });
                 }
-                                                                                                                                    });
+                                                                                                                                            });
 
             // Delete handler
             $('#btn-hapus').click(function () {
@@ -614,7 +625,7 @@
                     }
                 });
             });
-                                                                                                                                });
+                                                                                                                                        });
         </script>
 
     @endif

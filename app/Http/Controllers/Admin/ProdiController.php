@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AkunModel;
+use App\Models\MahasiswaModel;
 use App\Models\ProdiModel;
 use DB;
 use Illuminate\Http\Request;
@@ -18,7 +19,11 @@ class ProdiController extends Controller
     public function getProdi()
     {
         $prodi = ProdiModel::get();
-        return view('admin.prodi.index', ['prodi' => $prodi]);
+        $data = MahasiswaModel::select('id_prodi', DB::raw('count(*) as total'))
+            ->groupBy('id_prodi')
+            ->with('prodi')
+            ->get();
+        return view('admin.prodi.index', ['prodi' => $prodi, 'data' => $data]);
     }
 
     public function getAddProdi()
@@ -102,7 +107,7 @@ class ProdiController extends Controller
                                 foreach ($item->magang as $magang) {
                                     foreach ($magang->aktivitas_magang as $aktivitas) {
                                         $foto_path = $aktivitas->foto_path;
-        
+
                                         if (Storage::disk('public')->exists("aktivitas/$foto_path")) {
                                             Storage::disk('public')->delete("aktivitas/$foto_path");
                                         }

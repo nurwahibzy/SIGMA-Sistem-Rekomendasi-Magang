@@ -1,35 +1,46 @@
-<form action="{{ url('/admin/mahasiswa/tambah') }}" method="POST" id="form-tambah">
+<form action="{{ url('/admin/mahasiswa/tambah/excel') }}" method="POST" id="form-tambah-excel">
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white rounded-top">
-                <h5 class="text-light">Tambah Mahasiswa</h5>
+                <h5 class="text-light">Tambah Mahasiswa Excel</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="container mt-4">
-                    <div class="d-flex justify-content-center align-items-center flex-column">
-                        <div class="avatar avatar-2xl mb-3">
-                            <label for="file" style="cursor: pointer;">
-                                <img id="preview" src="{{ asset('template/assets/images/mhs.jpeg') }}"
-                                    alt="Profile Picture" class="rounded-circle"
-                                    style="width: 120px; height: 120px; border: 5px solid blue; object-fit: cover;">
-                            </label>
-                        </div>
-                        <small class="text-muted text-center">Tekan gambar untuk memberikan foto profil</small>
-                        <input type="file" id="file" name="file" accept="image/*" onchange="previewImage(event)"
-                            style="display: none;">
-                            <button type="button" id="tombolBatal" class="btn btn-sm btn-primary mt-2"
-                            style="visibility: hidden;" onclick="batalkanPreview()">Batalkan</button>
-                    </div>
+                    <a href="{{ url('/admin/mahasiswa/unduh/excel') }}" class="btn btn-primary"><i
+                            class="fa fa-file-excel"></i> Format </a>
+                </div>
+                <div class="container mt-4 alert alert-warning">
+                    <p>Perhatian:</p>
+                    <ul>
+                        <li>NIM: Tidak boleh sama</li>
+                        <li>Nomor Telepon: Minimal 8 angka dan tidak boleh sama</li>
+                        <li>Gender: l (laki-laki), p (perempuan)</li>
+                        <li>Email: Tidak boleh sama</li>
+                    </ul>
+                </div>
+                <div class="container mt-4">
+                    <p>Contoh: </p>
+                    <ul>
+                        <li>NIM: 2341720172</li>
+                        <li>Nama: ACHMAD MAULANA HAMZAH</li>
+                        <li>Alamat: Gang Ahmad Dahlan No. 85
+                            Bengkulu, Sumatera Barat 21915</li>
+                        <li>Nomor Telepon: 0857153140</li>
+                        <li>Tanggal Lahir: 2004-10-16</li>
+                        <li>Gender: l</li>
+                        <li>Email: charellino.kalingga.sadewo@example.com</li>
+                    </ul>
                 </div>
                 <div class="container mt-4">
                     <div class="d-flex justify-content-between">
                         <div class="w-50 me-2">
                             <div>
                                 <label for="id_prodi" class="form-label">Program Studi</label>
-                                <select name="id_prodi" class="form-select" id="id_prodi" data-placeholder="Pilih Program Studi" required>
+                                <select name="id_prodi" class="form-select" id="id_prodi"
+                                    data-placeholder="Pilih Program Studi" required>
                                     <option value="">Pilih Prodi</option>
                                     @foreach ($prodi as $item)
                                         <option value="{{ $item->id_prodi }}">{{ $item->nama_prodi }}</option>
@@ -38,51 +49,10 @@
                             </div>
                         </div>
                         <div class="w-50 ms-2">
-
+                            <label for="file_excel" class="form-label">File Excel</label>
+                            <input type="file" name="file_excel" id="file_excel" class="form-control"
+                                accept=".xlsx,.xls" required />
                         </div>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <div class="w-50 me-2">
-                            <div class="mt-4">
-                                <label for="id_user" class="form-label">NIM</label>
-                                <input type="text" class="form-control" id="id_user" name="id_user" required>
-                            </div>
-                            <div class="mt-4">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
-                            </div>
-                            <div class="mt-4">
-                                <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
-                                <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir"
-                                    max="{{ now()->format('Y-m-d') }}" required>
-                            </div>
-                        </div>
-                        <div class="w-50 ms-2">
-                            <div class="mt-4">
-                                <label for=" nama" class="form-label">Nama</label>
-                                <input type="text" class="form-control" id="nama" name="nama" required>
-                            </div>
-                            <div class="mt-4">
-                                <label for="telepon" class="form-label">Telepon</label>
-                                <input type="text" class="form-control" id="telepon" name="telepon" required>
-                            </div>
-                            <div class="mt-4">
-                                <label for="gender" class="form-label">Gender</label>
-                                <select name="gender" id="gender" class="form-select">
-                                    <option value="">Pilih Gender</option>
-                                    <option value="l">Laki-laki
-                                    </option>
-                                    <option value="p">
-                                        Perempuan</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="container mt-4">
-                    <div class="mb-3">
-                        <label for="alamat" class="form-label">Alamat</label>
-                        <textarea class="form-control" id="alamat" name="alamat" rows="3" required></textarea>
                     </div>
                 </div>
             </div>
@@ -93,51 +63,28 @@
         </div>
 </form>
 <script>
-    const defaultPreview = document.getElementById('preview').src;
-
-    function previewImage(event) {
-        const reader = new FileReader();
-        reader.onload = function () {
-            document.getElementById('preview').src = reader.result;
-        };
-        reader.readAsDataURL(event.target.files[0]);
-        document.getElementById('tombolBatal').style.visibility = 'visible';
-    }
-
-    function batalkanPreview() {
-        document.getElementById('preview').src = defaultPreview;
-        document.getElementById('file').value = "";
-        document.getElementById('tombolBatal').style.visibility = 'hidden';
-    }
-</script>
-<script>
     $(document).ready(function () {
-        $("#form-tambah").validate({
+        $("#form-tambah-excel").validate({
             rules: {
-                id_user: { required: true, digits: true },
+                file_excel : { required: true },
                 id_prodi: { required: true },
-                nama: { required: true },
-                alamat: { required: true },
-                telepon: { required: true,
-                    digits: true,
-                    minlength: 8 },
-                tanggal_lahir: { required: true, date: true },
-                email: { required: true, email: true }
             },
             messages: {
-                id_user: "ID User wajib diisi dan numerik",
+                file_excel : "File wajib diisi",
                 id_prodi: "Prodi wajib diisi",
-                nama: "Nama wajib diisi",
-                alamat: "Alamat wajib diisi",
-                telepon: {
-                    required: "Telepon wajib diisi",
-                    digits: "Hanya angka yang diperbolehkan",
-                    minlength: "Minimal 8 digit"
-                },
-                tanggal_lahir: "Tanggal lahir wajib diisi",
-                email: "Email wajib diisi dan harus valid"
             },
             submitHandler: function (form) {
+
+                Swal.fire({
+                    title: 'Menyimpan...',
+                    text: 'Sedang memproses data',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
                 const formData = new FormData(form);
                 $.ajax({
                     url: form.action,

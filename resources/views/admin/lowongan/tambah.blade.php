@@ -115,6 +115,16 @@ $(document).ready(function () {
 
             const formData = new FormData(form);
 
+            Swal.fire({
+                    title: 'Menyimpan...',
+                    text: 'Sedang memproses data',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
             $.ajax({
                 url: form.action,
                 type: form.method,
