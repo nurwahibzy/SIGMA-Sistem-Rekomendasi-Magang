@@ -129,7 +129,7 @@
                 email: { required: true, email: true }
             },
             messages: {
-                id_user: "ID User wajib diisi dan numerik",
+                id_user: "NIM wajib diisi dan numerik",
                 id_prodi: "Prodi wajib diisi",
                 nama: "Nama wajib diisi",
                 alamat: "Alamat wajib diisi",

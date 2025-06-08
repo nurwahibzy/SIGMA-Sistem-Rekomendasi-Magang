@@ -15,7 +15,7 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Nama</label>
+                    <label class="form-label fw-bold">Nama Periode</label>
                     <div class="border rounded p-2">
                         <p class="form-control-plaintext mb-0">{{ $periode->nama }}</p>
                     </div>

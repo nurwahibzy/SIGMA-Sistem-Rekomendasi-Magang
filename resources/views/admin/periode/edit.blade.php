@@ -37,7 +37,7 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="nama" class="form-label">Nama</label>
+                            <label for="nama" class="form-label">Nama Periode</label>
                             <input type="text" class="form-control" id="nama" name="nama" required
                                 value="{{ $periode->nama }}">
                         </div>

@@ -69,7 +69,7 @@
                     <div class="d-flex justify-content-between">
                         <div class="w-50 me-2">
                             <div>
-                                <label for="id_user" class="form-label">NIP</label>
+                                <label for="id_user" class="form-label">NIM</label>
                                 <input type="text" class="form-control" id="id_user" name="id_user" required
                                     value="{{ $mahasiswa->akun->id_user }}">
                             </div>
@@ -158,7 +158,7 @@
                 email: { required: true, email: true }
             },
             messages: {
-                id_user: "ID User wajib diisi dan numerik",
+                id_user: "NIM wajib diisi dan numerik",
                 status: "Status wajib diisi",
                 id_prodi: "Prodi wajib diisi",
                 nama: "Nama wajib diisi",
