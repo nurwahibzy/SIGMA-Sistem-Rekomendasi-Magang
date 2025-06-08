@@ -19,6 +19,11 @@
                         disabled>
                 </div>
                 <div class="mb-2">
+                    <label class="form-label">Program Studi</label>
+                    <input type="text" class="form-control" id="nim" value="{{Auth::user()->mahasiswa->prodi->nama_prodi ?? '-' }}"
+                        disabled>
+                </div>
+                <div class="mb-2">
                     <label class="form-label">Nama</label>
                     <input type="text" class="form-control" id="nama" value="{{ Auth::user()->mahasiswa->nama ?? '-' }}"
                         disabled>

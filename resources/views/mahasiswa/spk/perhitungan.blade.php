@@ -1,76 +1,20 @@
-<!DOCTYPE html>
-<html>
 
-<head>
-    <title>Langkah Perhitungan MEREC dan ARAS</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            margin: 20px;
-        }
+@extends('layouts.tamplate')
 
-        h1,
-        h2,
-        h3,
-        h4 {
-            color: #333;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        .step {
-            margin-bottom: 30px;
-            padding: 15px;
-            border: 1px solid #eee;
-            background-color: #f9f9f9;
-        }
-
-        .step h4 {
-            margin-top: 0;
-            color: #555;
-        }
-
-        .formula {
-            font-style: italic;
-            color: #666;
-        }
-
-        .note {
-            color: #888;
-            font-size: 0.9em;
-            margin-top: 10px;
-        }
-    </style>
-</head>
-
-<body>
-
+@section('content')
     <h1>Langkah Perhitungan MEREC dan ARAS</h1>
-    <a href="rekomendasi">Kembali</a>
+    <br>
+    <a href="{{ url('mahasiswa/periode/rekomendasi') }}" class="btn btn-primary">Kembali</a>
 
-    <hr>
+    <br>
+    <br>
 
     <h2>Metode MEREC</h2>
 
-    <div class="step">
-        <h4>Langkah 1: Membuat Matriks Keputusan Awal ($X$)</h4>
+    <div class="card rounded p-5">
+        <h4>Langkah 1: Membuat Matriks Keputusan Awal <span>$$ X $$</span></h4>
         <p>Matriks ini berisi kinerja alternatif terhadap setiap kriteria.</p>
-        <table>
+        <table class="table border">
             <thead>
                 <tr>
                     <th>ID Alternatif</th>
@@ -92,13 +36,13 @@
         </table>
     </div>
 
-    <div class="step">
-        <h4>Langkah 2: Normalisasi Matriks Keputusan ($N$)</h4>
+    <div class="card rounded p-5">
+        <h4>Langkah 2: Normalisasi Matriks Keputusan <span>$$ N $$</span></h4>
         <p>Normalisasi matriks untuk memastikan perbandingan antar kriteria yang berbeda. Rumus normalisasi bergantung
-            pada apakah kriteria tersebut bersifat keuntungan (benefit) atau biaya (cost).</p>
-        <p class="formula">Untuk kriteria keuntungan: $n_{ij} = x_{ij} / \max_i(x_{ij})$</p>
-        <p class="formula">Untuk kriteria biaya: $n_{ij} = \min_i(x_{ij}) / x_{ij}$</p>
-        <table>
+            pada apakah kriteria tersebut bersifat benefit atau cost.</p>
+        <p class="formula">Untuk kriteria keuntungan: <span>$$ n_{ij} = x_{ij} / \max_i(x_{ij}) $$</span></p>
+        <p class="formula">Untuk kriteria biaya: <span>$$ n_{ij} = \min_i(x_{ij}) / x_{ij} $$</span></p>
+        <table class="table border">
             <thead>
                 <tr>
                     <th>ID Alternatif</th>
@@ -120,15 +64,15 @@
         </table>
     </div>
 
-    <div class="step">
-        <h4>Langkah 3: Menghitung Kinerja Keseluruhan Alternatif (awal $S_j$)</h4>
+    <div class="card rounded p-5">
+        <h4>Langkah 3: Menghitung Kinerja Keseluruhan Alternatif Awal <span> $$ S_j $$</span></h4>
         <p>Hitung kinerja keseluruhan untuk setiap alternatif berdasarkan matriks yang dinormalisasi.</p>
-        <p class="formula">$S_j = \sum_{i=1}^{m} n_{ij}$</p>
-        <table>
+        <p class="formula">$$ S_j = \sum_{i=1}^{m} n_{ij} $$</p>
+        <table class="table border">
             <thead>
                 <tr>
                     <th>ID Alternatif</th>
-                    <th>Kinerja Keseluruhan ($S_j$)</th>
+                    <th>Kinerja Keseluruhan <span>$$ S_j $$</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -141,23 +85,23 @@
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="2">Data $S_j$ awal tidak tersedia di JSON yang diberikan.</td>
+                        <td colspan="2">Data <span>$$ S_j $$</span> awal tidak tersedia di JSON yang diberikan.</td>
                     </tr>
                 @endif
             </tbody>
         </table>
     </div>
 
-    <div class="step">
-        <h4>Langkah 4: Menghitung Kinerja Keseluruhan Setelah Menghapus Setiap Kriteria ($S'_j$)</h4>
+    <div class="card rounded p-5">
+        <h4>Langkah 4: Menghitung Kinerja Keseluruhan Setelah Menghapus Setiap Kriteria <span>$$ S'_j $$</span></h4>
         <p>Untuk setiap kriteria, hapus sementara kriteria tersebut dan hitung ulang kinerja keseluruhan untuk setiap
             alternatif.</p>
-        <table>
+        <table class="table border">
             <thead>
                 <tr>
                     <th>ID Alternatif</th>
                     @foreach (array_column($data['kriteria'], 'id') as $criterion_id)
-                        <th>S'j (menghapus {{ $criterion_id }})</th>
+                        <th><span>$$ S'_j $$</span> (menghapus {{ $criterion_id }})</th>
                     @endforeach
                 </tr>
             </thead>
@@ -173,7 +117,7 @@
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="{{ count(array_column($data['kriteria'], 'id')) + 1 }}">Data $S'_j$ tidak tersedia
+                        <td colspan="{{ count(array_column($data['kriteria'], 'id')) + 1 }}">Data <span>$$ S'_j $$</span> tidak tersedia
                             di JSON yang diberikan.</td>
                     </tr>
                 @endif
@@ -181,12 +125,12 @@
         </table>
     </div>
 
-    <div class="step">
-        <h4>Langkah 5: Menghitung Jumlah Perbedaan Absolut ($E_j$)</h4>
+    <div class="card rounded p-5">
+        <h4>Langkah 5: Menghitung Jumlah Perbedaan Absolut <span>$$ E_j $$</span></h4>
         <p>Hitung jumlah perbedaan absolut antara kinerja keseluruhan awal dan kinerja setelah menghapus setiap
             kriteria.</p>
-        <p class="formula">$E_j = \sum_{k=1}^{m} |S_k - S'_{k, j}|$</p>
-        <table>
+        <p class="formula">$$ E_j = \sum_{k=1}^{m} |S_k - S'_{k, j}| $$</p>
+        <table class="table border">
             <thead>
                 <tr>
                     <th>Kriteria</th>
@@ -210,15 +154,15 @@
         </table>
     </div>
 
-    <div class="step">
-        <h4>Langkah 6: Menghitung Bobot Akhir Kriteria ($w_j$)</h4>
+    <div class="card rounded p-5">
+        <h4>Langkah 6: Menghitung Bobot Akhir Kriteria <span>$$ w_j $$</span></h4>
         <p>Tentukan bobot akhir kriteria berdasarkan dampaknya terhadap kinerja keseluruhan.</p>
-        <p class="formula">$w_j = E_j / \sum_{k=1}^{n} E_k$</p>
-        <table>
+        <p class="formula">$$ w_j = E_j / \sum_{k=1}^{n} E_k $$</p>
+        <table class="table border">
             <thead>
                 <tr>
                     <th>Kriteria</th>
-                    <th>Bobot ($w_j$)</th>
+                    <th>Bobot<span>$$ w_j $$</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -236,10 +180,10 @@
 
     <h2>Metode ARAS</h2>
 
-    <div class="step">
-        <h4>Langkah 1: Membuat Matriks Keputusan Awal ($X$)</h4>
+    <div class="card rounded p-5">
+        <h4>Langkah 1: Membuat Matriks Keputusan Awal <span>$$ X $$</span></h4>
         </p>
-        <table>
+        <table class="table border">
             <thead>
                 <tr>
                     <th>ID Alternatif</th>
@@ -274,13 +218,15 @@
         </table>
     </div>
 
-    <div class="step">
-        <h4>Langkah 2: Normalisasi Matriks Keputusan ($N$)</h4>
+    <div class="card rounded p-5">
+        <h4>Langkah 2: Normalisasi Matriks Keputusan <span>$$ N $$</span></h4>
         <p>Normalisasi matriks menggunakan metode normalisasi yang sesuai (misalnya, normalisasi linear).</p>
-        <p class="formula">Untuk kriteria benefit: $n_{ij} = x_{ij} / \sum_{i=0}^{m} x_{ij}$ (dimana $x_{0j}$ adalah
-            nilai optimal)</p>
-        <p class="formula">Untuk kriteria cost: $n_{ij} = x_{0j} / x_{ij}$ (dimana $x_{0j}$ adalah nilai optimal)</p>
-        <table>
+        <p class="formula">Untuk kriteria benefit: <span>$$ n_{ij} = x_{ij} / \sum_{i=0}^{m} x_{ij} $$</p>
+        <p class="formula">Transformasi nilai cost menjadi benefit: <span>$$ x^*_{ij} = \frac{1}{x_{ij}} $$</span></p>
+        <p class="formula">Normalisasi nilai: <span>$$ r_{ij} = \frac{x^*_{ij}}{\sum_{i=0}^{m} x^*_{ij}} $$</span></p>
+        <p class="formula"></span> (dimana <span>$$ x_{0j} $$</span> adalah
+        nilai optimal)</p>
+        <table class="table border">
             <thead>
                 <tr>
                     <th>ID Alternatif</th>
@@ -306,11 +252,11 @@
         </table>
     </div>
 
-    <div class="step">
-        <h4>Langkah 3: Menentukan Matriks Keputusan Ternormalisasi Berbobot ($V$)</h4>
+    <div class="card rounded p-5">
+        <h4>Langkah 3: Menentukan Matriks Keputusan Ternormalisasi Berbobot <span>$$ V $$</span></h4>
         <p>Kalikan matriks yang dinormalisasi dengan bobot kriteria (yang dapat diperoleh dari MEREC).</p>
-        <p class="formula">$v_{ij} = w_j \times n_{ij}$</p>
-        <table>
+        <p class="formula">$$ v_{ij} = w_j \times n_{ij} $$</p>
+        <table class="table border">
             <thead>
                 <tr>
                     <th>ID Alternatif</th>
@@ -343,12 +289,12 @@
         </table>
     </div>
 
-    <div class="step">
-        <h4>Langkah 4: Menghitung Nilai Fungsi Optimalitas ($K_j$)</h4>
+    <div class="card rounded p-5">
+        <h4>Langkah 4: Menghitung Nilai Fungsi Optimalitas <span>$$ K_j $$</span></h4>
         <p>Hitung nilai fungsi optimalitas untuk setiap alternatif dengan menjumlahkan nilai-nilai yang dinormalisasi
             dan dibobot.</p>
-        <p class="formula">$K_j = \sum_{i=1}^{m} v_{ij}$</p>
-        <table>
+        <p class="formula">$$ K_j = \sum_{i=1}^{m} v_{ij} $$</p>
+        <table class="table border">
             <thead>
                 <tr>
                     <th>ID Alternatif</th>
@@ -382,23 +328,23 @@
                     @endforeach -->
                 @else
                     <tr>
-                        <td colspan="2">Data Fungsi Optimalitas ($K_j$) tidak tersedia di JSON yang diberikan.</td>
+                        <td colspan="2">Data Fungsi Optimalitas <span>$$ K_j $$</span> tidak tersedia di JSON yang diberikan.</td>
                     </tr>
                 @endif
             </tbody>
         </table>
     </div>
 
-    <div class="step">
-        <h4>Langkah 5: Menghitung Derajat Utilitas ($P_j$)</h4>
+    <div class="card rounded p-5">
+        <h4>Langkah 5: Menghitung Derajat Utilitas <span>$$ P_j $$</span></h4>
         <p>Tentukan derajat utilitas untuk setiap alternatif dengan membandingkan nilai fungsi optimalitasnya dengan
             nilai fungsi optimalitas maksimum.</p>
-        <p class="formula">$P_j = K_j / \max(K)$</p>
-        <table>
+        <p class="formula">$$ P_j = K_j / \max(K) $$</p>
+        <table class="table border">
             <thead>
                 <tr>
                     <th>ID Alternatif</th>
-                    <th>Derajat Utilitas ($P_j$)</th>
+                    <th>Derajat Utilitas <span>$$ P_j $$</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -411,17 +357,17 @@
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="2">Data Derajat Utilitas ($P_j$) tidak tersedia di JSON yang diberikan.</td>
+                        <td colspan="2">Data Derajat Utilitas <span>$$ P_j $$</span> tidak tersedia di JSON yang diberikan.</td>
                     </tr>
                 @endif
             </tbody>
         </table>
     </div>
 
-    <div class="step">
+    <div class="card rounded p-5">
         <h4>Langkah 6: Memeringkat Alternatif</h4>
         <p>Peringkatkan alternatif berdasarkan skornya dalam ascending.</p>
-        <table>
+        <table class="table border">
             <thead>
                 <tr>
                     <th>Peringkat</th>
@@ -451,6 +397,12 @@
         </table>
     </div>
 
-</body>
+  @endsection
 
-</html>
+@push('scripts')
+    <script src="{{ asset('template/assets/static/js/components/dark.js') }}"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+@endpush

@@ -168,9 +168,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['authorize:MHS'])->prefix('mahasiswa')->group(function () {
         Route::get('/dashboard', [PeriodeMagangControllerMahasiswa::class, 'getDashboard']);
-        Route::get('/rekomendasi', [RekomendasiController::class, 'tampilkanHasilRekomendasi']);
-        Route::get('/perhitungan', [RekomendasiController::class, 'prosesPerhitungan']);
-        Route::post('/tes', [KeahlianMahasiswaController::class, 'postKeahlian']);
+        // Route::post('/tes', [KeahlianMahasiswaController::class, 'postKeahlian']);
         Route::prefix('profil')->group(function () {
             Route::get('/', [AkunControllerMahasiswa::class, 'getProfil'])->name('mahasiswa.profil');
 
@@ -238,6 +236,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('periode')->group(function () {
             Route::get('/', [PeriodeMagangControllerMahasiswa::class, 'getPeriode']);
+            Route::get('/rekomendasi', [RekomendasiController::class, 'tampilkanHasilRekomendasi']);
+            Route::get('/rekomendasi/perhitungan', [RekomendasiController::class, 'prosesPerhitungan']);
             Route::get('/detail/{id_periode}', [PeriodeMagangControllerMahasiswa::class, 'getDetailPeriode']);
             Route::post('/{id_periode}', [MagangControllerMahasiswa::class, 'postMagang']);
         });

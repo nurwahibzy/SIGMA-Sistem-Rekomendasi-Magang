@@ -54,14 +54,14 @@ class MahasiswaController extends Controller
 
     public function getAddMahasiswa()
     {
-        $prodi = ProdiModel::get();
+        $prodi = ProdiModel::where('status', 'aktif')->get();
         return view('admin.mahasiswa.tambah', ['prodi' => $prodi]);
         // return response()->json($prodi);
     }
 
     public function getAddExcelMahasiswa()
     {
-        $prodi = ProdiModel::get();
+        $prodi = ProdiModel::where('status', 'aktif')->get();
         return view('admin.mahasiswa.tambah-excel', ['prodi' => $prodi]);
     }
 
@@ -118,7 +118,7 @@ class MahasiswaController extends Controller
                 $query->where('id_akun', $id_akun);
             })
             ->first();
-        $prodi = ProdiModel::get();
+        $prodi = ProdiModel::where('status', 'aktif')->get();
         return view('admin.mahasiswa.edit', ['mahasiswa' => $mahasiswa, 'prodi' => $prodi]);
     }
 

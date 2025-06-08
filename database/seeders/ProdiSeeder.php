@@ -17,12 +17,14 @@ class ProdiSeeder extends Seeder
             [
                 'nama_prodi' => 'Teknik Informatika',
                 'nama_jurusan' => 'Teknologi Informasi',
+                'status' => 'aktif',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'nama_prodi' => 'Sistem Informasi Bisnis',
                 'nama_jurusan' => 'Teknologi Informasi',
+                'status' => 'aktif',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

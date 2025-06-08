@@ -7,6 +7,7 @@ use App\Models\AkunModel;
 use App\Models\MagangModel;
 use App\Models\PeriodeMagangModel;
 use Auth;
+use DB;
 use Illuminate\Http\Request;
 
 class PeriodeMagangController extends Controller
@@ -67,8 +68,8 @@ class PeriodeMagangController extends Controller
                 'lowongan_magang.bidang:id_bidang,nama',
                 'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
             ])
-            ->where('tanggal_mulai', '>=', now())
-            ->orderBy('tanggal_mulai')
+                ->where('tanggal_mulai', '>=', now())
+                ->orderBy('tanggal_mulai')
                 ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
         }
 
@@ -132,7 +133,24 @@ class PeriodeMagangController extends Controller
             ->whereIn('status', ['proses', 'diterima'])
             ->count();
 
-        // return response()->json(data: $periode);
-        return view('mahasiswa.periode.detail', ['periode' => $periode, 'status' => $status]);
+        $lowongan = DB::table('lowongan_magang')
+            ->select(
+                'lowongan_magang.id_lowongan',
+                DB::raw("COALESCE(AVG(penilaian.tugas), 0) as tugas"),
+                DB::raw("COALESCE(AVG(penilaian.pembinaan), 0) as pembinaan"),
+                DB::raw("COALESCE(AVG(penilaian.fasilitas), 0) as fasilitas"),
+                DB::raw("CASE WHEN COUNT(penilaian.id_penilaian) = 0 THEN 'baru' ELSE 'lama' END as status")
+            )
+            ->leftJoin('periode_magang', 'periode_magang.id_lowongan', '=', 'lowongan_magang.id_lowongan')
+            ->leftJoin('magang', 'magang.id_periode', '=', 'periode_magang.id_periode')
+            ->leftJoin('penilaian', 'penilaian.id_magang', '=', 'magang.id_magang')
+            ->where('lowongan_magang.id_lowongan', $periode->id_lowongan)
+            ->groupBy(
+                'lowongan_magang.id_lowongan'
+            )
+            ->first();
+
+        // return response()->json($lowongan);
+        return view('mahasiswa.periode.detail', ['periode' => $periode, 'status' => $status, 'lowongan' => $lowongan]);
     }
 }

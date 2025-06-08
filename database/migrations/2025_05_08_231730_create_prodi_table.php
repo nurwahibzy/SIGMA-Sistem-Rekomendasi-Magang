@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('id_prodi');
             $table->string('nama_prodi', 100)->unique();
             $table->string('nama_jurusan', 100);
+            $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
             $table->timestamps();
         });
     }

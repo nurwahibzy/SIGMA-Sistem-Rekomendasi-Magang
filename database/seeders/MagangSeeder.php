@@ -35,7 +35,7 @@ class MagangSeeder extends Seeder
             ],
             [
                 'id_mahasiswa' => 2,
-                'id_dosen' => 2,
+                'id_dosen' => null,
                 'id_periode' => 3,
                 'status' => 'proses',
                 'tanggal_pengajuan' => Carbon::parse('2025-06-02 09:15:00'),

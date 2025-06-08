@@ -20,6 +20,36 @@
                     <p class="text-small">{{ $periode->lowongan_magang->perusahaan->telepon }}</p>
                 </div>
             </div>
+            @if ($lowongan->status == 'baru')
+                <div class="container mt-2 mb-3">
+                    <div class="text-center">
+                    <i class="fas fa-info-circle me-2"></i> Lowngan Baru
+                    </div>
+                </div>
+            @else
+                <div class="container mt-2 mb-3">
+                    <div class="d-flex justify-content-between align-items-center gap-0">
+                        <div class="text-center ps-5">
+                            <h5>Tugas</h5>
+                            @for ($i = 0; $i < round($lowongan->tugas); $i++)
+                                <span class="text-warning">★</span>
+                            @endfor
+                        </div>
+                        <div class="text-center">
+                            <h5>Pembinaan</h5>
+                            @for ($i = 0; $i < round($lowongan->pembinaan); $i++)
+                                <span class="text-warning">★</span>
+                            @endfor
+                        </div>
+                        <div class="text-center pe-5">
+                            <h5>Fasilitas</h5>
+                            @for ($i = 0; $i < round($lowongan->fasilitas); $i++)
+                                <span class="text-warning">★</span>
+                            @endfor
+                        </div>
+                    </div>
+                </div>
+            @endif
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <ul class="nav nav-tabs w-100" id="detailTab" role="tablist">
                     <li class="nav-item flex-fill text-center">
@@ -76,7 +106,9 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">Persyaratan</label>
                             <div class="border rounded p-2">
-                                <p class="form-control-plaintext mb-0">{!! htmlspecialchars_decode($periode->lowongan_magang->persyaratan) !!}</p>
+                                <p class="form-control-plaintext mb-0">
+                                    {!! htmlspecialchars_decode($periode->lowongan_magang->persyaratan) !!}
+                                </p>
                             </div>
                         </div>
                     </div>

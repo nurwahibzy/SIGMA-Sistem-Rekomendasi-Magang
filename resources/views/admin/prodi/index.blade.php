@@ -7,7 +7,7 @@
                 <div class="col-md-4">
                     <div class="position-sticky" style="top: 90px;">
                         <div class="card p-4 shadow  d-flex justify-content-between align-items-center">
-                            <div style="width: 250px; height: 250px;">
+                            <div style="width: 225px;">
                                 <canvas id="statusChart"></canvas>
                             </div>
                         </div>
@@ -28,6 +28,7 @@
                                             <tr>
                                                 <th>Jurusan</th>
                                                 <th>Prodi</th>
+                                                <th>Status</th>
                                                 <th class="text-center"></th>
                                             </tr>
                                         </thead>
@@ -36,6 +37,15 @@
                                                 <tr>
                                                     <td>{{ $item->nama_jurusan ?? '-' }}</td>
                                                     <td>{{ $item->nama_prodi ?? '-' }}</td>
+                                                    <td>
+                                        <span class="badge 
+                                            @if($item->status == 'aktif') bg-success
+                                            @elseif($item->status == 'nonaktif') bg-primary
+                                            @else bg-secondary
+                                            @endif">
+                                            {{ ucfirst($item->status ?? '-') }}
+                                        </span>
+                                    </td>
                                                     <td class="text-center">
                                                         <div class="d-flex justify-content-center gap-2">
                                                             <button class="btn btn-sm btn-warning btn-edit"

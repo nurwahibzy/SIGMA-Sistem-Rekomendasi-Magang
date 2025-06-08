@@ -136,6 +136,22 @@ class MagangController extends Controller
         })
             ->get();
 
+        $lowongan = DB::table('lowongan_magang')
+            ->select(
+                'lowongan_magang.id_lowongan',
+                DB::raw("COALESCE(AVG(penilaian.tugas), 0) as tugas"),
+                DB::raw("COALESCE(AVG(penilaian.pembinaan), 0) as pembinaan"),
+                DB::raw("COALESCE(AVG(penilaian.fasilitas), 0) as fasilitas"),
+                DB::raw("CASE WHEN COUNT(penilaian.id_penilaian) = 0 THEN 'baru' ELSE 'lama' END as status")
+            )
+            ->leftJoin('periode_magang', 'periode_magang.id_lowongan', '=', 'lowongan_magang.id_lowongan')
+            ->leftJoin('magang', 'magang.id_periode', '=', 'periode_magang.id_periode')
+            ->leftJoin('penilaian', 'penilaian.id_magang', '=', 'magang.id_magang')
+            ->where('lowongan_magang.id_lowongan', $magang->periode_magang->id_lowongan)
+            ->groupBy(
+                'lowongan_magang.id_lowongan'
+            )
+            ->first();
 
         $activeButton = [];
 
@@ -154,6 +170,7 @@ class MagangController extends Controller
                 'pengalaman' => $akun->mahasiswa->pengalaman,
                 'bidang' => $bidang,
                 'keahlian' => $akun->mahasiswa->keahlian_mahasiswa->sortBy('prioritas'),
+                'lowongan' => $lowongan,
                 'kompetensi' => $akun->mahasiswa->kompetensi,
                 'jenis' => $jenis,
                 'preferensi_perusahaan' => $akun->mahasiswa->preferensi_perusahaan_mahasiswa,
@@ -209,7 +226,7 @@ class MagangController extends Controller
 
         if ($magang) {
             if ($magang->status == 'proses' || $magang->status == 'diterima') {
-                return response()->json(['success' => false]);
+                return response()->json(['success' => false, 'message' => 'Kegiatan bisa dihapus jika statusnya lulus atau ditolak']);
             }
         }
 

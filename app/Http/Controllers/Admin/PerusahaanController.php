@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AdminModel;
 use App\Models\DosenModel;
 use App\Models\JenisPerusahaanModel;
+use App\Models\LowonganMagangModel;
 use App\Models\MahasiswaModel;
 use App\Models\PerusahaanModel;
 use DB;
@@ -57,7 +58,33 @@ class PerusahaanController extends Controller
     {
         $perusahaan = PerusahaanModel::with('jenis_perusahaan:id_jenis,jenis')
             ->where('id_perusahaan', $id_perusahaan)->first();
-        return view('admin.perusahaan.detail', ['perusahaan' => $perusahaan]);
+
+
+            $lowongan = DB::table('lowongan_magang')
+            ->select(
+                'lowongan_magang.id_lowongan',
+                'lowongan_magang.nama as lowongan',
+                'bidang.nama as bidang',
+                DB::raw("COALESCE(AVG(penilaian.tugas), 0) as tugas"),
+                DB::raw("COALESCE(AVG(penilaian.pembinaan), 0) as pembinaan"),
+                DB::raw("COALESCE(AVG(penilaian.fasilitas), 0) as fasilitas"),
+                DB::raw("CASE WHEN COUNT(penilaian.id_penilaian) = 0 THEN 'baru' ELSE 'lama' END as status")
+            )
+            ->leftJoin('periode_magang', 'periode_magang.id_lowongan', '=', 'lowongan_magang.id_lowongan')
+            ->leftJoin('magang', 'magang.id_periode', '=', 'periode_magang.id_periode')
+            ->leftJoin('penilaian', 'penilaian.id_magang', '=', 'magang.id_magang')
+            ->join('perusahaan', 'perusahaan.id_perusahaan', '=', 'lowongan_magang.id_perusahaan')
+            ->join('bidang', 'bidang.id_bidang', '=', 'lowongan_magang.id_bidang')
+            ->where('perusahaan.id_perusahaan', $id_perusahaan)
+            ->groupBy(
+                'lowongan_magang.id_lowongan',
+                'lowongan_magang.nama',
+                'bidang.nama'
+            )
+            ->get();
+        
+        return view('admin.perusahaan.detail', ['perusahaan' => $perusahaan, 'lowongan' => $lowongan]);
+        // return response()->json($data);
     }
 
     private function checkTelepon($telepon, $id_perusahaan = false)
@@ -94,8 +121,8 @@ class PerusahaanController extends Controller
     {
         if ($id_perusahaan) {
             $amount = PerusahaanModel::where('nama', $nama)
-            ->whereNot('id_perusahaan', $id_perusahaan)
-            ->count();
+                ->whereNot('id_perusahaan', $id_perusahaan)
+                ->count();
             if ($amount != 0) {
                 return true;
             }

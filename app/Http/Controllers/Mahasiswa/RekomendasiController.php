@@ -98,7 +98,7 @@ class RekomendasiController extends Controller
 
                 $total_fasilitas = 0;
                 $total_tugas = 0;
-                $total_kedisiplinan = 0;
+                $total_pembinaan = 0;
                 $total_penilaian = 0;
 
                 foreach ($lowongan->periode_magang as $periode) {
@@ -106,7 +106,7 @@ class RekomendasiController extends Controller
                         if ($magang->penilaian) {
                             $total_fasilitas += (int) $magang->penilaian->fasilitas;
                             $total_tugas += (int) $magang->penilaian->tugas;
-                            $total_kedisiplinan += (int) $magang->penilaian->kedisiplinan;
+                            $total_pembinaan += (int) $magang->penilaian->pembinaan;
                             $total_penilaian++;
                         }
                     }
@@ -115,17 +115,17 @@ class RekomendasiController extends Controller
                 // Inisialisasi nilai rata-rata
                 $rata_fasilitas = 0;
                 $rata_tugas = 0;
-                $rata_kedisiplinan = 0;
+                $rata_pembinaan = 0;
 
                 if ($total_penilaian > 0) {
                     $rata_fasilitas = $total_fasilitas / $total_penilaian;
                     $rata_tugas = $total_tugas / $total_penilaian;
-                    $rata_kedisiplinan = $total_kedisiplinan / $total_penilaian;
+                    $rata_pembinaan = $total_pembinaan / $total_penilaian;
                 }
 
                 $rata_fasilitas = $rata_fasilitas == 0 ? 2.5 : $rata_fasilitas;
                 $rata_tugas = $rata_tugas == 0 ? 2.5 : $rata_tugas;
-                $rata_kedisiplinan = $rata_kedisiplinan == 0 ? 2.5 : $rata_kedisiplinan;
+                $rata_pembinaan = $rata_pembinaan == 0 ? 2.5 : $rata_pembinaan;
 
                 $id_bidang = $lowongan->id_bidang;
                 $bobot_bidang = $bobot_prioritas[$id_bidang] ?? ($totalPrioritas + 1);
@@ -141,7 +141,7 @@ class RekomendasiController extends Controller
                     'jarak' => $jarak,
                     'fasilitas' => $rata_fasilitas,
                     'tugas' => $rata_tugas,
-                    'kedisiplinan' => $rata_kedisiplinan,
+                    'pembinaan' => $rata_pembinaan,
                 ];
             }
         }
@@ -236,7 +236,7 @@ class RekomendasiController extends Controller
             $matriks[$alt['id_lowongan']][$kriteria[0]->id] = $alt['prioritas_keahlian'];
             $matriks[$alt['id_lowongan']][$kriteria[1]->id] = $alt['fasilitas'];
             $matriks[$alt['id_lowongan']][$kriteria[2]->id] = $alt['tugas'];
-            $matriks[$alt['id_lowongan']][$kriteria[3]->id] = $alt['kedisiplinan'];
+            $matriks[$alt['id_lowongan']][$kriteria[3]->id] = $alt['pembinaan'];
             $matriks[$alt['id_lowongan']][$kriteria[4]->id] = $alt['jarak'];
         }
         $this->prosesPerhitungan["matriksKeputusan"] = $matriks;

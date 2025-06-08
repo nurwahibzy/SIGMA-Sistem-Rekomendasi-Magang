@@ -19,6 +19,17 @@
                             <label for="nama_prodi" class="form-label">Program Studi</label>
                             <input type="text" class="form-control" id="nama_prodi" name="nama_prodi" required value="{{ $prodi->nama_prodi }}"> 
                         </div>
+                        <div class="mb-3">
+                        <label for="status" class="form-label">Status</label>
+                                <select name="status" id="status" class="form-select" required>
+                                    <option value="">Pilih Status</option>
+                                    <option value="aktif" {{ $prodi->status == 'aktif' ? 'selected' : ''  }}>
+                                        aktif
+                                    </option>
+                                    <option value="nonaktif" {{ $prodi->status == 'nonaktif' ? 'selected' : ''  }}>
+                                        nonaktif</option>
+                                </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -35,10 +46,12 @@
             rules: {
                 nama_jurusan: { required: true },
                 nama_prodi: { required: true },
+                status: { required: true },
             },
             messages: {
                 nama_jurusan: "Jurusan wajib diisi",
                 nama_prodi: "Program studi wajib diisi",
+                status: "Status wajib diisi",
             },
             submitHandler: function (form) {
                 const formData = new FormData(form);

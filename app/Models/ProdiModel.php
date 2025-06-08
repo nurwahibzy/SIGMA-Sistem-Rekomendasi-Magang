@@ -11,7 +11,7 @@ class ProdiModel extends Model
     use HasFactory;
     protected $table = 'prodi';
     protected $primaryKey = 'id_prodi';
-    protected $fillable = [ 'nama_prodi', 'nama_jurusan'];
+    protected $fillable = [ 'nama_prodi', 'nama_jurusan', 'status'];
 
     public function mahasiswa(): HasMany
     {

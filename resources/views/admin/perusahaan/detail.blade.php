@@ -20,45 +20,99 @@
                     <p class="text-small">{{ $perusahaan->telepon }}</p>
                 </div>
             </div>
-            <div class="container mt-4">
-                <div class="d-flex justify-content-between">
-                    <div class="w-50 me-2">
-                        <div>
-                            <label class="form-label fw-bold">Jenis Perusahaan</label>
-                            <div class="border rounded p-2">
-                                <p class="form-control-plaintext mb-0">
-                                    {{ $perusahaan->jenis_perusahaan->jenis }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="w-50 ms-2"></div>
-                </div>
-                <div class="d-flex justify-content-between">
-                    <div class="w-50 me-2">
-                        <div class="mt-4">
-                            <label class="form-label fw-bold">Provinsi</label>
-                            <div class="border rounded p-2">
-                                <p class="form-control-plaintext mb-0">{{ $perusahaan->provinsi }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="w-50 ms-2">
-                        <div class="mt-4">
-                            <label class="form-label fw-bold">Daerah</label>
-                            <div class="border rounded p-2">
-                                <p class="form-control-plaintext mb-0">{{ $perusahaan->daerah }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <ul class="nav nav-tabs w-100" id="detailTab" role="tablist">
+                    <li class="nav-item flex-fill text-center">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#perusahaan" role="tab">Perusahaan</a>
+                    </li>
+                    <li class="nav-item flex-fill text-center">
+                        <a class="nav-link" data-bs-toggle="tab" href="#lowongan" role="tab">Perusahaan</a>
+                    </li>
+                </ul>
             </div>
-            <div class="container mt-4">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Deskripsi</label>
-                    <div class="border rounded p-2">
-                        <p class="form-control-plaintext mb-0">{{ $perusahaan->deskripsi }}</p>
+            <div class="tab-content" id="detailTabContent">
+                <div class="tab-pane fade show active" id="perusahaan" role="tabpanel">
+                    <div class="container mt-4">
+                        <div class="d-flex justify-content-between">
+                            <div class="w-50 me-2">
+                                <div>
+                                    <label class="form-label fw-bold">Jenis Perusahaan</label>
+                                    <div class="border rounded p-2">
+                                        <p class="form-control-plaintext mb-0">
+                                            {{ $perusahaan->jenis_perusahaan->jenis }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-50 ms-2"></div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <div class="w-50 me-2">
+                                <div class="mt-4">
+                                    <label class="form-label fw-bold">Provinsi</label>
+                                    <div class="border rounded p-2">
+                                        <p class="form-control-plaintext mb-0">{{ $perusahaan->provinsi }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-50 ms-2">
+                                <div class="mt-4">
+                                    <label class="form-label fw-bold">Daerah</label>
+                                    <div class="border rounded p-2">
+                                        <p class="form-control-plaintext mb-0">{{ $perusahaan->daerah }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    <div class="container mt-4">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Deskripsi</label>
+                            <div class="border rounded p-2">
+                                <p class="form-control-plaintext mb-0">{{ $perusahaan->deskripsi }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="lowongan" role="tabpanel">
+                    @if (count($lowongan))
+                        <div class="container mt-4">
+                            @foreach ($lowongan as $item)
+                                <div class="mb-3 border rounded pb-2 pt-2 pe-5 ps-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <p class="form-control-plaintext mb-0">{{ $item->lowongan . ' - ' . $item->bidang }}</p>
+                                        </div>
+                                        <div>
+                                            @if ($item->status == 'baru')
+                                            <div class="px-3 py-1 border border-secondary text-secondary rounded">
+    Baru
+</div>
+                                            @else
+                                            <ul class="list-unstyled mb-0">
+    <li><strong>Tugas:</strong>
+        @for ($i = 0; $i < round($item->tugas); $i++)
+            <span class="text-warning">★</span>
+        @endfor
+    </li>
+    <li><strong>Pembinaan:</strong>
+        @for ($i = 0; $i < round($item->pembinaan); $i++)
+            <span class="text-warning">★</span>
+        @endfor
+    </li>
+    <li><strong>Fasilitas:</strong>
+        @for ($i = 0; $i < round($item->fasilitas); $i++)
+            <span class="text-warning">★</span>
+        @endfor
+    </li>
+</ul>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

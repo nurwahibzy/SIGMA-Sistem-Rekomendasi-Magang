@@ -51,10 +51,12 @@ class ProdiController extends Controller
 
                 $nama_prodi = $request->input('nama_prodi');
                 $nama_jurusan = $request->input('nama_jurusan');
+                $status = 'aktif';
 
                 ProdiModel::create([
                     'nama_prodi' => $nama_prodi,
-                    'nama_jurusan' => $nama_jurusan
+                    'nama_jurusan' => $nama_jurusan,
+                    'status' => $status
                 ]);
                 return response()->json(['success' => true]);
             } catch (\Exception $e) {
@@ -76,11 +78,13 @@ class ProdiController extends Controller
                     return false;
                 }
                 $nama_prodi = $request->input('nama_prodi');
+                $status = $request->input('status');
 
 
                 ProdiModel::where('id_prodi', $id_prodi)
                     ->update([
-                        'nama_prodi' => $nama_prodi
+                        'nama_prodi' => $nama_prodi,
+                        'status' => $status
                     ]);
 
                 return response()->json(['success' => true]);

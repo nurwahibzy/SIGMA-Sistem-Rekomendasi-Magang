@@ -31,17 +31,21 @@ class MagangController extends Controller
 
     public function postMagang($id_periode)
     {
-        $id_mahasiswa = $this->idMahasiswa();
-        $tanggal_pengajuan = now();
+        try {
+            $id_mahasiswa = $this->idMahasiswa();
+            $tanggal_pengajuan = now();
 
-        // tentukan tanggal pengajuan kurang dari tanggal
-        MagangModel::create([
-            'id_mahasiswa' => $id_mahasiswa,
-            'id_periode' => $id_periode,
-            'tanggal_pengajuan' => $tanggal_pengajuan
-        ]);
+            MagangModel::create([
+                'id_mahasiswa' => $id_mahasiswa,
+                'id_periode' => $id_periode,
+                'tanggal_pengajuan' => $tanggal_pengajuan
+            ]);
 
-        return response()->json(['success' => true]);
+            return response()->json(['success' => true]);
+        } catch (\Throwable $e) {
+            Log::error("Gagal memuat halaman penilaian: " . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Tidak bisa daftar dengan lowongan dan periode yang sama.'], 500);
+        }
     }
 
     public function indexRiwayat()
@@ -76,8 +80,8 @@ class MagangController extends Controller
     {
         // Validasi ID Magang
         $magang = MagangModel::with('mahasiswa.akun', 'periode_magang.lowongan_magang.perusahaan')
-                            ->where('id_magang', $idMagang)
-                            ->firstOrFail();
+            ->where('id_magang', $idMagang)
+            ->firstOrFail();
 
         // Data untuk template sertifikat
         $data = [
@@ -90,14 +94,14 @@ class MagangController extends Controller
 
         // Render view Blade menjadi PDF dengan ukuran A4 landscape
         $pdf = Pdf::loadView('certificates.sertifikat', $data)
-                ->setPaper('A4', 'landscape')
-                ->setOptions([
-                    'dpi' => 150,
-                    'defaultFont' => 'serif',
-                    'isRemoteEnabled' => true,
-                    'isHtml5ParserEnabled' => true,
-                    'enable_php' => false
-                ]);
+            ->setPaper('A4', 'landscape')
+            ->setOptions([
+                'dpi' => 150,
+                'defaultFont' => 'serif',
+                'isRemoteEnabled' => true,
+                'isHtml5ParserEnabled' => true,
+                'enable_php' => false
+            ]);
 
         // Simpan nama file sesuai NIM mahasiswa
         $filename = "Sertifikat_Magang_{$magang->mahasiswa->akun->id_user}.pdf";

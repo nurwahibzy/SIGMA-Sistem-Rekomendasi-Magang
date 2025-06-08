@@ -87,56 +87,62 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-5 mb-4">
-                            <div class="card shadow p-4 h-100">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tr>
-                                        <td style="padding-bottom: 8px; vertical-align: top;">
+                        <div class="col-md-6 col-lg-5 mb-4">
+    <div class="card shadow p-4 h-100">
+        <div class="text-center mb-3">
+            <h4 class="fw-bold mb-1">
+                {{ $magang->periode_magang->lowongan_magang->nama }}
+            </h4>
+            <p class="fw-bold text-muted">
+                {{ $magang->periode_magang->lowongan_magang->bidang->nama }}
+            </p>
+        </div>
 
-                                        </td>
-                                        <td style="padding-bottom: 8px; vertical-align: top;" class="text-center">
-                                            <h4 class="fw-bold mb-1">
-                                                {{ $magang->periode_magang->lowongan_magang->nama }}
-                                            </h4>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding-bottom: 8px; vertical-align: top;">
+        <div class="mb-4 text-center">
+            @if ($lowongan->status == 'baru')
+                <div class="alert alert-info py-2 px-3 d-inline-block">
+                    <i class="fas fa-info-circle me-2"></i> Lowongan Baru
+                </div>
+            @else
+                <div class="row text-center">
+                    <div class="col-4">
+                        <h6 class="fw-bold">Tugas</h6>
+                        @for ($i = 0; $i < round($lowongan->tugas); $i++)
+                            <span class="text-warning">★</span>
+                        @endfor
+                    </div>
+                    <div class="col-4">
+                        <h6 class="fw-bold">Pembinaan</h6>
+                        @for ($i = 0; $i < round($lowongan->pembinaan); $i++)
+                            <span class="text-warning">★</span>
+                        @endfor
+                    </div>
+                    <div class="col-4">
+                        <h6 class="fw-bold">Fasilitas</h6>
+                        @for ($i = 0; $i < round($lowongan->fasilitas); $i++)
+                            <span class="text-warning">★</span>
+                        @endfor
+                    </div>
+                </div>
+            @endif
+        </div>
 
-                                        </td>
-                                        <td style="padding-bottom: 8px; vertical-align: top;" class="text-center">
-                                            <p class="fw-bold mb-5">
-                                                {{ $magang->periode_magang->lowongan_magang->bidang->nama }}
-                                            </p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding-bottom: 8px; vertical-align: top;">
-                                            <p class="fw-bold mb-0">
-                                                <i class="fas fa-info-circle me-2"></i>
-                                            </p>
-                                        </td>
-                                        <td style="padding-bottom: 8px; vertical-align: top;">
-                                            <div class="form-control-plaintext mb-0">
-                                                {!! htmlspecialchars_decode($magang->periode_magang->lowongan_magang->persyaratan) !!}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding-bottom: 8px; vertical-align: top;">
-                                            <p class="fw-bold mb-0">
-                                                <i class="fas fa-info-circle me-2"></i>
-                                            </p>
-                                        </td>
-                                        <td style="padding-bottom: 8px; vertical-align: top;">
-                                            <p class="fw-bold mb-0">
-                                                {{ $magang->periode_magang->lowongan_magang->deskripsi }}
-                                            </p>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
+        <div class="mb-3">
+            <h6 class="fw-bold"><i class="fas fa-info-circle me-2"></i>Persyaratan</h6>
+            <div class="form-control-plaintext">
+                {!! htmlspecialchars_decode($magang->periode_magang->lowongan_magang->persyaratan) !!}
+            </div>
+        </div>
+
+        <div>
+            <h6 class="fw-bold"><i class="fas fa-info-circle me-2"></i>Deskripsi</h6>
+            <p class="mb-0">
+                {{ $magang->periode_magang->lowongan_magang->deskripsi }}
+            </p>
+        </div>
+    </div>
+</div>
+
                         <div class="card p-4 bg-primary bg-opacity-10 border-0 mb-4 h-100">
                             @if(count($activeButton))
                                 <div class="mb-4">
@@ -213,6 +219,11 @@
                                         <label class="form-label">NIM</label>
                                         <input type="text" class="form-control" id="nim"
                                             value="{{ $mahasiswa->akun->id_user ?? '-' }}" disabled>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label">Program Studi</label>
+                                        <input type="text" class="form-control" id="nim"
+                                            value="{{ $mahasiswa->prodi->nama_prodi ?? '-' }}" disabled>
                                     </div>
                                     <div class="mb-2">
                                         <label class="form-label">Nama</label>
