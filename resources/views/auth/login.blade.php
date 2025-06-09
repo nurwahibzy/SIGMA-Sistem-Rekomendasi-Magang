@@ -109,7 +109,7 @@
                     password: { required: true },
                 },
                 messages: {
-                    id_user: "Masukkan ID",
+                    id_user: "Masukkan NIM/NIP",
                     password: "Masukkan Password",
                 },
                 submitHandler: function (form) {
