@@ -101,8 +101,7 @@
                                     <td class="text-center">
                                         <button class="btn btn-sm btn-info btn-detail"
                                                 data-url="{{ url('/dosen/riwayat/detail/' . $item->id_magang) }}"
-                                                onclick="modalAction(this.dataset.url)">
-                                            <i class="bi bi-eye me-1"></i>Detail
+                                                onclick="modalAction(this.dataset.url)">Detail
                                         </button>
                                     </td>
                                 </tr>

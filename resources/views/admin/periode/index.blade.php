@@ -73,7 +73,7 @@
                         value="{{ $tanggal_selesai ?? '' }}">
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
-                    <a href="{{ url('/admin/periode') }}" class="btn btn-secondary me-2"><i class="bi bi-x-circle"></i> Riset</a>
+                    <a href="{{ url('/admin/periode') }}" class="btn btn-secondary me-2"><i class="bi bi-x-circle"></i> Reset</a>
                     <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Filter</button>
                 </div>
             </form>

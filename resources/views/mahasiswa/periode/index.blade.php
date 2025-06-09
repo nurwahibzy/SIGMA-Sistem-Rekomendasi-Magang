@@ -81,7 +81,7 @@
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
                     <a href="{{ url('/mahasiswa/periode') }}" class="btn btn-secondary me-2"><i class="bi bi-x-circle"></i>
-                        Riset</a>
+                        Reset</a>
                     <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Filter</button>
                 </div>
             </form>
