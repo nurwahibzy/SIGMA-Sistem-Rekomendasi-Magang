@@ -78,7 +78,7 @@
             <form action="{{ url('login') }}" method="POST" id="login">
                 @csrf
                 <div class="form-group position-relative has-icon-left mb-3">
-                    <input type="text" id="id_user" name="id_user" class="form-control form-control-xl" placeholder="ID">
+                    <input type="text" id="id_user" name="id_user" class="form-control form-control-xl" placeholder="NIM/NIP">
                     <div class="form-control-icon">
                         <i class="bi bi-person"></i>
                     </div>
