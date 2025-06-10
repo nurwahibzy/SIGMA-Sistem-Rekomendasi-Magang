@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('bidang', function (Blueprint $table) {
             $table->id('id_bidang');
-            $table->string('nama', 20)->unique();
+            $table->string('nama', 100)->unique();
             $table->timestamps();
         });
     }
