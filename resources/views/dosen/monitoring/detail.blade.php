@@ -96,12 +96,15 @@
                             <div class="card-body">
                                 <form id="form-inline-evaluasi-input">
                                     <input type="hidden" id="id-evaluasi-edit">
+
                                     <div class="mb-3">
                                         <label for="feedback-inline" class="form-label">Feedback / Evaluasi</label>
                                         <textarea class="form-control" id="feedback-inline" rows="4" required></textarea>
                                     </div>
-                                    <button type="submit" class="btn btn-success btn-sm" id="btn-simpan-inline">Simpan</button>
-                                    <button type="button" class="btn btn-secondary btn-sm" id="btn-batal-inline">Batal</button>
+                                    <div class="d-flex justify-content-end">
+                                        <button type="button" class="btn btn-warning btn-sm me-2" id="btn-batal-inline">Batal</button>
+                                        <button type="submit" class="btn btn-primary btn-sm" id="btn-simpan-inline">Simpan</button>
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -215,11 +218,11 @@ function loadEvaluasi() {
                                         <p class="mb-1">${item.feedback}</p>
                                         <small class="text-muted">Tanggal: ${tanggal}</small>
                                     </div>
-                                    <div class="btn-group btn-group-sm">
-                                        <button class="btn btn-outline-primary" onclick="editInline(${item.id_evaluasi}, '${item.feedback.replace(/'/g, "\\'")}')">
+                                    <div class="btn-group-sm">
+                                        <button class="btn-edit-section btn btn-primary me-1" onclick="editInline(${item.id_evaluasi}, '${item.feedback.replace(/'/g, "\\'")}')">
                                             <i class="bi bi-pencil"></i>
                                         </button>
-                                        <button class="btn btn-outline-danger" onclick="deleteEvaluasi(${item.id_evaluasi})">
+                                        <button class="btn-delete-keahlian btn btn-danger" onclick="deleteEvaluasi(${item.id_evaluasi})">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>

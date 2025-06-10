@@ -297,8 +297,8 @@ function displayKeahlian(keahlianList) {
             html += '<strong>' + item.keahlian + '</strong><br>';
             html += '<small class="text-muted">' + item.bidang.nama + '</small>';
             html += '</div>';
-            html += '<div class="btn-group btn-group-sm">';
-            html += '<button class="btn btn-primary me-2 btn-edit-keahlian" data-id="' + item.id_keahlian_dosen + '">';
+            html += '<div class="btn-group-sm d-flex">';
+            html += '<button class="btn btn-primary me-1 btn-edit-keahlian" data-id="' + item.id_keahlian_dosen + '">';
             html += '<i class="bi bi-pencil"></i>';
             html += '</button>';
             html += '<button class="btn btn-danger btn-delete-keahlian" data-id="' + item.id_keahlian_dosen + '">';
