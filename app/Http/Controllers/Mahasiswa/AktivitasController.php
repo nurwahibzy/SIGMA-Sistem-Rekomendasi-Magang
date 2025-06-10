@@ -151,6 +151,13 @@ class AktivitasController extends Controller
                     return ['success' => false, 'message' => 'Foto kegiatan Harus Diisi!!!'];   
                 }
 
+                $file = $request->file('file');
+                $max_size = 2 * 1024 * 1024;
+
+                if ($file->getSize() > $max_size) {
+                    return response()->json(['success' => false, 'message' => 'Ukuran file tidak boleh lebih dari 2MB.']);
+                }
+
                 if ($validator->fails()) {
                     return response()->json(['success' => false]);
                 }
@@ -228,6 +235,12 @@ class AktivitasController extends Controller
 
                     if ($request->hasFile('file')) {
                         $file = $request->file('file');
+                        $max_size = 2 * 1024 * 1024;
+
+                        if ($file->getSize() > $max_size) {
+                            return response()->json(['success' => false, 'message' => 'Ukuran file tidak boleh lebih dari 2MB.']);
+                        }
+
                         $filename = $id_magang . '_' . Carbon::now()->toDateString() . '.' . $file->getClientOriginalExtension();
 
                         $file->storeAs('public/aktivitas', $filename);

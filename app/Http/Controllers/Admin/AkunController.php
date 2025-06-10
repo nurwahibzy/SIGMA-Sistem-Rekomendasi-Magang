@@ -52,48 +52,6 @@ class AkunController extends Controller
         return view('admin.edit-profil');
     }
 
-    // public function putAkun(Request $request)
-    // {
-    //     if ($request->ajax() || $request->wantsJson()) {
-            // try {
-            //     DB::transaction(function () use ($request) {
-            //         $id_admin = $this->idAdmin();
-            //         $nama = $request->input('nama');
-            //         $alamat = $request->input('alamat');
-            //         $telepon = $request->input('telepon');
-            //         $tanggal_lahir = $request->input('tanggal_lahir');
-            //         $email = $request->input('email');
-
-            //         if ($request->filled('password')) {
-            //             $password = $request->input('password');
-            //             AkunModel::with('admin:id_akun,id_admin')
-            //                 ->whereHas('admin', function ($query) use ($id_admin) {
-            //                     $query->where('id_admin', $id_admin);
-            //                 })
-            //                 ->update([
-            //                     'password' => Hash::make($password)
-            //                 ]);
-            //         }
-
-            //         AdminModel::where('id_admin', $id_admin)
-            //             ->update([
-            //                 'nama' => $nama,
-            //                 'alamat' => $alamat,
-            //                 'telepon' => $telepon,
-            //                 'tanggal_lahir' => $tanggal_lahir,
-            //                 'email' => $email
-            //             ]);
-            //     });
-            //     return response()->json(['success' => true]);
-            // } catch (\Exception $e) {
-            //     Log::error("Gagal update profil: " . $e->getMessage());
-            //     return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
-            // }
-
-    //         return response()->json(['success' => true]);
-    //     }
-    // }
-
     public function putAkun(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
@@ -112,9 +70,17 @@ class AkunController extends Controller
                             'password' => 'nullable|string|min:6|max:255'
                         ]);
 
+                        if ($request->hasFile('file')) {
+                            $file = $request->file('file');
+                            $max_size = 2 * 1024 * 1024;
+    
+                            if ($file->getSize() > $max_size) {
+                                return ['success' => false, 'message' => 'Ukuran file tidak boleh lebih dari 2MB.'];
+                            }
+                        }
 
                         if ($validator->fails()) {
-                            return false;
+                            return ['success' => false, 'message' => 'Data Tidak Valid'];
                         }
 
                         $id_akun = Auth::user()->id_akun;
@@ -130,11 +96,9 @@ class AkunController extends Controller
                         $foto_path = $data->foto_path;
 
                         if ($request->hasFile('file')) {
+                        
                             $foto_path = $this->handleFileUpload($request, $id_user, $foto_path);
                         }
-                        //  else if ($data->id_user != $id_user) {
-                        //     $foto_path = $this->renameFileOnly($foto_path, $id_user);
-                        // }
 
                         if ($request->filled('password')) {
                             $password = $request->input('password');
@@ -164,10 +128,10 @@ class AkunController extends Controller
                                 'tanggal_lahir' => $tanggal_lahir,
                                 'email' => $email
                             ]);
-                        return true;
+                            return ['success' => true];
                     }
                 );
-                return response()->json(['success' => $request->all()]);
+                return response()->json($results);
             } catch (\Throwable $e) {
                 Log::error("Gagal update user: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
@@ -183,18 +147,6 @@ class AkunController extends Controller
         $file->storeAs('public/profil/akun', $filename);
         return $filename;
     }
-
-    // private function renameFileOnly($foto_path, $id_user)
-    // {
-    //     $extension = pathinfo($foto_path, PATHINFO_EXTENSION);
-    //     $file_path_baru = $id_user . '.' . $extension;
-
-    //     if (Storage::disk('public')->exists("profil/akun/$foto_path")) {
-    //         Storage::disk('public')->move("profil/akun/$foto_path", "profil/akun/$file_path_baru");
-    //     }
-
-    //     return $file_path_baru;
-    // }
 
     public function getFoto()
     {

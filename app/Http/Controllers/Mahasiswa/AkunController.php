@@ -56,7 +56,6 @@ class AkunController extends Controller
                 'dokumen' => $akun->mahasiswa->dokumen,
             ]
         );
-        // return response()->json($akun);
     }
 
     public function getEditProfil()
@@ -114,8 +113,17 @@ class AkunController extends Controller
                             'password' => 'nullable|string|min:6|max:255'
                         ]);
 
+                        if ($request->hasFile('file')) {
+                            $file = $request->file('file');
+                            $max_size = 2 * 1024 * 1024;
+    
+                            if ($file->getSize() > $max_size) {
+                                return ['success' => false, 'message' => 'Ukuran file tidak boleh lebih dari 2MB.'];
+                            }
+                        }
+
                         if ($validator->fails()) {
-                            return false;
+                            return ['success' => false, 'message' => 'Data Tidak Valid'];
                         }
 
                         $id_akun = Auth::user()->id_akun;
@@ -131,6 +139,7 @@ class AkunController extends Controller
                         $foto_path = $data->foto_path;
 
                         if ($request->hasFile('file')) {
+
                             $foto_path = $this->handleFileUpload($request, $id_user, $foto_path);
                         } 
 
@@ -163,10 +172,10 @@ class AkunController extends Controller
                                 'email' => $email
                             ]);
 
-                        return true;
+                            return ['success' => true];
                     }
                 );
-                return response()->json(['success' => $results]);
+                return response()->json($results);
             } catch (\Throwable $e) {
                 Log::error("Gagal update user: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);

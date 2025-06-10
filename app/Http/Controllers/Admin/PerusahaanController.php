@@ -60,7 +60,7 @@ class PerusahaanController extends Controller
             ->where('id_perusahaan', $id_perusahaan)->first();
 
 
-            $lowongan = DB::table('lowongan_magang')
+        $lowongan = DB::table('lowongan_magang')
             ->select(
                 'lowongan_magang.id_lowongan',
                 'lowongan_magang.nama as lowongan',
@@ -82,7 +82,7 @@ class PerusahaanController extends Controller
                 'bidang.nama'
             )
             ->get();
-        
+
         return view('admin.perusahaan.detail', ['perusahaan' => $perusahaan, 'lowongan' => $lowongan]);
         // return response()->json($data);
     }
@@ -154,6 +154,13 @@ class PerusahaanController extends Controller
 
                         if (!$request->hasFile('file')) {
                             return ['success' => false, 'message' => 'Logo Perusahaan Harus Diisi !!'];
+                        }
+
+                        $file = $request->file('file');
+                        $max_size = 2 * 1024 * 1024;
+
+                        if ($file->getSize() > $max_size) {
+                            return response()->json(['success' => false, 'message' => 'Ukuran file tidak boleh lebih dari 2MB.']);
                         }
 
                         if ($validator->fails()) {
@@ -274,6 +281,13 @@ class PerusahaanController extends Controller
 
 
                         if ($request->hasFile('file')) {
+                            $file = $request->file('file');
+                            $max_size = 2 * 1024 * 1024;
+
+                            if ($file->getSize() > $max_size) {
+                                return response()->json(['success' => false, 'message' => 'Ukuran file tidak boleh lebih dari 2MB.']);
+                            }
+
                             $this->handleFileUpload($request, $data, $id_perusahaan, $id_jenis, $nama, $telepon, $deskripsi, $provinsi, $daerah, $latitude, $longitude);
                         } else if ($data->nama !== $nama) {
                             $this->renameFileOnly($data, $id_perusahaan, $id_jenis, $nama, $telepon, $deskripsi, $provinsi, $daerah, $latitude, $longitude);
