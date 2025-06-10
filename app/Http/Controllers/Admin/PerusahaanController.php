@@ -153,7 +153,7 @@ class PerusahaanController extends Controller
                         ]);
 
                         if (!$request->hasFile('file')) {
-                            return ['success' => false, 'message' => 'Logo Perusahaan Harus Diisi!!!'];
+                            return ['success' => false, 'message' => 'Logo Perusahaan Harus Diisi !!'];
                         }
 
                         if ($validator->fails()) {

@@ -171,7 +171,7 @@ class RekomendasiController extends Controller
 
         if ($peringkat == false) {
             // return response(url('/mahasiswa/periode'));
-            return redirect('/mahasiswa/profil')->with('error', 'Silakan isi keahlian dan preferensi perusahaan terlebih dahulu.');
+            return redirect('/mahasiswa/profil')->with('error', 'Silakan lengkapi profil Anda terlebih dahulu.');
         }
 
         $topLowonganIds = array_column($peringkat, 'id_lowongan');

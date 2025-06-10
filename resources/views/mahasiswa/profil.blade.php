@@ -16,7 +16,7 @@
         @if (session('error'))
             Swal.fire({
                 icon: 'error',
-                title: 'Tidak dapat memberikan rekomendasi...',
+                title: 'Tidak dapat memberikan rekomendasi',
                 text: {!! json_encode(session('error')) !!}
             });
         @endif

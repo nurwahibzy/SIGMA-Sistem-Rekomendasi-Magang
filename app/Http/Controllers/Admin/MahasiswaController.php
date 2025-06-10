@@ -512,6 +512,8 @@ class MahasiswaController extends Controller
                     'file_excel' => 'required|mimes:xlsx,xls',
                     'id_prodi' => 'nullable|exists:prodi,id_prodi',
                 ]);
+                set_time_limit(0);
+                ini_set('memory_limit', '-1');
 
                 $file = $request->file('file_excel');
                 $reader = IOFactory::createReader('Xlsx');
@@ -612,5 +614,4 @@ class MahasiswaController extends Controller
             }
         }
     }
-
 }

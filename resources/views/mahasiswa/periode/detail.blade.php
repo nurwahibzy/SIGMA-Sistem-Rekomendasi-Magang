@@ -23,7 +23,7 @@
             @if ($lowongan->status == 'baru')
                 <div class="container mt-2 mb-3">
                     <div class="text-center">
-                    <i class="fas fa-info-circle me-2"></i> Lowngan Baru
+                    <i class="fas fa-info-circle me-2"></i> Lowongan Baru
                     </div>
                 </div>
             @else

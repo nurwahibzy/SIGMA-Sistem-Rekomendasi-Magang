@@ -55,7 +55,7 @@ class MagangController extends Controller
                 $id_mahasiswa = $this->idMahasiswa();
 
                 $magang = MagangModel::where('id_mahasiswa', $id_mahasiswa)
-                    ->whereIn('status', ['proses', 'lulus', 'ditolak'])
+                    // ->whereIn('status', ['proses', 'lulus', 'ditolak'])
                     ->with([
                         'periode_magang:id_periode,id_lowongan,nama,tanggal_mulai,tanggal_selesai',
                         'periode_magang.lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',

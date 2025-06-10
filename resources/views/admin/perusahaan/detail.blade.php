@@ -26,7 +26,7 @@
                         <a class="nav-link active" data-bs-toggle="tab" href="#perusahaan" role="tab">Perusahaan</a>
                     </li>
                     <li class="nav-item flex-fill text-center">
-                        <a class="nav-link" data-bs-toggle="tab" href="#lowongan" role="tab">Perusahaan</a>
+                        <a class="nav-link" data-bs-toggle="tab" href="#lowongan" role="tab">Lowongan</a>
                     </li>
                 </ul>
             </div>
