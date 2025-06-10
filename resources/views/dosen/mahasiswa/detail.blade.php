@@ -1,8 +1,7 @@
 <div id="modal-master" class="modal-dialog modal-xl" role="document">
     <div class="modal-content shadow-lg rounded">
         <div class="modal-header bg-primary text-white">
-            <h5 class="modal-title">
-                <i class="bi bi-person-workspace me-2"></i>
+            <h5 class="modal-title text-light">
                 Detail Magang - {{ $magang->mahasiswa->nama }}
             </h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
