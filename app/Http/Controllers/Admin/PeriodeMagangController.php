@@ -65,17 +65,18 @@ class PeriodeMagangController extends Controller
                 'lowongan_magang',
                 'lowongan_magang.perusahaan'
             )
-            ->orderBy('created_at')
+                ->orderBy('created_at')
                 ->get();
 
             return view('admin.periode.index', ['periode' => $periode, 'selesai' => $selesai, 'berlangsung' => $berlangsung, 'segera' => $segera]);
         }
     }
 
-    public function getPeriodeLowongan($id_perusahaan, $id_bidang){
+    public function getPeriodeLowongan($id_perusahaan, $id_bidang)
+    {
         $lowongan = LowonganMagangModel::where('id_perusahaan', $id_perusahaan)
-        ->where('id_bidang', $id_bidang)
-        ->get();
+            ->where('id_bidang', $id_bidang)
+            ->get();
 
         return response()->json($lowongan);
     }
@@ -100,7 +101,7 @@ class PeriodeMagangController extends Controller
             $bidang = BidangModel::get();
 
             $periode = PeriodeMagangModel::with('lowongan_magang')
-            ->where('id_periode', $id_periode)->firstOrFail(); 
+                ->where('id_periode', $id_periode)->firstOrFail();
 
             return [
                 'periode' => $periode,
@@ -142,6 +143,19 @@ class PeriodeMagangController extends Controller
                 $tanggal_mulai = $request->input('tanggal_mulai');
                 $tanggal_selesai = $request->input('tanggal_selesai');
 
+                $tanggal_selesai_terakhir = PeriodeMagangModel::where('id_lowongan', $id_lowongan)
+                    ->orderByDesc('tanggal_selesai')
+                    ->first();
+
+                if ($tanggal_selesai_terakhir) {
+                    if (strtotime($tanggal_mulai) < strtotime($tanggal_selesai_terakhir->tanggal_selesai)) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Lowongan sebelumnya masih berlangsung hingga ' . $tanggal_selesai_terakhir->tanggal_selesai
+                        ]);
+                    }
+                }
+
                 PeriodeMagangModel::insert([
                     'id_lowongan' => $id_lowongan,
                     'nama' => $nama,
@@ -175,6 +189,20 @@ class PeriodeMagangController extends Controller
                 $nama = $request->input('nama');
                 $tanggal_mulai = $request->input('tanggal_mulai');
                 $tanggal_selesai = $request->input('tanggal_selesai');
+
+                $tanggal_selesai_terakhir = PeriodeMagangModel::where('id_lowongan', $id_lowongan)
+                    ->whereNot('id_periode', $id_periode)
+                    ->orderByDesc('tanggal_selesai')
+                    ->first();
+                    
+                if ($tanggal_selesai_terakhir) {
+                    if (strtotime($tanggal_mulai) < strtotime($tanggal_selesai_terakhir->tanggal_selesai)) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Lowongan sebelumnya masih berlangsung hingga ' . $tanggal_selesai_terakhir->tanggal_selesai
+                        ]);
+                    }
+                }
 
                 PeriodeMagangModel::where('id_periode', $id_periode)
                     ->update([
