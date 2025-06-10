@@ -75,7 +75,7 @@
                                             @endphp
 
                                             {{-- Jika sudah dinilai, tampilkan tombol download sertifikat --}}
-                                            @if($sudahDinilai)
+                                            @if($sudahDinilai && $item->status == 'lulus' )
                                                 <a href="{{ route('penilaian.download', $item->id_magang) }}" class="btn btn-success">
                                                     <i class="bi bi-file-earmark-pdf-fill"></i> Sertifikat
                                                 </a>
