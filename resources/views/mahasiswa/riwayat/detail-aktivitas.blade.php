@@ -1,8 +1,8 @@
 <div id="modal-master" class="modal-dialog modal-lg" role="document">
     <div class="modal-content shadow-sm rounded">
 
-        <div class="modal-header">
-            <h5 class="modal-title">Detail Admin</h5>
+        <div class="modal-header bg-primary text-white rounded-top">
+            <h5 class="text-light">Detail Aktivitas</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
@@ -14,7 +14,7 @@
                             <img id="preview" src="{{ asset('storage/aktivitas/' . $aktivitas->foto_path) }}"
                                 alt="Profile Picture" class="img-fluid rounded w-50 h-50"
                                 style="width: 120px; height: 120px; border: 5px solid blue; object-fit: cover; cursor: pointer;"
-                                onclick="showDosenImagePopup(this.src)" />
+                                onclick="showImagePopup(this.src)" />
                         </div>
                     </div>
                 </div>

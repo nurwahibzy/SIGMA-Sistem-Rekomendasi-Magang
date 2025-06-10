@@ -7,15 +7,11 @@ use App\Http\Controllers\Admin\MahasiswaController;
 use App\Http\Controllers\Admin\PeriodeMagangController as PeriodeMagangControllerAdmin;
 use App\Http\Controllers\Admin\PerusahaanController;
 use App\Http\Controllers\Admin\ProdiController;
-use App\Http\Controllers\AkunController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Dosen\AktivitasController as AktivitasControllerDosen;
 use App\Http\Controllers\Dosen\EvaluasiController;
 use App\Http\Controllers\Dosen\KeahlianDosenController;
-use App\Http\Controllers\GeolokasiController;
-use App\Http\Controllers\JarakController;
 use App\Http\Controllers\Admin\MagangController as MagangControllerAdmin;
 use App\Http\Controllers\Mahasiswa\AktivitasController as AktivitasControllerMahasiswa;
 use App\Http\Controllers\Mahasiswa\DokumenController;
@@ -48,10 +44,6 @@ use App\Http\Controllers\LandingPageController;
 //     return view('welcome');
 // });
 
-// Route::get('/akun', [AkunController::class, 'tes']);
-
-// Route::get('/jarak', [JarakController::class, 'hitungJarak']);
-// Route::get('/koordinat', [GeolokasiController::class, 'getKoordinat']);
 Route::get('/dashboard', [LandingPageController::class, 'index'])->name('dashboard');
 
 
@@ -60,17 +52,11 @@ Route::get('/main', [LandingPageController::class, 'index'])->name('main');
 Route::get('/login', [LoginController::class, 'getLogin'])->name('login');
 Route::post('/login', [LoginController::class, 'postLogin']);
 Route::get('/logout', [LogoutController::class, 'getLogout'])->middleware('auth');
-// Route::put('/preferensi/lokasi/', [AkunControllerMahasiswa::class, 'putPreferensiLokasi']);
 
 Route::middleware(['auth'])->group(function () {
-    // Route::get('/', function () {
-    //     return view('welcome');
-    // });
     Route::get('/', [LoginController::class, 'getDashoboard']);
     Route::middleware(['authorize:ADM'])->prefix('admin')->group(function () {
         Route::get('/dashboard', [MagangControllerAdmin::class, 'getDashboard']);
-        // Route::get('/tes', [AkunControllerAdmin::class, 'tes']);
-        // Route::post('/tes', [AkunControllerAdmin::class, 'postUserAdminExcel']); 
 
         Route::prefix('profil')->group(function () {
             Route::get('/', [AkunControllerAdmin::class, 'getProfil']);
@@ -168,15 +154,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['authorize:MHS'])->prefix('mahasiswa')->group(function () {
         Route::get('/dashboard', [PeriodeMagangControllerMahasiswa::class, 'getDashboard']);
-        // Route::post('/tes', [KeahlianMahasiswaController::class, 'postKeahlian']);
+
         Route::prefix('profil')->group(function () {
             Route::get('/', [AkunControllerMahasiswa::class, 'getProfil'])->name('mahasiswa.profil');
 
             Route::prefix('edit')->group(function () {
                 Route::get('/', [AkunControllerMahasiswa::class, 'getEditProfil']);
-                // Route::get('/', [AkunControllerMahasiswa::class, 'getEditProfil'])->name('mahasiswa.edit');
-                // Route::post('/update', [AkunControllerMahasiswa::class, 'updateProfil'])->name('mahasiswa.update');
-
                 Route::post('/', [AkunControllerMahasiswa::class, 'putAkun']);
 
                 Route::prefix('keahlian')->group(callback: function () {
@@ -277,7 +260,6 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::prefix('riwayat')->group(function () {
-            // Route::get('/', [MagangControllerDosen::class, 'getRiwayat']);
             Route::get('/detail/{id_magang}', [MagangControllerDosen::class, 'getDetailRiwayat']);
         });
     });

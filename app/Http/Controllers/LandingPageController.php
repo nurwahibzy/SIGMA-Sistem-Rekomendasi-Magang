@@ -15,7 +15,6 @@ class LandingPageController extends Controller
     ])->get();
 
     $bidang = BidangModel::get();
-    // return response()->json($perusahaan);
     return view('landing_page.index', ['perusahaan' => $perusahaan, 'bidang' => $bidang]);
 }
 

@@ -38,7 +38,7 @@
                                 </p>
                                 <div class="mt-4">
                                 <a href="{{ url('mahasiswa/aktivitas/' . $magang->id_magang) }}" class="btn btn-primary">
-                                    Lihat Aktivitas
+                                <i class="bi bi-pencil-square"></i> Aktivitas
                                 </a>
                                 </div>
                             </div>

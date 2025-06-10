@@ -61,7 +61,12 @@
                                             @if ($item->status == 'lulus')
                                                 <a href="{{ url('mahasiswa/riwayat/aktivitas/' . $item->id_magang) }}"
                                                     class="btn btn-primary">
-                                                    <i class="bi bi-pencil-square"></i> Detail
+                                                    <i class="bi bi-eye-fill"></i> Detail
+                                                </a>
+                                            @elseif ($item->status == 'diterima')
+                                            <a href="{{ url('mahasiswa/aktivitas/' . $item->id_magang) }}"
+                                                    class="btn btn-primary">
+                                                    <i class="bi bi-pencil-square"></i> Aktivitas
                                                 </a>
                                             @endif
 
