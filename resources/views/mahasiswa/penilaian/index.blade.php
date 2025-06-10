@@ -48,6 +48,27 @@
                                             <a href="{{ route('penilaian.get', $item->id_magang) }}" class="btn btn-primary">
                                                 Beri Penilaian
                                             </a>
+                                        @else
+                                            <div class="d-flex justify-content-between align-items-center gap-0">
+                                                <div class="text-center ps-2">
+                                                    <h5>Tugas</h5>
+                                                    @for ($i = 0; $i < round($item->penilaian->tugas); $i++)
+                                                        <span class="text-warning">★</span>
+                                                    @endfor
+                                                </div>
+                                                <div class="text-center">
+                                                    <h5>Pembinaan</h5>
+                                                    @for ($i = 0; $i < round($item->penilaian->pembinaan); $i++)
+                                                        <span class="text-warning">★</span>
+                                                    @endfor
+                                                </div>
+                                                <div class="text-center pe-2">
+                                                    <h5>Fasilitas</h5>
+                                                    @for ($i = 0; $i < round($item->penilaian->fasilitas); $i++)
+                                                        <span class="text-warning">★</span>
+                                                    @endfor
+                                                </div>
+                                            </div>
                                         @endif
                                     </div>
                                 </div>

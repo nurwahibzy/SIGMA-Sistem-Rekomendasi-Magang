@@ -36,7 +36,8 @@ class PenilaianController extends Controller
                         'periode_magang.lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
                         'periode_magang.lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama',
                         'periode_magang.lowongan_magang.bidang:id_bidang,nama',
-                        'periode_magang.lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
+                        'periode_magang.lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis',
+                        'penilaian'
                     ])
                     ->orderByDesc('tanggal_pengajuan')
                     ->get();
@@ -44,8 +45,6 @@ class PenilaianController extends Controller
                 return view('mahasiswa.penilaian.index', [
                     'magang' => $magang
                 ]);
-
-                // return response()->json($magang);
             });
         } catch (\Throwable $e) {
             Log::error("Gagal memuat halaman penilaian: " . $e->getMessage());
