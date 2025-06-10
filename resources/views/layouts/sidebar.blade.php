@@ -44,7 +44,7 @@
         @if(Auth::check() && Auth::user()->level->kode == 'ADM')
             <div class="sidebar-menu">
                 <ul class="menu">
-                    <li class="sidebar-title">User</li>
+                    <li class="sidebar-title">Pengguna</li>
 
                     <li class="sidebar-item {{ request()->is('admin/admin*') ? 'active' : '' }}">
                         <a href="{{ url('admin/admin') }}" class="sidebar-link">
