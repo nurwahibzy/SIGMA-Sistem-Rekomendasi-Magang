@@ -50,10 +50,11 @@
                         <div class="row align-items-center">
                             <div class="col-md-8">
                                 <h4 class="fw-bold text-primary mb-3">
+                                    Lengkapi Informasi<br>
                                     <span>Profil Anda</span>
                                 </h4>
                                 <p class="text-muted">
-                                    Profil ini menampilkan data diri Anda sebagai dosen. Tambahkan dan kelola keahlian untuk mendukung informasi akademik dan profesional Anda.
+                                    Tambahkan dan kelola keahlian untuk mendukung informasi akademik dan profesional Anda.
                                 </p>
                             </div>
                             <div class="col-md-4 d-flex justify-content-center">
