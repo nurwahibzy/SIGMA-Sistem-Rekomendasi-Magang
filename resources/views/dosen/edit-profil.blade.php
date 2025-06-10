@@ -3,9 +3,6 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
     <div class="page-heading d-flex justify-content-between align-items-center">
         <h3>Profil Saya</h3>
-        <a href="{{ url('dosen/profil/') }}" id="btn-edit-profile" class="btn-edit-section btn btn-danger">
-            <i class="bi bi-box-arrow-left"></i> Kembali
-        </a>
     </div>
     <section class="section">
         <div class="row">
@@ -70,6 +67,27 @@
                 </div>
             </div>
                 <div class="col-md-8">
+                    <div class="card p-5 bg-primary bg-opacity-10 border-0 mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h4 class="fw-bold text-primary mb-3">
+                                    <span>Profil Anda</span>
+                                </h4>
+                                <p class="text-muted">
+                                    Profil ini menampilkan data diri Anda sebagai dosen. Tambahkan dan kelola keahlian untuk mendukung informasi akademik dan profesional Anda.
+                                </p>
+                            </div>
+                            <div class="col-md-4 d-flex justify-content-center">
+                                <img src="{{ asset('template/assets/images/magang.jpg') }}" alt="Foto Profil"
+                                    class="rounded-circle shadow" style="width: 120px; height: 120px; object-fit: cover;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-heading d-flex justify-content-end align-items-center mb-3">
+                        <a href="{{ url('dosen/profil/') }}" id="btn-edit-profile" class="btn-edit-section btn btn-danger">
+                            <i class="bi bi-box-arrow-left"></i> Kembali
+                        </a>
+                    </div>
                     <!-- Card Keahlian Dosen -->
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
