@@ -13,9 +13,9 @@
                     <div class="d-flex justify-content-center align-items-center flex-column">
                         <div class="avatar avatar-2xl mb-3">
                             <label for="file" style="cursor: pointer;">
-                                <img id="preview" src="{{ asset('template/assets/images/mhs.jpeg') }}"
+                                <img id="preview" src="{{ asset('template/assets/images/profil.png') }}"
                                     alt="Profile Picture" class="rounded-circle"
-                                    style="width: 120px; height: 120px; border: 5px solid blue; object-fit: cover;">
+                                    style="width: 150px; height: 150px; border: 5px solid blue; object-fit: cover;">
                             </label>
                         </div>
                         <small class="text-muted text-center">Tekan gambar untuk memberikan Logo</small>

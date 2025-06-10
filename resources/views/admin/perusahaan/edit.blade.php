@@ -16,7 +16,7 @@
                                 <img id="preview" src="{{ Storage::exists('public/profil/perusahaan/' . $perusahaan->foto_path)
     ? asset('storage/profil/perusahaan/' . $perusahaan->foto_path)
     : asset('template/assets/images/mhs.jpeg') }}" alt="Profile Picture" class="rounded-circle"
-                                    style="width: 120px; height: 120px; border: 5px solid blue; object-fit: cover;">
+                                    style="width: 150px; height: 150px; border: 5px solid blue; object-fit: cover;">
                             </label>
                         </div>
                         <small class="text-muted text-center">Tekan gambar untuk mengganti logo</small>
