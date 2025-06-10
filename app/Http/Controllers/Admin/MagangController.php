@@ -171,6 +171,7 @@ class MagangController extends Controller
                 'bidang' => $bidang,
                 'keahlian' => $akun->mahasiswa->keahlian_mahasiswa->sortBy('prioritas'),
                 'lowongan' => $lowongan,
+                'periode' =>$magang->periode_magang,
                 'kompetensi' => $akun->mahasiswa->kompetensi,
                 'jenis' => $jenis,
                 'preferensi_perusahaan' => $akun->mahasiswa->preferensi_perusahaan_mahasiswa,

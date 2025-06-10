@@ -86,11 +86,13 @@
                             <col style="width: 100px;">
                             <col style="width: 100px;">
                             <col style="width: 100px;">
+                            <col style="width: 100px;">
                         </colgroup>
                         <thead>
                             <tr>
                                 <th class="d-none">No</th>
                                 <th>Perusahaan</th>
+                                <th>Bidang</th>
                                 <th>Lowongan</th>
                                 <th>Waktu</th>
                                 <th></th>
@@ -101,8 +103,9 @@
                                 <tr>
                                     <td class="d-none">{{ $i + 1 }}</td>
                                     <td>{{ $item->lowongan_magang->perusahaan->nama ?? '-' }}</td>
+                                    <td>{{ $item->lowongan_magang->bidang->nama ?? '-' }}</td>
                                     <td>{{ $item->lowongan_magang->nama . ' - ' . $item->nama ?? '-' }}</td>
-                                    <td>{{ $item->tanggal_mulai->format('d M Y') }} - {{ $item->tanggal_selesai->format('d M Y') }}
+                                    <td>{{ $item->tanggal_mulai->format('d M Y') }} - {{ $item->tanggal_selesai->format('d M Y') }}</td>
                                     <td class="text-center"> <button class="btn btn-sm btn-info btn-detail"
                                             onclick="modalAction('{{ url('/admin/periode/detail/' . $item->id_periode) }}')">
                                             Detail

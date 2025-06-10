@@ -98,7 +98,7 @@
             </p>
         </div>
 
-        <div class="mb-4 text-center">
+        <div class="mb-5 text-center">
             @if ($lowongan->status == 'baru')
                 <div class="alert alert-info py-2 px-3 d-inline-block">
                     <i class="fas fa-info-circle me-2"></i> Lowongan Baru
@@ -125,6 +125,13 @@
                     </div>
                 </div>
             @endif
+        </div>
+
+        <div class="mb-3">
+            <h6 class="fw-bold"><i class="bi-clock-fill me-2"></i>Waktu</h6>
+            <p class="mb-0">
+            {{ $periode->tanggal_mulai->format('d M Y') }} - {{ $periode->tanggal_selesai->format('d M Y') }}
+            </p>
         </div>
 
         <div class="mb-3">
