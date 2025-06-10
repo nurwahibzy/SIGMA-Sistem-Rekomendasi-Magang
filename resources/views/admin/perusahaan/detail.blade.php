@@ -84,10 +84,13 @@
                                             <p class="form-control-plaintext mb-0">{{ $item->lowongan . ' - ' . $item->bidang }}</p>
                                         </div>
                                         <div>
-                                            @if ($item->status == 'baru')
-                                            <div class="px-3 py-1 border border-secondary text-secondary rounded">
-    Baru
-</div>
+                                           @if ($item->status == 'baru')
+    <div 
+        class="px-3 py-1 border text-white rounded" 
+        style="background: linear-gradient(to right,rgb(130, 191, 234), #8B5CF6);">
+        Baru
+    </div>
+
                                             @else
                                             <ul class="list-unstyled mb-0">
     <li><strong>Tugas:</strong>
