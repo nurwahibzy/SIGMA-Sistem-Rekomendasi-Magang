@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="card">
+    <div class="card shadow">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="card-title mb-0">Monitoring Magang</h5>
         </div>

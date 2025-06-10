@@ -7,7 +7,7 @@
         <div class="position-sticky" style="top: 90px;">
             <div class="row">
                 <div class="col-md-4">
-                    <div class="card p-4 text-center">
+                    <div class="card shadow p-4 text-center">
                         <img src="{{ Storage::exists('public/profil/akun/' . Auth::user()->foto_path)
                             ? asset('storage/profil/akun/' . Auth::user()->foto_path)
                             : asset('template/assets/images/mhs.jpeg') }}"
@@ -68,7 +68,7 @@
                         </a>
                     </div>
                     <!-- Card Keahlian -->
-                    <div class="card">
+                    <div class="card shadow">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="card-title mb-0">Keahlian</h5>
                         </div>
