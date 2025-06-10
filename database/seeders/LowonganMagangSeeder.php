@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\BidangModel;
+use App\Models\LowonganMagangModel;
+use App\Models\PerusahaanModel;
 use DB;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class LowonganMagangSeeder extends Seeder
 {
@@ -26,29 +28,28 @@ class LowonganMagangSeeder extends Seeder
             ['Customer Service', 'Komunikatif dan sabar menghadapi pelanggan.', 'Menangani pertanyaan dan keluhan pengguna.'],
         ];
 
-        $jumlahLowongan = 50;
+        $jumlahLowongan = 30;
         $jumlahPerusahaan = 20;
+        $jumlahBidang = BidangModel::count();
 
         $counter = 0;
-        $maxTries = 200;
 
-        while ($counter < $jumlahLowongan && $maxTries > 0) {
-            $position = $positions[array_rand($positions)];
-            $id_perusahaan = rand(1, $jumlahPerusahaan);
-            $id_bidang = rand(1, 6);
+        for ($index = 0; $index < $jumlahLowongan; $index++) {
+            $position = $positions[$index % count($positions)];
+            $id_perusahaan = ($index % $jumlahPerusahaan) + 1;
+            $id_bidang = ($index % $jumlahBidang) + 1;
+
             $baseName = $position[0];
             $uniqueName = $baseName;
             $suffix = 1;
 
-            // Pastikan kombinasi unik
+            // Cek duplikat nama
             while (DB::table('lowongan_magang')->where([
                 ['id_perusahaan', '=', $id_perusahaan],
                 ['id_bidang', '=', $id_bidang],
                 ['nama', '=', $uniqueName],
             ])->exists()) {
                 $uniqueName = $baseName . ' (' . $suffix++ . ')';
-                $maxTries--;
-                if ($maxTries <= 0) break 2; // Hentikan kalau terlalu banyak percobaan
             }
 
             DB::table('lowongan_magang')->insert([
@@ -60,8 +61,6 @@ class LowonganMagangSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
-
-            $counter++;
         }
     }
 }
