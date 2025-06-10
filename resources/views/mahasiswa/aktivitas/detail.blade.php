@@ -41,7 +41,7 @@
                 </button>
                 <button type="button" class="btn btn-primary"
                     onclick="modalAction('{{ url('/mahasiswa/aktivitas/' . $aktivitas->id_magang . '/edit/' . $aktivitas->id_aktivitas) }}')">
-                    Edit
+                     <i class="bi bi-pencil-square"></i> Edit
                 </button>
             </div>
         @endif

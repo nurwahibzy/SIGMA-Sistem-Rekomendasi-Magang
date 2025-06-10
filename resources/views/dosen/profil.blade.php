@@ -2,24 +2,19 @@
 @section('content')
     <div class="page-heading d-flex justify-content-between align-items-center">
         <h3>Profil Saya</h3>
-        <a href="{{ url('dosen/profil/edit') }}" id="btn-edit-profile" class="btn btn-primary">
-            <i class="bi bi-pencil-square"></i> Edit
-        </a>
     </div>
     <section class="section">
         <div class="position-sticky" style="top: 90px;">
             <div class="row">
-                <!-- Profil dipindahkan ke kiri -->
                 <div class="col-md-4">
-                    <div class="card p-4 text-center">
-
+                    <div class="card shadow p-4 text-center">
                         <img src="{{ Storage::exists('public/profil/akun/' . Auth::user()->foto_path)
                             ? asset('storage/profil/akun/' . Auth::user()->foto_path)
                             : asset('template/assets/images/mhs.jpeg') }}"
                             alt="Foto Profil"
                             class="rounded-circle mx-auto d-block mb-3" width="100" height="100"
                             style="border: 5px solid blue;" />
-                        
+
                         <form class="text-start mt-3">
                             @csrf
                             <div class="mb-2">
@@ -51,8 +46,29 @@
                 </div>
 
                 <div class="col-md-8">
-                    <!-- Card Keahlian Dosen -->
-                    <div class="card">
+                    <div class="card p-5 bg-primary bg-opacity-10 border-0 mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h4 class="fw-bold text-primary mb-3">
+                                    <span>Profil Anda</span>
+                                </h4>
+                                <p class="text-muted">
+                                    Profil ini menampilkan data diri Anda sebagai dosen. Tambahkan dan kelola keahlian untuk mendukung informasi akademik dan profesional Anda.
+                                </p>
+                            </div>
+                            <div class="col-md-4 d-flex justify-content-center">
+                                <img src="{{ asset('template/assets/images/magang.jpg') }}" alt="Foto Profil"
+                                    class="rounded-circle shadow" style="width: 120px; height: 120px; object-fit: cover;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-heading d-flex justify-content-end align-items-center mb-3">
+                        <a href="{{ url('dosen/profil/edit') }}" id="btn-edit-profile" class="btn btn-primary">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
+                    </div>
+                    <!-- Card Keahlian -->
+                    <div class="card shadow">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="card-title mb-0">Keahlian</h5>
                         </div>
