@@ -34,13 +34,6 @@ class MahasiswaController extends Controller
                 $query->where('status', 'aktif');
             })
             ->count();
-        // $aktif = DosenModel::withCount([
-        //     'magang' => function ($query) {
-        //         $query->where('status', 'diterima');
-        //     }
-        // ])
-        //     ->orderByDesc('magang_count')
-        //     ->first();
 
         $nonaktif = MahasiswaModel::with('akun')
             ->whereHas('akun', function ($query) {

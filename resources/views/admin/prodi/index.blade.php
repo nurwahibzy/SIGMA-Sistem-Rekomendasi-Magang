@@ -87,8 +87,6 @@
         const labels = @json($labels);
         const data = @json($totals);
 
-        console.log(data)
-
         function generateColors(count) {
             const colors = [];
             for (let i = 0; i < count; i++) {

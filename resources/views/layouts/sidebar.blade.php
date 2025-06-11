@@ -3,9 +3,16 @@
         <div class="sidebar-header position-relative">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="logo">
-                    <a href="{{ url('/mahasiswa/dashboard') }}">
+                @if(Auth::check() && Auth::user()->level->kode == 'ADM')
+                <a href="{{ url('/admin/dashboard') }}">
                         <img src="{{ asset('template/assets/compiled/svg/logo.svg') }}" alt="Logo"  style="width: 130px; height: auto;">
                     </a>
+                @elseif(Auth::check() && Auth::user()->level->kode == 'MHS')
+                <a href="{{ url('/mahasiswa/dashboard') }}">
+                        <img src="{{ asset('template/assets/compiled/svg/logo.svg') }}" alt="Logo"  style="width: 130px; height: auto;">
+                    </a>
+                @elseif(Auth::check() && Auth::user()->level->kode == 'DSN')
+                @endif
                 </div>
                 <div class="theme-toggle d-flex gap-2  align-items-center mt-2">
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"

@@ -3,11 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminModel;
 use App\Models\AkunModel;
 use App\Models\BidangModel;
 use App\Models\DosenModel;
 use App\Models\JenisPerusahaanModel;
+use App\Models\LowonganMagangModel;
 use App\Models\MagangModel;
+use App\Models\MahasiswaModel;
+use App\Models\PeriodeMagangModel;
+use App\Models\PerusahaanModel;
 use Auth;
 use DB;
 use Illuminate\Http\Request;
@@ -18,8 +23,72 @@ class MagangController extends Controller
 {
     public function getDashboard()
     {
-        // return view('admin.index');
-        return redirect('/admin/admin');
+        $jenisPerusahaan = PerusahaanModel::select('id_jenis', DB::raw('count(*) as total'))
+            ->groupBy('id_jenis')
+            ->with('jenis_perusahaan')
+            ->orderByDesc('total')
+            ->get();
+
+        $bidangLowongan = LowonganMagangModel::select('id_bidang', DB::raw('count(*) as total'))
+            ->groupBy('id_bidang')
+            ->with('bidang')
+            ->orderByDesc('total')
+            ->get();
+
+        $mahasiswa = MahasiswaModel::with('akun')
+            ->whereHas('akun')
+            ->get()
+            ->groupBy(function ($item) {
+                return $item->akun->status;
+            })
+            ->map(function ($group) {
+                return $group->count();
+            });
+
+        $dosen = DosenModel::with('akun')
+            ->whereHas('akun')
+            ->get()
+            ->groupBy(function ($item) {
+                return $item->akun->status;
+            })
+            ->map(function ($group) {
+                return $group->count();
+            });
+
+        $admin = AdminModel::with('akun')
+            ->whereHas('akun')
+            ->get()
+            ->groupBy(function ($item) {
+                return $item->akun->status;
+            })
+            ->map(function ($group) {
+                return $group->count();
+            });
+
+
+        $periode = PeriodeMagangModel::select(
+            DB::raw('YEAR(tanggal_mulai) as tahun'),
+            DB::raw('COUNT(*) as total')
+        )
+            ->groupBy(DB::raw('YEAR(tanggal_mulai)'))
+            ->orderBy('tahun')
+            ->get();
+        
+        $magang = MagangModel::select('status', DB::raw('count(*) as total'))
+        ->groupBy('status')
+        ->get();
+
+        // return response()->json($jenisPerusahaan);
+
+        return view('admin.index', [
+            'periode' => $periode,
+            'admin' => $admin,
+            'mahasiswa' => $mahasiswa,
+            'dosen' => $dosen,
+            'bidangLowongan' => $bidangLowongan,
+            'jenisPerusahaan' => $jenisPerusahaan,
+            'magang' => $magang
+        ]);
     }
 
     public function getKegiatan()
@@ -171,7 +240,7 @@ class MagangController extends Controller
                 'bidang' => $bidang,
                 'keahlian' => $akun->mahasiswa->keahlian_mahasiswa->sortBy('prioritas'),
                 'lowongan' => $lowongan,
-                'periode' =>$magang->periode_magang,
+                'periode' => $magang->periode_magang,
                 'kompetensi' => $akun->mahasiswa->kompetensi,
                 'jenis' => $jenis,
                 'preferensi_perusahaan' => $akun->mahasiswa->preferensi_perusahaan_mahasiswa,
