@@ -13,7 +13,7 @@
                     <div class="d-flex justify-content-center align-items-center flex-column">
                         <div class="avatar avatar-2xl mb-3">
                             <label for="file" style="cursor: pointer;">
-                                <img id="preview" src="{{ asset('template/assets/images/profil.png') }}"
+                                <img id="preview" src="{{ asset('template/assets/images/mhs.jpeg') }}"
                                     alt="Profile Picture" class="rounded-circle"
                                     style="width: 150px; height: 150px; border: 5px solid blue; object-fit: cover;">
                             </label>
@@ -81,7 +81,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" data-bs-dismiss="modal" class="btn btn-warning">Batal</button>
-                <button type="submit" class="btn btn-primary">Simpan</button>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Simpan</button>
             </div>
         </div>
     </div>

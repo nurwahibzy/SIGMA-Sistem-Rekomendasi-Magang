@@ -109,7 +109,7 @@
                     data: data,
                     backgroundColor: dynamicColors,
                     borderColor: '#ffffff',
-                    borderWidth: 2
+                    borderWidth: 0
                 }]
             },
             options: {

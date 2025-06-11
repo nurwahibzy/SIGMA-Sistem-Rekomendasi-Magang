@@ -388,7 +388,6 @@ class PerusahaanController extends Controller
                             }
                         }
 
-                        return response()->json($perusahaan);
 
                         if (Storage::disk('public')->exists("profil/perusahaan/$foto_path")) {
                             Storage::disk('public')->delete("profil/perusahaan/$foto_path");
@@ -398,7 +397,7 @@ class PerusahaanController extends Controller
                             ->delete();
                     }
                 );
-                return response()->json(['success' => true]);
+                // return response()->json(['success' => true]);
             } catch (\Throwable $e) {
                 Log::error("Gagal menghapus perusahaan: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
