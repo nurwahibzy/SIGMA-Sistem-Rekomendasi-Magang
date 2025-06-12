@@ -89,20 +89,30 @@
                 id_user: { required: true, digits: true },
                 nama: { required: true },
                 alamat: { required: true },
-                telepon: { required: true, digits: true },
+                telepon: { required: true, digits: true, minlength: 8 },
                 tanggal_lahir: { required: true, date: true },
                 email: { required: true, email: true },
-                password: { minlength: "Password minimal 6 karakter"}
+                password: { minlength: 6}
             },
             messages: {
                 id_user: "ID User wajib diisi",
                 nama: "Nama wajib diisi",
                 alamat: "Alamat wajib diisi",
-                telepon: "Nomor telepon wajib diisi dan numerik",
+                telepon: "Nomor telepon minimal 8 digit",
                 tanggal_lahir: "Tanggal lahir wajib diisi",
                 email: "Email wajib diisi dan harus valid",
                 password: { minlength: "Password minimal 6 karakter"}
             },
+                errorElement: 'div',
+                errorClass: 'invalid-feedback',
+                validClass: 'is-valid',
+                errorClass: 'is-invalid',
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid').removeClass('is-valid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-valid').removeClass('is-invalid');
+                },
             submitHandler: function (form) {
                 const formData = new FormData(form);
                 Swal.fire({

@@ -51,7 +51,7 @@
                             <div class="mb-2">
                                 <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
                                 <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" required
-                                    value="{{ Auth::user()->dosen->tanggal_lahir ?? '-' }}">
+                                    value="{{ Auth::user()->dosen->tanggal_lahir ?? '-' }}" max="{{ now()->format('Y-m-d') }}">
                             </div>
                             <div class="mb-2">
 
@@ -140,6 +140,7 @@
     </div>
 @endsection
 
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     function previewImage(event) {
@@ -155,21 +156,67 @@
     $(document).ready(function () {
         $("#form-tambah").validate({
             rules: {
-                id_user: { required: true, digits: true },
-                nama: { required: true },
-                alamat: { required: true },
-                telepon: { required: true, digits: true },
-                tanggal_lahir: { required: true, date: true },
-                email: { required: true, email: true }
+                    nama: {
+                        required: true,
+                        minlength: 2
+                    },
+                    alamat: {
+                        required: true,
+                        minlength: 5
+                    },
+                    telepon: {
+                        required: true,
+                        digits: true,
+                        minlength: 8
+                    },
+                    tanggal_lahir: {
+                        required: true,
+                        date: true
+                    },
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    password: {
+                        minlength: 6
+                    }
             },
             messages: {
-                id_user: "ID User wajib diisi",
-                nama: "Nama wajib diisi",
-                alamat: "Alamat wajib diisi",
-                telepon: "Nomor telepon wajib diisi dan numerik",
-                tanggal_lahir: "Tanggal lahir wajib diisi",
-                email: "Email wajib diisi dan harus valid"
+                    nama: {
+                        required: "Nama wajib diisi",
+                        minlength: "Nama minimal 2 karakter"
+                    },
+                    alamat: {
+                        required: "Alamat wajib diisi",
+                        minlength: "Alamat minimal 5 karakter"
+                    },
+                    telepon: {
+                        required: "Nomor telepon wajib diisi",
+                        digits: "Nomor telepon harus berupa angka",
+                        minlength: "Nomor telepon minimal 8 digit"
+                    },
+                    tanggal_lahir: {
+                        required: "Tanggal lahir wajib diisi",
+                        date: "Format tanggal tidak valid"
+                    },
+                    email: {
+                        required: "Email wajib diisi",
+                        email: "Format email tidak valid"
+                    },
+                    password: {
+                        minlength: "Password minimal 6 karakter"
+                    }
             },
+                errorElement: 'div',
+                errorClass: 'invalid-feedback',
+                validClass: 'is-valid',
+                errorClass: 'is-invalid',
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid').removeClass('is-valid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-valid').removeClass('is-invalid');
+                },
             submitHandler: function (form) {
                 const formData = new FormData(form);
                 $.ajax({
@@ -220,17 +267,45 @@ $(document).ready(function() {
     // Load bidang untuk modal
     loadBidang();
 
+    // Setup validasi untuk form keahlian
+    $("#form-keahlian").validate({
+        rules: {
+            id_bidang: {
+                required: true
+            },
+            keahlian: {
+                required: true
+            }
+        },
+        messages: {
+            id_bidang: {
+                required: "Bidang keahlian wajib dipilih"
+            },
+            keahlian: {
+                required: "Deskripsi keahlian wajib diisi"
+            }
+        },
+        errorElement: 'div',
+        errorClass: 'invalid-feedback',
+        validClass: 'is-valid',
+        errorClass: 'is-invalid',
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid').removeClass('is-valid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-valid').removeClass('is-invalid');
+        },
+        submitHandler: function (form) {
+            saveKeahlian();
+            return false;
+        }
+    });
+
     // Event listener untuk tombol tambah keahlian
     $('#btn-add-keahlian').click(function() {
         resetModal();
         $('#modalKeahlianLabel').text('Tambah Keahlian');
         $('#modalKeahlian').modal('show');
-    });
-
-    // Event listener untuk form submit keahlian
-    $('#form-keahlian').submit(function(e) {
-        e.preventDefault();
-        saveKeahlian();
     });
 
     // Event delegation untuk tombol edit dan delete
@@ -316,6 +391,9 @@ function displayKeahlian(keahlianList) {
 function resetModal() {
     $('#form-keahlian')[0].reset();
     $('#id_keahlian_dosen').val('');
+    // Reset validasi
+    $('#form-keahlian').find('.is-valid, .is-invalid').removeClass('is-valid is-invalid');
+    $('#form-keahlian').find('.invalid-feedback').remove();
 }
 
 function saveKeahlian() {
@@ -378,7 +456,7 @@ function editKeahlian(id) {
 function deleteKeahlian(id) {
     $.ajax({
         url: "{{ url('dosen/profil/edit/keahlian') }}/" + id,
-        type: 'POST', // Gunakan POST dengan _method DELETE
+        type: 'POST',
         data: {
             _token: $('meta[name="csrf-token"]').attr('content'),
             _method: 'DELETE'
