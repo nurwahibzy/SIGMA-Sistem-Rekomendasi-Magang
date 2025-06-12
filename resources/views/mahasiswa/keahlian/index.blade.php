@@ -39,9 +39,9 @@
                         </div>
                     </div>
                     <div>
-                        <div class="px-3 py-1 rounded d-inline-block">
-                            {{ $item->keahlian }}
-                        </div>
+                        <div>
+                        <textarea disabled required style="width: 100%;">{{ $item->keahlian }}</textarea>
+                    </div>
                     </div>
                 </div>
             </div>

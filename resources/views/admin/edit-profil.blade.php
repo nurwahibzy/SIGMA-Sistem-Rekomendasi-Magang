@@ -57,7 +57,8 @@
                         <div class="col-md-6">
                             <label class="form-label">Tanggal Lahir</label>
                             <input type="date" class="form-control" name="tanggal_lahir"
-                                value="{{ Auth::user()->admin->tanggal_lahir }}" required>
+                                value="{{ Auth::user()->admin->tanggal_lahir }}" max="{{ now()->format('Y-m-d') }}"
+                                required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Email</label>
@@ -81,6 +82,9 @@
                         </div>
 
                         <div class="col-12 text-end">
+                            <button type="button" class="btn btn-warning me-2" id="btn-batal">
+                                 Batal
+                            </button>
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-save"></i> Simpan
                             </button>
@@ -128,7 +132,7 @@
                     telepon: {
                         required: true,
                         digits: true,
-                        minlength: 10
+                        minlength: 8
                     },
                     tanggal_lahir: {
                         required: true,
@@ -154,7 +158,7 @@
                     telepon: {
                         required: "Nomor telepon wajib diisi",
                         digits: "Nomor telepon harus berupa angka",
-                        minlength: "Nomor telepon minimal 10 digit"
+                        minlength: "Nomor telepon minimal 8 digit"
                     },
                     tanggal_lahir: {
                         required: "Tanggal lahir wajib diisi",
@@ -250,6 +254,22 @@
                     // return false;
                 }
             });
+
+            $('#btn-batal').click(function () {
+            Swal.fire({
+                title: 'Yakin ingin membatalkan perubahan data ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, batalkan!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '{{ url("admin/profil") }}';
+                }
+            });
+        });
         });
     </script>
 @endsection

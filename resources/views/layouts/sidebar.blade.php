@@ -12,6 +12,7 @@
                         <img src="{{ asset('template/assets/compiled/svg/logo.svg') }}" alt="Logo"  style="width: 130px; height: auto;">
                     </a>
                 @elseif(Auth::check() && Auth::user()->level->kode == 'DSN')
+                <img src="{{ asset('template/assets/compiled/svg/logo.svg') }}" alt="Logo"  style="width: 130px; height: auto;">
                 @endif
                 </div>
                 <div class="theme-toggle d-flex gap-2  align-items-center mt-2">

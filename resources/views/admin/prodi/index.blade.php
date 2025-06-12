@@ -139,7 +139,7 @@
                 let id = $(this).data('id');
                 Swal.fire({
                     title: 'Yakin ingin menghapus data ini?',
-                    text: "Tindakan ini tidak dapat dibatalkan!",
+                    text: "Akan Menghapus Seluruh Mahasiswa yang memiliki Prodi ini!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',

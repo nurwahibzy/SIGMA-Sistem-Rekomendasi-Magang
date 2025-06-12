@@ -54,7 +54,7 @@
         </div>
         @if (count($dosen))
         <div class="col-6 col-lg-3 col-md-6">
-            <div class="card shadow">
+            <div class="card shadow" onclick="modalAction('{{ url('/admin/dosen/detail/' . $topDosen->akun->id_akun) }}')" style="cursor: pointer;">
                 <div class="card-body px-4 py-4-5">
                     <div class="row">
                         <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">

@@ -14,23 +14,21 @@
         @foreach ($pengalaman as $item)
             <div class="card mb-4 shadow">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        
-                            <button type="button" class="btn-edit-section btn btn-primary me-2"
-                            onclick="modalAction('{{ url('/mahasiswa/profil/edit/pengalaman/edit/' . $item->id_pengalaman) }}')">
-                                <i class="bi bi-pencil-square"></i>
-                            </button>
+                    <div class="d-flex justify-content-end align-items-center mb-3">
 
-                            <button type="button" class="btn-delete-pengalaman btn btn-danger"
-                                data-url="{{ url('/mahasiswa/profil/edit/pengalaman/' . $item->id_pengalaman) }}">
-                                <i class="bi bi-trash"></i>
-                            </button>
+                        <button type="button" class="btn-edit-section btn btn-primary me-2"
+                            onclick="modalAction('{{ url('/mahasiswa/profil/edit/pengalaman/edit/' . $item->id_pengalaman) }}')">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+
+                        <button type="button" class="btn-delete-pengalaman btn btn-danger"
+                            data-url="{{ url('/mahasiswa/profil/edit/pengalaman/' . $item->id_pengalaman) }}">
+                            <i class="bi bi-trash"></i>
+                        </button>
 
                     </div>
                     <div>
-                        <div class="px-3 py-1 rounded d-inline-block">
-                            {{ $item->deskripsi }}
-                        </div>
+                        <textarea disabled required style="width: 100%;">{{ $item->deskripsi }}</textarea>
                     </div>
                 </div>
             </div>
@@ -66,7 +64,7 @@
                                 title: 'Berhasil',
                                 text: 'Data berhasil dihapus.'
                             }).then(() => {
-                                location.reload(); 
+                                location.reload();
                             });
                         },
                         error: function () {

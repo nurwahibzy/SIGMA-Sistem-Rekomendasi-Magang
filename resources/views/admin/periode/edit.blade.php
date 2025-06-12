@@ -44,11 +44,11 @@
                         <div class="mb-3">
                             <label for="tanggal_mulai_modal" class="form-label">Tanggal Mulai</label>
                             <input type="date" class="form-control" id="tanggal_mulai_modal" name="tanggal_mulai"
-                                required min="{{ $now }}" value="{{ $periode->tanggal_mulai->format('Y-m-d') }}">
+                                required min="{{ $now }}" value="{{ $periode->tanggal_mulai->format('Y-m-d') }}" max="{{ $periode->tanggal_selesai->copy()->subDay()->format('Y-m-d') }}">
                         </div>
                         <div class="mb-3">
-                            <label for="tanggal_mulai_modal" class="form-label">Tanggal Selesai</label>
-                            <input type="date" class="form-control" id="tanggal_mulai_modal" name="tanggal_selesai"
+                            <label for="tanggal_selesai_modal" class="form-label">Tanggal Selesai</label>
+                            <input type="date" class="form-control" id="tanggal_selesai_modal" name="tanggal_selesai"
                                 required min="{{ $tomorrow }}" value="{{ $periode->tanggal_selesai->format('Y-m-d') }}">
                         </div>
                     </div>

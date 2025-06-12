@@ -26,8 +26,8 @@
 
             <div class="container mt-4">
                 <div class="mb-3">
-                    <label for="keterangan" class="form-label">Kenterangan</label>
-                    <textarea class="form-control" id="keterangan" name="keterangan" rows="3"
+                    <label for="keterangan" class="form-label">Keterangan</label>
+                    <textarea class="form-control" id="keterangan" name="keterangan" rows="3" disabled
                         required>{{  $aktivitas->keterangan }}</textarea>
                 </div>
             </div>

@@ -21,7 +21,7 @@
                         <small class="text-muted text-center">Tekan gambar untuk mengganti foto profil</small>
                         <input type="file" id="file" name="file" accept="image/*" onchange="previewImage(event)"
                             style="display: none;">
-                            <button type="button" id="tombolBatal" class="btn btn-sm btn-primary mt-2"
+                        <button type="button" id="tombolBatal" class="btn btn-sm btn-primary mt-2"
                             style="visibility: hidden;" onclick="batalkanPreview()">Batalkan</button>
                     </div>
                 </div>
@@ -123,11 +123,15 @@
                 status: { required: true },
                 nama: { required: true },
                 alamat: { required: true },
-                telepon: { required: true,
+                telepon: {
+                    required: true,
                     digits: true,
-                    minlength: 8 },
+                    minlength: 8
+                },
                 tanggal_lahir: { required: true, date: true },
                 email: { required: true, email: true }
+                ,
+                password: {minlength: 6}
             },
             messages: {
                 id_user: "NIP wajib diisi dan numerik",
@@ -141,6 +145,8 @@
                 },
                 tanggal_lahir: "Tanggal lahir wajib diisi",
                 email: "Email wajib diisi dan harus valid"
+                ,
+                password: { minlength: "Password minimal 6 karakter"}
             },
             submitHandler: function (form) {
                 const formData = new FormData(form);
@@ -154,7 +160,7 @@
                         Swal.showLoading();
                     }
                 });
-                
+
                 $.ajax({
                     url: form.action,
                     type: form.method,

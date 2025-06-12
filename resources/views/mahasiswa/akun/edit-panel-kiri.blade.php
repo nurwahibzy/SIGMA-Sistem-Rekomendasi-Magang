@@ -46,7 +46,7 @@
                 <div class="mb-2">
                     <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
                     <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" required
-                        value="{{ Auth::user()->mahasiswa->tanggal_lahir ?? '-' }}">
+                        value="{{ Auth::user()->mahasiswa->tanggal_lahir ?? '-' }}"  max="{{ now()->format('Y-m-d') }}">
                 </div>
                 <div class="mb-2">
 
@@ -91,7 +91,8 @@
                 alamat: { required: true },
                 telepon: { required: true, digits: true },
                 tanggal_lahir: { required: true, date: true },
-                email: { required: true, email: true }
+                email: { required: true, email: true },
+                password: { minlength: "Password minimal 6 karakter"}
             },
             messages: {
                 id_user: "ID User wajib diisi",
@@ -99,7 +100,8 @@
                 alamat: "Alamat wajib diisi",
                 telepon: "Nomor telepon wajib diisi dan numerik",
                 tanggal_lahir: "Tanggal lahir wajib diisi",
-                email: "Email wajib diisi dan harus valid"
+                email: "Email wajib diisi dan harus valid",
+                password: { minlength: "Password minimal 6 karakter"}
             },
             submitHandler: function (form) {
                 const formData = new FormData(form);

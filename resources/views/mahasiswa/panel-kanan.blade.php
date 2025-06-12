@@ -69,9 +69,10 @@
                                 </div>
 
                                 <div>
-                                    <div class="px-3 py-1 rounded d-inline-block">
+                                <textarea disabled required style="width: 100%;">{{ $item->keahlian }}</textarea>
+                                    <!-- <div class="px-3 py-1 rounded d-inline-block">
                                         {{ $item->keahlian }}
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -152,9 +153,10 @@
                                 <div class="card mb-4 shadow">
                                     <div class="card-body">
                                         <div>
-                                            <div class="px-3 py-1 rounded d-inline-block">
+                                        <textarea disabled required style="width: 100%;">{{ $item->deskripsi }}</textarea>
+                                            <!-- <div class="px-3 py-1 rounded d-inline-block">
                                                 {{ $item->deskripsi }}
-                                            </div>
+                                            </div> -->
                                         </div>
                                     </div>
                                 </div>

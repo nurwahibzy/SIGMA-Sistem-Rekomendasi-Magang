@@ -155,7 +155,8 @@
                     digits: true,
                     minlength: 8 },
                 tanggal_lahir: { required: true, date: true },
-                email: { required: true, email: true }
+                email: { required: true, email: true },
+                password: {minlength: 6}
             },
             messages: {
                 id_user: "NIM wajib diisi dan numerik",
@@ -169,7 +170,8 @@
                     minlength: "Minimal 8 digit"
                 },
                 tanggal_lahir: "Tanggal lahir wajib diisi",
-                email: "Email wajib diisi dan harus valid"
+                email: "Email wajib diisi dan harus valid",
+                password: { minlength: "Password minimal 6 karakter"}
             },
             submitHandler: function (form) {
                 const formData = new FormData(form);

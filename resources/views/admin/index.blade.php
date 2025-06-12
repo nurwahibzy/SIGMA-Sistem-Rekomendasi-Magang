@@ -34,7 +34,7 @@
         <div class="col-md-4">
             <div class="card shadow">
                 <div class="card-header text-white">
-                    <h5 class="mb-0">Sataus Mahasiswa Magang</h5>
+                    <h5 class="mb-0">Status Mahasiswa Magang</h5>
                 </div>
                 <div class="card-body">
                     <canvas id="magangChart" height="120"></canvas>
