@@ -70,7 +70,7 @@
                             </div>
                             <div class="mt-4">
                                 <label for="gender" class="form-label">Gender</label>
-                                <select name="gender" id="gender" class="form-select">
+                                <select name="gender" id="gender" class="form-select" required>
                                     <option value="">Pilih Gender</option>
                                     <option value="l" {{ $dosen->gender == 'l' ? 'selected' : ''  }}>Laki-laki
                                     </option>
@@ -128,7 +128,8 @@
                     minlength: 8 },
                 tanggal_lahir: { required: true, date: true },
                 email: { required: true, email: true },
-                password: {minlength: 6}
+                password: {minlength: 6},
+                gender: { required: true}
             },
             messages: {
                 id_user: "NIP wajib diisi dan numerik",
@@ -142,8 +143,13 @@
                 },
                 tanggal_lahir: "Tanggal lahir wajib diisi",
                 email: "Email wajib diisi dan harus valid",
-                password: { minlength: "Password minimal 6 karakter"}
+                password: { minlength: "Password minimal 6 karakter"},
+                gender: "Gender wajib diisi",
             },
+            errorElement: 'div',
+            errorClass: 'invalid-feedback',
+            validClass: 'is-valid',
+            errorClass: 'is-invalid',
             submitHandler: function (form) {
                 const formData = new FormData(form);
 

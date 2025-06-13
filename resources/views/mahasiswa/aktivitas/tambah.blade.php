@@ -69,6 +69,10 @@
                 file: "File wajib diisi",
                 keterangan: "Keterangan wajib diisi dan harus valid"
             },
+            errorElement: 'div',
+            errorClass: 'invalid-feedback',
+            validClass: 'is-valid',
+            errorClass: 'is-invalid',
             submitHandler: function (form) {
                 const formData = new FormData(form);
                 Swal.fire({

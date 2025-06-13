@@ -69,7 +69,7 @@
                                 </div>
 
                                 <div>
-                                <textarea disabled required style="width: 100%;">{{ $item->keahlian }}</textarea>
+                                <textarea disabled required style="width: 100%;"  class="p-2">{{ $item->keahlian }}</textarea>
                                     <!-- <div class="px-3 py-1 rounded d-inline-block">
                                         {{ $item->keahlian }}
                                     </div> -->
@@ -153,7 +153,7 @@
                                 <div class="card mb-4 shadow">
                                     <div class="card-body">
                                         <div>
-                                        <textarea disabled required style="width: 100%;">{{ $item->deskripsi }}</textarea>
+                                        <textarea disabled required style="width: 100%;"  class="p-2">{{ $item->deskripsi }}</textarea>
                                             <!-- <div class="px-3 py-1 rounded d-inline-block">
                                                 {{ $item->deskripsi }}
                                             </div> -->

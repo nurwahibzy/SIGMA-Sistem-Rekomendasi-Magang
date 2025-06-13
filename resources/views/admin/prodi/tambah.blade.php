@@ -40,6 +40,10 @@
                 nama_jurusan: "Jurusan wajib diisi",
                 nama_prodi: "Program studi wajib diisi",
             },
+            errorElement: 'div',
+            errorClass: 'invalid-feedback',
+            validClass: 'is-valid',
+            errorClass: 'is-invalid',
             submitHandler: function (form) {
                 const formData = new FormData(form);
 

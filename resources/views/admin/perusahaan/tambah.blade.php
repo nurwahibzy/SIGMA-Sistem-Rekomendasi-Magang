@@ -21,7 +21,7 @@
                         <small class="text-muted text-center">Tekan gambar untuk memberikan Logo</small>
                         <input type="file" id="file" name="file" accept="image/*" onchange="previewImage(event)"
                             style="display: none;">
-                            <button type="button" id="tombolBatal" class="btn btn-sm btn-primary mt-2"
+                        <button type="button" id="tombolBatal" class="btn btn-sm btn-primary mt-2"
                             style="visibility: hidden;" onclick="batalkanPreview()">Batalkan</button>
                     </div>
                 </div>
@@ -34,7 +34,7 @@
                             </div>
                         </div>
                         <div class="w-50 ms-2">
-                            
+
                         </div>
                     </div>
                     <div class="d-flex justify-content-between">
@@ -45,7 +45,8 @@
                             </div>
                             <div class="mt-4">
                                 <label for="nama_provinsi" class="form-label">Provinsi</label>
-                                <select name="nama_provinsi" class="form-select" id="nama_provinsi" data-placeholder="Pilih Provinsi" required>
+                                <select name="nama_provinsi" class="form-select" id="nama_provinsi"
+                                    data-placeholder="Pilih Provinsi" required>
                                     <option value=""></option>
                                 </select>
                                 <input type="hidden" name="provinsi" id="provinsi">
@@ -54,7 +55,8 @@
                         <div class="w-50 ms-2">
                             <div class="mt-4">
                                 <label for="id_jenis" class="form-label">Jenis Perusahaan</label>
-                                <select name="id_jenis" class="form-select" id="id_jenis" data-placeholder="Pilih Jenis Perusahaan" required>
+                                <select name="id_jenis" class="form-select" id="id_jenis"
+                                    data-placeholder="Pilih Jenis Perusahaan" required>
                                     <option value=""></option>
                                     @foreach ($jenis as $item)
                                         <option value="{{ $item->id_jenis }}">{{ $item->jenis }}</option>
@@ -63,7 +65,8 @@
                             </div>
                             <div class="mt-4">
                                 <label for="nama_daerah" class="form-label">Daerah</label>
-                                <select name="nama_daerah" class="form-select" id="nama_daerah" data-placeholder="Pilih Daerah" required>
+                                <select name="nama_daerah" class="form-select" id="nama_daerah"
+                                    data-placeholder="Pilih Daerah" required>
                                     <option value=""></option>
                                 </select>
                                 <input type="hidden" name="daerah" id="daerah">
@@ -166,6 +169,10 @@
                 provinsi: "Pilih provinsi",
                 daerah: "Pilih daerah"
             },
+            errorElement: 'div',
+            errorClass: 'invalid-feedback',
+            validClass: 'is-valid',
+            errorClass: 'is-invalid',
             submitHandler: function (form) {
                 const formData = new FormData(form);
 

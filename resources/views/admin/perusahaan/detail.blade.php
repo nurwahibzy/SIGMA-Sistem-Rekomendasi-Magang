@@ -115,8 +115,12 @@
                                 </div>
                             @endforeach
                         </div>
+                    @else
+                    <div class="alert alert-warning">
+                                    Belum ada lowongan magang.
+                                </div>
                     @endif
-                </div>
+                </di>
             </div>
         </div>
 

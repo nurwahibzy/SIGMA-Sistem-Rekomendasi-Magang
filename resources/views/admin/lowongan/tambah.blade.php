@@ -52,7 +52,7 @@
                             </div>
 
                             <!-- Hidden textarea untuk pengiriman form -->
-                            <textarea id="persyaratan" name="persyaratan" style="display: none;"></textarea>
+                            <textarea id="persyaratan" name="persyaratan" required style="display: none;"></textarea>
                         </div>
 
                         <div class="mb-3">
@@ -109,6 +109,10 @@ $(document).ready(function () {
             persyaratan: "Persyaratan Magang wajib diisi",
             deskripsi: "Deskripsi Magang wajib diisi"
         },
+        errorElement: 'div',
+            errorClass: 'invalid-feedback',
+            validClass: 'is-valid',
+            errorClass: 'is-invalid',
         submitHandler: function (form) {
             // Sinkronkan Quill ke textarea sebelum submit
             syncQuillToTextarea();

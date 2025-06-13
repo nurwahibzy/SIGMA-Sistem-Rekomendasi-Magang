@@ -73,6 +73,10 @@
                 file_excel : "File wajib diisi",
                 id_prodi: "Prodi wajib diisi",
             },
+            errorElement: 'div',
+            errorClass: 'invalid-feedback',
+            validClass: 'is-valid',
+            errorClass: 'is-invalid',
             submitHandler: function (form) {
 
                 Swal.fire({

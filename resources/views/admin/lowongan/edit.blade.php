@@ -100,6 +100,10 @@ $(document).ready(function () {
             persyaratan: "Persyaratan magang wajib diisi",
             deskripsi: "Deskripsi magang wajib diisi"
         },
+        errorElement: 'div',
+            errorClass: 'invalid-feedback',
+            validClass: 'is-valid',
+            errorClass: 'is-invalid',
         submitHandler: function (form) {
             // Sinkronkan Quill ke textarea sebelum submit
             syncQuillToTextarea();

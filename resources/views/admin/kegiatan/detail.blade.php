@@ -309,9 +309,7 @@
                                                     </div>
 
                                                     <div>
-                                                        <div class="px-3 py-1 rounded d-inline-block">
-                                                            {{ $item->keahlian }}
-                                                        </div>
+                                                    <textarea disabled required style="width: 100%;" class="p-2">{{ $item->keahlian }}</textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -391,11 +389,7 @@
                                                 @foreach ($pengalaman as $item)
                                                     <div class="card mb-4 shadow">
                                                         <div class="card-body">
-                                                            <div>
-                                                                <div class="px-3 py-1 rounded d-inline-block">
-                                                                    {{ $item->deskripsi }}
-                                                                </div>
-                                                            </div>
+                                                        <textarea disabled required style="width: 100%;" class="p-2">{{ $item->deskripsi }}</textarea>  
                                                         </div>
                                                     </div>
                                                 @endforeach
@@ -535,7 +529,10 @@
                 @endif
                                                     },
                 ignore: [],
-                errorElement: 'span',
+                errorElement: 'div',
+            errorClass: 'invalid-feedback',
+            validClass: 'is-valid',
+            errorClass: 'is-invalid',
                 errorPlacement: function (error, element) {
                     error.addClass('invalid-feedback');
                     element.closest('.form-check, .form-select').append(error);

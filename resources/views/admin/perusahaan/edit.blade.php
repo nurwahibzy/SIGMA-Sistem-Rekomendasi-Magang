@@ -167,6 +167,10 @@
                 provinsi: "Pilih provinsi",
                 daerah: "Pilih daerah"
             },
+            errorElement: 'div',
+            errorClass: 'invalid-feedback',
+            validClass: 'is-valid',
+            errorClass: 'is-invalid',
             submitHandler: function (form) {
                 const formData = new FormData(form);
 

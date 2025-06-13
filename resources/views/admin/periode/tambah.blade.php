@@ -129,6 +129,10 @@
                 tanggal_mulai: "Tanggal mulai wajib diisi",
                 tanggal_selesai: "Tanggal selesai wajib diisi"
             },
+            errorElement: 'div',
+            errorClass: 'invalid-feedback',
+            validClass: 'is-valid',
+            errorClass: 'is-invalid',
             submitHandler: function (form) {
                 const formData = new FormData(form);
 

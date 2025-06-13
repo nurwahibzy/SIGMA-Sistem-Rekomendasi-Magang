@@ -53,6 +53,10 @@
                 nama_prodi: "Program studi wajib diisi",
                 status: "Status wajib diisi",
             },
+            errorElement: 'div',
+            errorClass: 'invalid-feedback',
+            validClass: 'is-valid',
+            errorClass: 'is-invalid',
             submitHandler: function (form) {
                 const formData = new FormData(form);
 

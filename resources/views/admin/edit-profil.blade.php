@@ -186,7 +186,7 @@
                     const formData = new FormData(form);
 
                     // Debug: Check if file is included
-                    console.log('FormData contents:');
+                    // console.log('FormData contents:');
                     for (let pair of formData.entries()) {
                         console.log(pair[0] + ': ' + pair[1]);
                     }

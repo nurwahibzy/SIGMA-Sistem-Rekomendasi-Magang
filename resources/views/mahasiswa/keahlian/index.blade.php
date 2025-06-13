@@ -40,7 +40,7 @@
                     </div>
                     <div>
                         <div>
-                        <textarea disabled required style="width: 100%;">{{ $item->keahlian }}</textarea>
+                        <textarea disabled required style="width: 100%;" class="p-2">{{ $item->keahlian }}</textarea>
                     </div>
                     </div>
                 </div>
