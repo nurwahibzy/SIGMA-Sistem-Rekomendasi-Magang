@@ -23,7 +23,7 @@
                                 <th>Nama</th>
                                 <th>Perusahaan</th>
                                 <th>Status</th>
-                                <th>Aksi</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>

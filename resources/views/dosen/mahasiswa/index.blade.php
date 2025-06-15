@@ -73,7 +73,7 @@
                                 <th>Periode Magang</th>
                                 <th>Tanggal Pengajuan</th>
                                 <th>Status</th>
-                                <th>Detail</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
