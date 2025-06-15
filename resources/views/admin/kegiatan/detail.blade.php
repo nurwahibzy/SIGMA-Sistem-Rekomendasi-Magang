@@ -175,7 +175,7 @@
                                     <div class="form-control bg-light">{{ $magang->dosen->nama }}</div>
                                 @elseif($magang->status == 'ditolak')
                                     <div class="form-control bg-light">{{ $magang->alasan_penolakan }}</div>
-                                @else
+                                    @elseif($magang->status == 'proses')
                                     <select name="id_dosen" class="form-select d-none" data-placeholder="Pilih Dosen Pembimbing" id="input-dosen">
                                         <option value=""></option>
                                         @foreach($dosen as $d)

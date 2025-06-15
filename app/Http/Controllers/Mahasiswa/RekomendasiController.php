@@ -150,7 +150,9 @@ class RekomendasiController extends Controller
         // Proses perhitungan keputusan MEREC & ARAS
         $matriksKeputusan = $this->bangunMatriksKeputusan($data_array, $kriteria);
 
-
+        if (!count($matriksKeputusan)) {
+            return false;
+        }
         $normalisasiMatriks = $this->normalisasiMerec($matriksKeputusan, $kriteria);
         $this->hitungIntermediateMerec($normalisasiMatriks, $kriteria);
         $bobot = $this->hitungBobotMerec($normalisasiMatriks, $kriteria);
@@ -171,7 +173,7 @@ class RekomendasiController extends Controller
 
         if ($peringkat == false) {
             // return response(url('/mahasiswa/periode'));
-            return redirect('/mahasiswa/profil')->with('error', 'Silakan lengkapi profil Anda terlebih dahulu.');
+            return redirect('/mahasiswa/profil')->with('error', 'Silakan lengkapi profil Anda terlebih dahulu. Kemungkinan Keahlian atau Preferensi Perusahaan Anda tidak ada yang sesuai');
         }
 
         $topLowonganIds = array_column($peringkat, 'id_lowongan');

@@ -18,8 +18,6 @@ class KeahlianDosenSeeder extends Seeder
             [1, 2, 'Mampu bekerja dengan Node.js, Express, serta menggunakan database MySQL untuk pengembangan backend.'], 
             [2, 3, 'Pernah mengembangkan model machine learning dengan menggunakan Python dan library seperti TensorFlow dan Scikit-learn.'],
             [2, 4, 'Menguasai analisis data menggunakan Python dengan Pandas, Numpy, dan Matplotlib.'],  
-            [3, 5, 'Berpengalaman dalam penggunaan Docker, Kubernetes, dan Jenkins untuk otomatisasi deployment aplikasi.'], 
-            [3, 6, 'Berpengalaman dalam mendesain antarmuka pengguna menggunakan tools seperti Figma dan Adobe XD.'], 
             [1, 7, 'Pernah melakukan penetration testing dan audit keamanan aplikasi menggunakan tools seperti Kali Linux.'], 
             [2, 8, 'Membangun aplikasi mobile menggunakan React Native untuk platform Android dan iOS.'],
         ];

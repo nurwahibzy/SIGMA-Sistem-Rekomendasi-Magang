@@ -48,7 +48,7 @@
     <div class="row justify-content-center gap-4">
         <!-- Baris kedua -->
         <div class="col-md-6 col-lg-4 d-flex flex-column align-items-center">
-            <img src="{{ asset('template/assets/images/profile.jpg') }}" alt="Kelola Profil Mahasiswa"
+            <img src="{{asset('template/assets/images/mhs.jpeg') }}" alt="Kelola Profil Mahasiswa"
                 class="rounded-circle shadow-sm mb-4 border border-2 border-primary"
                 style="width: 100px; height: 100px; object-fit: cover;">
             <h4 class="fw-bold text-primary mb-3">

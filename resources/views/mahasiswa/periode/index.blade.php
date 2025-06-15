@@ -96,12 +96,14 @@
                             <col style="width: 100px;">
                             <col style="width: 100px;">
                             <col style="width: 100px;">
+                            <col style="width: 100px;">
                         </colgroup>
                         <thead>
                             <tr>
                                 <th class="d-none">No</th>
                                 <th>Nama Lowongan</th>
                                 <th>Perusahaan</th>
+                                <th>Jenis Perusahaan</th>
                                 <th>Bidang</th>
                                 <th>Periode</th>
                                 <th>Daerah</th>
@@ -114,6 +116,7 @@
                                     <td class="d-none">{{ $i+1 ?? '-' }}</td>
                                     <td>{{ $item->lowongan_magang->nama ?? '-' }}</td>
                                     <td>{{ $item->lowongan_magang->perusahaan->nama ?? '-' }}</td>
+                                    <td>{{ $item->lowongan_magang->perusahaan->jenis_perusahaan->jenis ?? '-' }}</td>
                                     <td>{{ $item->lowongan_magang->bidang->nama ?? '-' }}</td>
                                     <td>{{ $item->tanggal_mulai->format('d M Y') }} - {{ $item->tanggal_selesai->format('d M Y') }}
                                     </td>

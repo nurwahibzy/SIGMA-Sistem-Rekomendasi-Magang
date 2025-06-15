@@ -28,7 +28,7 @@
                             <label class="form-label fw-bold">Program Studi</label>
                             <div class="border rounded p-2">
                                 <p class="form-control-plaintext mb-0">
-                                    {{ $mahasiswa->prodi->nama_prodi }}
+                                    {{ $mahasiswa->prodi->nama_prodi ?? 'Belum memiliki prodi' }}
                                 </p>
                             </div>
                         </div>

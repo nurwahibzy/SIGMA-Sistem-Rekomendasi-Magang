@@ -77,7 +77,11 @@
 @endsection
 
 @php
-    $labels = collect($data)->pluck('prodi.nama_prodi');
+$labels = collect($data)
+    ->pluck('prodi.nama_prodi')
+    ->map(function ($label) {
+        return $label ?? 'Belum memiliki prodi';
+    });
     $totals = collect($data)->pluck('total');
 @endphp
 
@@ -139,7 +143,7 @@
                 let id = $(this).data('id');
                 Swal.fire({
                     title: 'Yakin ingin menghapus data ini?',
-                    text: "Akan Menghapus Seluruh Mahasiswa yang memiliki Prodi ini!",
+                    text: "Mahasiswa yang memiliki prodi ini menjadi tidak memiliki prodi!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',

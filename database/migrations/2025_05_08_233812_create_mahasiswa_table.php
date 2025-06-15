@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('mahasiswa', function (Blueprint $table) {
             $table->id('id_mahasiswa');
             $table->unsignedBigInteger('id_akun')->unique()->index();
-            $table->unsignedBigInteger('id_prodi')->index();
+            $table->unsignedBigInteger('id_prodi')->nullable()->index();
             $table->string('nama', 100);
             $table->text('alamat');
             $table->string('telepon', 30)->unique();

@@ -14,7 +14,8 @@
                     <table class="table" id="table1">
                         <colgroup>
                             <col style="width: 100px;">
-                            <col style="width: 100px;">
+                            <col style="width: 100px;"> 
+                            <col style="width: 100px;"> 
                             <col style="width: 100px;">
                             <col style="width: 100px;">
                             <col style="width: 100px;">
@@ -22,6 +23,7 @@
                         <thead>
                             <tr>
                                 <th>Perusahaan</th>
+                                <th>Jenis</th>
                                 <th>Telepon</th>
                                 <th>Provinsi</th>
                                 <th>Daerah</th>
@@ -32,6 +34,7 @@
                             @foreach ($perusahaan as $item)
                                 <tr>
                                     <td>{{ $item->nama ?? '-' }}</td>
+                                    <td>{{ $item->jenis_perusahaan->jenis ?? '-' }}</td>
                                     <td>{{ $item->telepon ?? '-' }}</td>
                                     <td>{{ $item->provinsi ?? '-' }}</td>
                                     <td>{{ $item->daerah }}</td>

@@ -256,6 +256,16 @@ class MahasiswaController extends Controller
                             'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
                         ]);
 
+                        if ($request->hasFile('file')) {
+                            $file = $request->file('file');
+                            $max_size = 2 * 1024 * 1024;
+    
+                            if ($file->getSize() > $max_size) {
+                                return ['success' => false, 'message' => 'Ukuran file tidak boleh lebih dari 2MB.'];
+                            }
+                        }
+
+
                         if ($validator->fails()) {
                             return ['success' => false, 'message' => 'Data Tidak Valid'];
                         }
@@ -290,12 +300,7 @@ class MahasiswaController extends Controller
                         }
 
                         if ($request->hasFile('file')) {
-                            $file = $request->file('file');
-                            $max_size = 2 * 1024 * 1024;
-    
-                            if ($file->getSize() > $max_size) {
-                                return response()->json(['success' => false, 'message' => 'Ukuran file tidak boleh lebih dari 2MB.']);
-                            }
+            
 
                             $foto_path = $this->handleFileUpload($request, $id_user, $foto_path);
                         }
@@ -357,6 +362,15 @@ class MahasiswaController extends Controller
                             'password' => 'nullable|string|min:6|max:255'
                         ]);
 
+                        if ($request->hasFile('file')) {
+                            $file = $request->file('file');
+                            $max_size = 2 * 1024 * 1024;
+    
+                            if ($file->getSize() > $max_size) {
+                                return ['success' => false, 'message' => 'Ukuran file tidak boleh lebih dari 2MB.'];
+                            }
+                        }
+
                         if ($validator->fails()) {
                             return ['success' => false, 'message' => 'Data Tidak Valid'];
                         }
@@ -388,12 +402,7 @@ class MahasiswaController extends Controller
                         $foto_path = $data->foto_path;
 
                         if ($request->hasFile('file')) {
-                            $file = $request->file('file');
-                            $max_size = 2 * 1024 * 1024;
-    
-                            if ($file->getSize() > $max_size) {
-                                return response()->json(['success' => false, 'message' => 'Ukuran file tidak boleh lebih dari 2MB.']);
-                            }
+            
                             
                             $foto_path = $this->handleFileUpload($request, $id_user, $foto_path);
                         } else if ($data->id_user != $id_user) {

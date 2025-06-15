@@ -7,6 +7,7 @@
         <section class="section">
             <div class="row">
                 <div class="col-md-4">
+                @if(!empty($magang->dosen))
                     <div class="position-sticky" style="top: 90px;">
                         <div class="card p-4 shadow">
                             <h5 class="card-title mb-5">Dosen Pembimbing</h5>
@@ -40,7 +41,13 @@
                             </form>
                         </div>
                     </div>
+                    @else
+                    <div class="alert alert-warning">
+                                    Data Dosen pembimbing tidak diketahui.
+                                </div>
+                    @endif
                 </div>
+                
                 <div class="col-md-8">
                     <div class="card shadow">
                         <div class="card-body">

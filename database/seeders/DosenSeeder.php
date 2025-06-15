@@ -16,17 +16,6 @@ class DosenSeeder extends Seeder
     {
         $data = [
             [
-                'id_akun' => 7,
-                'nama' => 'Dr. Budi Santosa',
-                'alamat' => 'Jl. Cendana No. 12, Yogyakarta',
-                'telepon' => '081234567801',
-                'tanggal_lahir' => Carbon::parse('1979-03-10')->toDateString(),
-                'gender' => 'l',
-                'email' => 'budi.santosa@example.com',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
                 'id_akun' => 8,
                 'nama' => 'Dr. Siti Aminah',
                 'alamat' => 'Jl. Melati No. 45, Surabaya',

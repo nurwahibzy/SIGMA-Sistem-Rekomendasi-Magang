@@ -25,7 +25,7 @@ class PerusahaanController extends Controller
     // add peringatan, try catch, transaction
     public function getPerusahaan()
     {
-        $perusahaan = PerusahaanModel::get();
+        $perusahaan = PerusahaanModel::with('jenis_perusahaan')->get();
         return view('admin.perusahaan.index', ['perusahaan' => $perusahaan]);
 
     }
@@ -160,7 +160,7 @@ class PerusahaanController extends Controller
                         $max_size = 2 * 1024 * 1024;
 
                         if ($file->getSize() > $max_size) {
-                            return response()->json(['success' => false, 'message' => 'Ukuran file tidak boleh lebih dari 2MB.']);
+                            return ['success' => false, 'message' => 'Ukuran file tidak boleh lebih dari 2MB.'];
                         }
 
                         if ($validator->fails()) {
@@ -245,6 +245,15 @@ class PerusahaanController extends Controller
                             'daerah' => 'required|string|max:30',
                         ]);
 
+                        if ($request->hasFile('file')) {
+                            $file = $request->file('file');
+                            $max_size = 2 * 1024 * 1024;
+    
+                            if ($file->getSize() > $max_size) {
+                                return ['success' => false, 'message' => 'Ukuran file tidak boleh lebih dari 2MB.'];
+                            }
+                        }
+
                         if ($validator->fails()) {
                             return ['success' => false, 'message' => 'Data Tidak Valid'];
                         }
@@ -281,13 +290,6 @@ class PerusahaanController extends Controller
 
 
                         if ($request->hasFile('file')) {
-                            $file = $request->file('file');
-                            $max_size = 2 * 1024 * 1024;
-
-                            if ($file->getSize() > $max_size) {
-                                return response()->json(['success' => false, 'message' => 'Ukuran file tidak boleh lebih dari 2MB.']);
-                            }
-
                             $this->handleFileUpload($request, $data, $id_perusahaan, $id_jenis, $nama, $telepon, $deskripsi, $provinsi, $daerah, $latitude, $longitude);
                         } else if ($data->nama !== $nama) {
                             $this->renameFileOnly($data, $id_perusahaan, $id_jenis, $nama, $telepon, $deskripsi, $provinsi, $daerah, $latitude, $longitude);

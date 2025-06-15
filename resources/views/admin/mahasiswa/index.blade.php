@@ -73,11 +73,13 @@
                             <col style="width: 100px;">
                             <col style="width: 100px;">
                             <col style="width: 100px;">
+                            <col style="width: 100px;">
                         </colgroup>
                         <thead>
                             <tr>
                                 <th>NIM</th>
                                 <th>Nama</th>
+                                <th>Prodi</th>
                                 <th>Telepon</th>
                                 <th>Email</th>
                                 <th>Status</th>
@@ -89,6 +91,7 @@
                                 <tr>
                                     <td>{{ $item->akun->id_user ?? '-' }}</td>
                                     <td>{{ $item->nama ?? '-' }}</td>
+                                    <td>{{ $item->prodi->nama_prodi ?? '-' }}</td>
                                     <td>{{ $item->telepon ?? '-' }}</td>
                                     <td>{{ $item->email }}</td>
                                     <td>

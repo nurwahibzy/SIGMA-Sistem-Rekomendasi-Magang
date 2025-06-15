@@ -66,7 +66,8 @@
                                 <div class="mt-4">
                                     <label class="form-label fw-bold">Gender</label>
                                     <div class="border rounded p-2">
-                                        <p class="form-control-plaintext mb-0">{{ $dosen->gender == 'l' ? 'Laki-laki' : 'Perempuan' }}</p>
+                                        <p class="form-control-plaintext mb-0">
+                                            {{ $dosen->gender == 'l' ? 'Laki-laki' : 'Perempuan' }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -268,13 +269,21 @@
                             _token: '{{ csrf_token() }}'
                         },
                         success: function (response) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil',
-                                text: 'Data berhasil dihapus.'
-                            }).then(() => {
-                                location.reload();
-                            });
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil',
+                                    text: 'Data berhasil dihapus.'
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: response.message || 'Terjadi kesalahan saat menyimpan.'
+                                });
+                            }
                         },
                         error: function () {
                             Swal.fire({

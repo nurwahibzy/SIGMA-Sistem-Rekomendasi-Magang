@@ -256,6 +256,16 @@ class DosenController extends Controller
                             'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
                         ]);
 
+                        if ($request->hasFile('file')) {
+                            $file = $request->file('file');
+                            $max_size = 2 * 1024 * 1024;
+
+                            if ($file->getSize() > $max_size) {
+                                return ['success' => false, 'message' => 'Ukuran file tidak boleh lebih dari 2MB.'];
+                            }
+                        }
+
+
                         if ($validator->fails()) {
                             return ['success' => false, 'message' => 'Data Tidak Valid'];
                         }
@@ -286,12 +296,7 @@ class DosenController extends Controller
 
 
                         if ($request->hasFile('file')) {
-                            $file = $request->file('file');
-                            $max_size = 2 * 1024 * 1024;
-    
-                            if ($file->getSize() > $max_size) {
-                                return response()->json(['success' => false, 'message' => 'Ukuran file tidak boleh lebih dari 2MB.']);
-                            }
+
 
                             $foto_path = $this->handleFileUpload($request, $id_user, $foto_path);
                         }
@@ -345,6 +350,16 @@ class DosenController extends Controller
                             'password' => 'nullable|string|min:6|max:255'
                         ]);
 
+                        if ($request->hasFile('file')) {
+                            $file = $request->file('file');
+                            $max_size = 2 * 1024 * 1024;
+
+                            if ($file->getSize() > $max_size) {
+                                return ['success' => false, 'message' => 'Ukuran file tidak boleh lebih dari 2MB.'];
+                            }
+                        }
+
+
                         if ($validator->fails()) {
                             return ['success' => false, 'message' => 'Data Tidak Valid'];
                         }
@@ -362,11 +377,11 @@ class DosenController extends Controller
                             return ['success' => false, 'message' => 'NIP Tidak Boleh Sama!!!'];
                         }
 
-                        if ($this->checkEmail($email,  $id_akun)) {
+                        if ($this->checkEmail($email, $id_akun)) {
                             return ['success' => false, 'message' => 'Email Tidak Boleh Sama!!!'];
                         }
 
-                        if ($this->checkTelepon($telepon,  $id_akun)) {
+                        if ($this->checkTelepon($telepon, $id_akun)) {
                             return ['success' => false, 'message' => 'Nomor Telepon Tidak Boleh Sama!!!'];
                         }
 
@@ -375,13 +390,8 @@ class DosenController extends Controller
                         $foto_path = $data->foto_path;
 
                         if ($request->hasFile('file')) {
-                            $file = $request->file('file');
-                            $max_size = 2 * 1024 * 1024;
-    
-                            if ($file->getSize() > $max_size) {
-                                return response()->json(['success' => false, 'message' => 'Ukuran file tidak boleh lebih dari 2MB.']);
-                            }
-                            
+
+
                             $foto_path = $this->handleFileUpload($request, $id_user, $foto_path);
                         } else if ($data->id_user != $id_user) {
                             $foto_path = $this->renameFileOnly($foto_path, $id_user);
@@ -454,11 +464,20 @@ class DosenController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                DB::transaction(
+                $results = DB::transaction(
                     function () use ($request, $id_akun) {
 
-                        $akun = AkunModel::where('id_akun', $id_akun)
-                            ->first(['foto_path']);
+                        $akun = AkunModel::with('dosen')
+                            ->where('id_akun', $id_akun)
+                            ->first();
+
+                        $magang = MagangModel::where('id_dosen', $akun->dosen->id_dosen)
+                            ->where('status', 'diterima')
+                            ->count();
+
+                        if ($magang != 0) {
+                            return ['success' => false, 'message' => 'Tidak bisa menghapus Dosen jika masih memiliki Mahasiswa bimbingan.'];
+                        }
 
                         $foto_path = $akun->foto_path;
 
@@ -466,11 +485,17 @@ class DosenController extends Controller
                             Storage::disk('public')->delete("profil/akun/$foto_path");
                         }
 
-                        AkunModel::where('id_akun', $id_akun)
-                            ->delete();
+                        MagangModel::where('id_dosen', $akun->dosen->id_dosen)->update([
+                            'id_dosen' => null
+                        ]);
+
+                        // AkunModel::where('id_akun', $id_akun)
+                        //     ->delete();
+    
+                        return ['success' => true];
                     }
                 );
-                return response()->json(['success' => true]);
+                return response()->json($results);
             } catch (\Throwable $e) {
                 Log::error("Gagal menghapus lowongan: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);

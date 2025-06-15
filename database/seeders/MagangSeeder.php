@@ -67,7 +67,7 @@ class MagangSeeder extends Seeder
             ],
             [
                 'id_mahasiswa' => 4,
-                'id_dosen' => 3,
+                'id_dosen' => 2,
                 'id_periode' => 7,
                 'status' => 'diterima',
                 'alasan_penolakan' => null, // Added key with null value
@@ -77,7 +77,7 @@ class MagangSeeder extends Seeder
             ],
             [
                 'id_mahasiswa' => 4,
-                'id_dosen' => 3,
+                'id_dosen' => 2,
                 'id_periode' => 8,
                 'status' => 'diterima',
                 'alasan_penolakan' => null, // Added key with null value
@@ -107,7 +107,7 @@ class MagangSeeder extends Seeder
             ],
             [
                 'id_mahasiswa' => 6,
-                'id_dosen' => 3,
+                'id_dosen' => 1,
                 'id_periode' => 10,
                 'status' => 'diterima',
                 'alasan_penolakan' => null, // Added key with null value
@@ -117,7 +117,7 @@ class MagangSeeder extends Seeder
             ],
             [
                 'id_mahasiswa' => 6,
-                'id_dosen' => 3,
+                'id_dosen' => 2,
                 'id_periode' => 11,
                 'status' => 'diterima',
                 'alasan_penolakan' => null, // Added key with null value

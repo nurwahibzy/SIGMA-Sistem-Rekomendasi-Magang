@@ -101,47 +101,51 @@ class ProdiController extends Controller
             try {
                 DB::transaction(
                     function () use ($request, $id_prodi) {
-                        $prodi = ProdiModel::with('mahasiswa', 'mahasiswa.akun', 'mahasiswa.dokumen', 'mahasiswa.magang', 'mahasiswa.magang.aktivitas_magang')
-                            ->where('id_prodi', $id_prodi)
-                            ->first();
+                        MahasiswaModel::where('id_prodi', $id_prodi)
+                        ->update([
+                            'id_prodi' => null
+                        ]);
+                        // $prodi = ProdiModel::with('mahasiswa', 'mahasiswa.akun', 'mahasiswa.dokumen', 'mahasiswa.magang', 'mahasiswa.magang.aktivitas_magang')
+                        //     ->where('id_prodi', $id_prodi)
+                        //     ->first();
 
-                        foreach ($prodi->mahasiswa as $item) {
+                        // foreach ($prodi->mahasiswa as $item) {
 
-                            if (!empty($item->magang)) {
-                                foreach ($item->magang as $magang) {
-                                    foreach ($magang->aktivitas_magang as $aktivitas) {
-                                        $foto_path = $aktivitas->foto_path;
+                        //     if (!empty($item->magang)) {
+                        //         foreach ($item->magang as $magang) {
+                        //             foreach ($magang->aktivitas_magang as $aktivitas) {
+                        //                 $foto_path = $aktivitas->foto_path;
 
-                                        if (Storage::disk('public')->exists("aktivitas/$foto_path")) {
-                                            Storage::disk('public')->delete("aktivitas/$foto_path");
-                                        }
-                                    }
-                                }
-                            }
+                        //                 if (Storage::disk('public')->exists("aktivitas/$foto_path")) {
+                        //                     Storage::disk('public')->delete("aktivitas/$foto_path");
+                        //                 }
+                        //             }
+                        //         }
+                        //     }
 
-                            if (!empty($item->dokumen)) {
-                                foreach ($item->dokumen as $dokumen) {
-                                    $file_path = $dokumen->file_path;
+                        //     if (!empty($item->dokumen)) {
+                        //         foreach ($item->dokumen as $dokumen) {
+                        //             $file_path = $dokumen->file_path;
 
-                                    if (Storage::disk('public')->exists("dokumen/$file_path")) {
-                                        Storage::disk('public')->delete("dokumen/$file_path");
-                                    }
-                                }
-                            }
+                        //             if (Storage::disk('public')->exists("dokumen/$file_path")) {
+                        //                 Storage::disk('public')->delete("dokumen/$file_path");
+                        //             }
+                        //         }
+                        //     }
 
-                            if (!empty($item->akun)) {
+                        //     if (!empty($item->akun)) {
 
-                                $foto_path = $item->akun->foto_path;
+                        //         $foto_path = $item->akun->foto_path;
 
-                                if (Storage::disk('public')->exists("profil/akun/$foto_path")) {
-                                    Storage::disk('public')->delete("profil/akun/$foto_path");
-                                }
+                        //         if (Storage::disk('public')->exists("profil/akun/$foto_path")) {
+                        //             Storage::disk('public')->delete("profil/akun/$foto_path");
+                        //         }
 
-                                $id_akun = $item->akun->id_akun;
+                        //         $id_akun = $item->akun->id_akun;
 
-                                AkunModel::where('id_akun', $id_akun)->delete();
-                            }
-                        }
+                        //         AkunModel::where('id_akun', $id_akun)->delete();
+                        //     }
+                        // }
                         ProdiModel::where('id_prodi', $id_prodi)
                             ->delete();
 
