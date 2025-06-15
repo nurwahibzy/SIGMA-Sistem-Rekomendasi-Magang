@@ -192,7 +192,7 @@
         $('#btn-hapus').click(function () {
             Swal.fire({
                 title: 'Yakin ingin menghapus data ini?',
-                text: "Akan Menghapus Seluruh Lowongan dan Periode yang dimiliki Perusahaan ini!!",
+                text: "Akan menghapus seluruh Lowongan dan Periode yang dimiliki Perusahaan ini. Juga Magang yang telah diikuti Mahasiswa!!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
