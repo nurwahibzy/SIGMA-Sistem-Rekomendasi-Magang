@@ -560,6 +560,19 @@ class MahasiswaController extends Controller
 
                         if (is_numeric($tanggal_lahir)) {
                             $tanggal_lahir = Date::excelToDateTimeObject($tanggal_lahir)->format('Y-m-d');
+                        
+                        }
+
+                        if (strtotime($tanggal_lahir) > strtotime(now()->format('Y-m-d'))) {
+                            throw ValidationException::withMessages([
+                                'tanggal lahir' => "tanggal lahir harus kurang dari tanggal ini",
+                            ]);
+                        }
+
+                        if (!is_numeric($id_user) || !is_numeric($telepon)) {
+                            throw ValidationException::withMessages([
+                                'numerik' => "id user dan telepon harus numerik",
+                            ]);
                         }
 
                         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {

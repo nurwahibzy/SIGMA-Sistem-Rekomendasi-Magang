@@ -89,6 +89,7 @@
                         </colgroup>
                         <thead>
                             <tr>
+                            <th class="d-none">No</th>
                                 <th>NIM</th>
                                 <th>Nama</th>
                                 <th>Dosen</th>
@@ -98,8 +99,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($magang as $item)
+                            @foreach ($magang as $i => $item)
                                 <tr>
+                                <td class="d-none">{{ $i+1 ?? '-' }}</td>
                                     <td>{{ $item->mahasiswa->akun->id_user ?? '-' }}</td>
                                     <td>{{ $item->mahasiswa->nama ?? '-' }}</td>
                                     <td>{{ $item->dosen->nama ?? '-' }}</td>

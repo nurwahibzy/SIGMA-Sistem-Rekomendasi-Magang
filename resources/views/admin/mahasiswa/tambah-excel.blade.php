@@ -15,8 +15,9 @@
                 <div class="container mt-4 alert alert-warning">
                     <p>Perhatian:</p>
                     <ul>
-                        <li>NIM: Tidak boleh sama</li>
+                        <li>NIM: Harus angka dan tidak boleh sama</li>
                         <li>Nomor Telepon: Minimal 8 angka dan tidak boleh sama</li>
+                        <li>Tanggal lahir: Harus kurang dari sama dengan tanggal ini</li>
                         <li>Gender: l (laki-laki), p (perempuan)</li>
                         <li>Email: Tidak boleh sama</li>
                     </ul>
