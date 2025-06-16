@@ -189,7 +189,7 @@
     ">
 </div>
 
-<script>
+<!-- <script>
     const ctx = document.getElementById('statusChart').getContext('2d');
 
     const statusChart = new Chart(ctx, {
@@ -223,7 +223,7 @@
             }
         }
     });
-</script>
+</script> -->
 <script>
     function showImagePopup(src) {
         const popup = document.getElementById('image-popup');
@@ -250,6 +250,41 @@
 </script>
 <script>
     $(document).ready(function () {
+        const ctx = document.getElementById('statusChart')?.getContext('2d');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['diterima', 'lulus'],
+                    datasets: [{
+                        label: 'Jumlah Mahasiswa',
+                        data: [{{ $amountMahasiswaDiterima }}, {{ $amountMahasiswaLulus }}],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Status Magang'
+                        }
+                    }
+                }
+            });
+        }
+        
         $('#btn-hapus').click(function () {
             Swal.fire({
                 title: 'Yakin ingin menghapus data ini?',
