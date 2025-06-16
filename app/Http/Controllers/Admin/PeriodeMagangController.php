@@ -20,6 +20,7 @@ class PeriodeMagangController extends Controller
     {
         $tanggal_mulai = $request->input('tanggal_mulai_filter');
         $tanggal_selesai = $request->input('tanggal_selesai_filter');
+        $waktu = $request->input('waktu');
 
 
         $selesai = PeriodeMagangModel::where('tanggal_selesai', '<=', now())->count();
@@ -28,6 +29,19 @@ class PeriodeMagangController extends Controller
 
 
         if ($tanggal_mulai != null && $tanggal_selesai != null) {
+            if ($waktu != null) {
+                $periode = PeriodeMagangModel::with(
+                    'lowongan_magang',
+                    'lowongan_magang.perusahaan'
+                )
+                    ->where('tanggal_mulai', '<=', $tanggal_mulai)
+                    ->where('tanggal_selesai', '>=', $tanggal_selesai)
+                    ->orderBy('created_at')
+                    ->get();
+    
+                return view('admin.periode.index', ['periode' => $periode, 'selesai' => $selesai, 'berlangsung' => $berlangsung, 'segera' => $segera]);
+            }
+
             $periode = PeriodeMagangModel::with(
                 'lowongan_magang',
                 'lowongan_magang.perusahaan'
@@ -46,6 +60,10 @@ class PeriodeMagangController extends Controller
                 ->where('tanggal_mulai', '>=', $tanggal_mulai)
                 ->orderBy('created_at')
                 ->get();
+            
+                if ($waktu != null) {
+                    return view('admin.periode.index', ['periode' => $periode, 'selesai' => $selesai, 'berlangsung' => $berlangsung, 'segera' => $segera]);
+                }
 
             return view('admin.periode.index', ['periode' => $periode, 'selesai' => $selesai, 'berlangsung' => $berlangsung, 'segera' => $segera, 'tanggal_mulai' => $tanggal_mulai]);
 
@@ -57,6 +75,10 @@ class PeriodeMagangController extends Controller
                 ->where('tanggal_selesai', '<=', $tanggal_selesai)
                 ->orderBy('created_at')
                 ->get();
+
+            if ($waktu != null) {
+                return view('admin.periode.index', ['periode' => $periode, 'selesai' => $selesai, 'berlangsung' => $berlangsung, 'segera' => $segera]);
+            }
 
             return view('admin.periode.index', ['periode' => $periode, 'selesai' => $selesai, 'berlangsung' => $berlangsung, 'segera' => $segera, 'tanggal_selesai' => $tanggal_selesai]);
 

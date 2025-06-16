@@ -3,6 +3,7 @@
 @section('content')
     <div class="row">
         <div class="col-6 col-lg-3 col-md-6">
+            <a href="{{ url('/admin/periode?tanggal_mulai_filter='. now()->format('Y-m-d') .'&tanggal_selesai_filter=&waktu=segera') }}">
             <div class="card shadow">
                 <div class="card-body px-4 py-4-5">
                     <div class="row">
@@ -18,8 +19,10 @@
                     </div>
                 </div>
             </div>
+            </a>
         </div>
         <div class="col-6 col-lg-3 col-md-6">
+            <a href="{{ url('/admin/periode?tanggal_mulai_filter= ' . now()->format('Y-m-d'). '&tanggal_selesai_filter='. now()->format('Y-m-d'). '&waktu=berlangsung') }}">
             <div class="card shadow">
                 <div class="card-body px-4 py-4-5">
                     <div class="row">
@@ -35,8 +38,10 @@
                     </div>
                 </div>
             </div>
+            </a>
         </div>
         <div class="col-6 col-lg-3 col-md-6">
+            <a href="{{ url('/admin/periode?tanggal_mulai_filter=&tanggal_selesai_filter='. now()->format('Y-m-d'). '&waktu=selesai') }}">
             <div class="card shadow">
                 <div class="card-body px-4 py-4-5">
                     <div class="row">
@@ -52,6 +57,7 @@
                     </div>
                 </div>
             </div>
+            </a>
         </div>
     </div>
     <div class="card shadow">
