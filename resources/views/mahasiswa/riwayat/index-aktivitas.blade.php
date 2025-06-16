@@ -81,7 +81,6 @@
                                         <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th>Deskripsi</th>
                                                 <th>Tanggal</th>
                                                 <th>Aksi</th>
                                             </tr>
@@ -90,10 +89,9 @@
                                             @foreach($aktivitas as $i => $item)
                                                 <tr>
                                                     <td>{{ $i + 1 }}</td>
-                                                    <td>{{ $item->keterangan }}</td>
                                                     <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}
                                                     </td>
-                                                    <td class="text-center">
+                                                    <td>
                                                         <button class="btn btn-sm btn-info btn-detail"
                                                             onclick="modalAction('{{ url('/mahasiswa/riwayat/aktivitas/' . $item->id_magang . '/detail/' . $item->id_aktivitas) }}')">
                                                             Detail

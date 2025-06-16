@@ -65,7 +65,6 @@
                                         <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th>Deskripsi</th>
                                                 <th>Tanggal</th>
                                                 <th>Aksi</th>
                                             </tr>
@@ -74,10 +73,8 @@
                                             @foreach($aktivitas as $i => $item)
                                                 <tr>
                                                     <td>{{ $i + 1 }}</td>
-                                                    <td>{{ $item->keterangan }}</td>
-                                                    <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}
-                                                    </td>
-                                                    <td class="text-center">
+                                                    <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}</td>
+                                                    <td>
                                                         <button class="btn btn-sm btn-info btn-detail"
                                                             onclick="modalAction('{{ url('/mahasiswa/aktivitas/' . $id_magang . '/detail/' . $item->id_aktivitas) }}')">
                                                             Detail
@@ -106,30 +103,30 @@
         </div>
 
         <div id="image-popup-dosen" style="
-                    display: none;
-                    position: fixed;
-                    top: 0; left: 0;
-                    width: 100vw; height: 100vh;
-                    background-color: rgba(0,0,0,0.8);
-                    z-index: 1050;
-                    justify-content: center;
-                    align-items: center;
-                ">
+                            display: none;
+                            position: fixed;
+                            top: 0; left: 0;
+                            width: 100vw; height: 100vh;
+                            background-color: rgba(0,0,0,0.8);
+                            z-index: 1050;
+                            justify-content: center;
+                            align-items: center;
+                        ">
             <span id="close-popup-dosen" style="
-                        position: absolute;
-                        top: 20px; right: 30px;
-                        font-size: 30px;
-                        color: white;
-                        cursor: pointer;
-                        z-index: 1060;
-                    ">&times;</span>
+                                position: absolute;
+                                top: 20px; right: 30px;
+                                font-size: 30px;
+                                color: white;
+                                cursor: pointer;
+                                z-index: 1060;
+                            ">&times;</span>
             <img id="popup-img-dosen" src="" alt="Full Image" style="
-                        max-width: 90vw;
-                        max-height: 90vh;
-                        border-radius: 10px;
-                        box-shadow: 0 0 10px #000;
-                        object-fit: contain;
-                    ">
+                                max-width: 90vw;
+                                max-height: 90vh;
+                                border-radius: 10px;
+                                box-shadow: 0 0 10px #000;
+                                object-fit: contain;
+                            ">
         </div>
         <script>
             function showImagePopup(src) {
