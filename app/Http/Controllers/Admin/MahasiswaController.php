@@ -523,7 +523,6 @@ class MahasiswaController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             try {
-
                 $request->validate([
                     'file_excel' => 'required|mimes:xlsx,xls',
                     'id_prodi' => 'nullable|exists:prodi,id_prodi',
@@ -538,7 +537,7 @@ class MahasiswaController extends Controller
                 $sheet = $spreadsheet->getActiveSheet();
                 $data = $sheet->toArray(null, false, true, true);
 
-                DB::transaction(function () use ($data, $request) {
+                $results = DB::transaction(function () use ($data, $request) {
                     $id_prodi = $request->input('id_prodi');
                     $provinsi = 'Jawa Timur';
                     $daerah = 'Kota Malang';
@@ -558,54 +557,44 @@ class MahasiswaController extends Controller
                         $gender = trim($row['F']);
                         $email = trim($row['G']);
 
+                        $i = $index - 1;
+
                         if (is_numeric($tanggal_lahir)) {
                             $tanggal_lahir = Date::excelToDateTimeObject($tanggal_lahir)->format('Y-m-d');
                         
                         }
 
                         if (strtotime($tanggal_lahir) > strtotime(now()->format('Y-m-d'))) {
-                            throw ValidationException::withMessages([
-                                'tanggal lahir' => "tanggal lahir harus kurang dari tanggal ini",
-                            ]);
+                            throw new \Exception("Baris $i: Tanggal lahir harus kurang dari hari ini.");
                         }
 
                         if (!is_numeric($id_user) || !is_numeric($telepon)) {
-                            throw ValidationException::withMessages([
-                                'numerik' => "id user dan telepon harus numerik",
-                            ]);
+                            throw new \Exception("Baris $i: ID user dan Telepon harus numerik.");
                         }
 
                         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                            throw ValidationException::withMessages([
-                                'email' => "Email tidak valid pada NIM: $id_user ($email)",
-                            ]);
+                            throw new \Exception("Baris $i: Email tidak valid.");
                         }
 
                         if (!preg_match('/^\d{8,}$/', $telepon)) {
-                            throw ValidationException::withMessages([
-                                'telepon' => "Nomor telepon tidak valid pada NIM: $id_user ($telepon)",
-                            ]);
+                            throw new \Exception("Baris $i: Nomor telepon tidak valid.");
                         }
 
                         if ($this->checkId($id_user)) {
                             // return ['success' => false, 'message' => 'NIM Tidak Boleh Sama!!!'];
-                            throw ValidationException::withMessages([
-                                'NIM' => "NIM tidak boleh sama",
-                            ]);
+                            throw new \Exception("Baris $i: NIM sudah digunakan.");
+
                         }
 
                         if ($this->checkEmail($email)) {
                             // return ['success' => false, 'message' => 'Email Tidak Boleh Sama!!!'];
-                            throw ValidationException::withMessages([
-                                'Email' => "Email tidak boleh sama",
-                            ]);
+                            throw new \Exception("Baris $i: Email sudah digunakan.");
+
                         }
 
                         if ($this->checkTelepon($telepon)) {
                             // return ['success' => false, 'message' => 'Nomor Telepon Tidak Boleh Sama!!!'];
-                            throw ValidationException::withMessages([
-                                'Telepon' => "Telepon tidak boleh sama",
-                            ]);
+                            throw new \Exception("Baris $i: Telepon sudah digunakan.");
                         }
 
                         $akun = AkunModel::create([
@@ -635,11 +624,16 @@ class MahasiswaController extends Controller
                             'longitude' => $longitude
                         ]);
                     }
+                    return ['success' => true];
                 });
-                return response()->json(['success' => true]);
+                // return response()->json(['success' => true]);
+                return response()->json($results);
             } catch (\Throwable $e) {
                 Log::error("Gagal menambahkan user: " . $e->getMessage());
-                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan.'], 500);
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 400);
             }
         }
     }
