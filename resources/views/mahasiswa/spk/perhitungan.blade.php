@@ -1,4 +1,3 @@
-
 @extends('layouts.tamplate')
 
 @section('content')
@@ -40,8 +39,8 @@
         <h4>Langkah 2: Normalisasi Matriks Keputusan <span>$$ N $$</span></h4>
         <p>Normalisasi matriks untuk memastikan perbandingan antar kriteria yang berbeda. Rumus normalisasi bergantung
             pada apakah kriteria tersebut bersifat benefit atau cost.</p>
-        <p class="formula">Untuk kriteria keuntungan: <span>$$ n_{ij} = x_{ij} / \max_i(x_{ij}) $$</span></p>
-        <p class="formula">Untuk kriteria biaya: <span>$$ n_{ij} = \min_i(x_{ij}) / x_{ij} $$</span></p>
+        <p class="formula">Untuk kriteria benefit: <span>$$ n_{ij} = \frac{x_{ij}}{\max(x_{ij})} $$</span></p>
+        <p class="formula">Untuk kriteria cost: <span>$$ n_{ij} = \frac{\min(x_{ij})}{x_{ij}} $$</span></p>
         <table class="table border">
             <thead>
                 <tr>
@@ -65,14 +64,14 @@
     </div>
 
     <div class="card rounded p-5">
-        <h4>Langkah 3: Menghitung Kinerja Keseluruhan Alternatif Awal <span> $$ S_j $$</span></h4>
-        <p>Hitung kinerja keseluruhan untuk setiap alternatif berdasarkan matriks yang dinormalisasi.</p>
-        <p class="formula">$$ S_j = \sum_{i=1}^{m} n_{ij} $$</p>
+        <h4>Langkah 3: Menghitung Kinerja Keseluruhan Alternatif Awal <span> $$ S_i $$</span></h4>
+        <p>Hitung kinerja keseluruhan untuk setiap alternatif menggunakan formula logaritma.</p>
+        <p class="formula">$$ S_i = \ln\left(1 + \frac{1}{n}\sum_{j=1}^{n} |\ln(n_{ij})|\right) $$</p>
         <table class="table border">
             <thead>
                 <tr>
                     <th>ID Alternatif</th>
-                    <th>Kinerja Keseluruhan <span>$$ S_j $$</span></th>
+                    <th>Kinerja Keseluruhan <span>$$ S_i $$</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -85,7 +84,7 @@
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="2">Data <span>$$ S_j $$</span> awal tidak tersedia di JSON yang diberikan.</td>
+                        <td colspan="2">Data <span>$$ S_i $$</span> awal tidak tersedia.</td>
                     </tr>
                 @endif
             </tbody>
@@ -93,15 +92,16 @@
     </div>
 
     <div class="card rounded p-5">
-        <h4>Langkah 4: Menghitung Kinerja Keseluruhan Setelah Menghapus Setiap Kriteria <span>$$ S'_j $$</span></h4>
-        <p>Untuk setiap kriteria, hapus sementara kriteria tersebut dan hitung ulang kinerja keseluruhan untuk setiap
-            alternatif.</p>
+        <h4>Langkah 4: Menghitung Kinerja Setelah Menghapus Kriteria <span>$$ S_{ij}' $$</span></h4>
+        <p>Untuk setiap kriteria, hitung kinerja tanpa kriteria tersebut.</p>
+        <p class="formula">$$ S_{ij}' = \ln\left(1 + \frac{1}{n-1}\sum_{\substack{k=1 \\ k \neq j}}^{n} |\ln(n_{ik})|\right)
+            $$</p>
         <table class="table border">
             <thead>
                 <tr>
                     <th>ID Alternatif</th>
                     @foreach (array_column($data['kriteria'], 'id') as $criterion_id)
-                        <th><span>$$ S'_j $$</span> (menghapus {{ $criterion_id }})</th>
+                        <th><span>$$ S_{ij}' $$</span> (tanpa {{ $criterion_id }})</th>
                     @endforeach
                 </tr>
             </thead>
@@ -117,8 +117,8 @@
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="{{ count(array_column($data['kriteria'], 'id')) + 1 }}">Data <span>$$ S'_j $$</span> tidak tersedia
-                            di JSON yang diberikan.</td>
+                        <td colspan="{{ count(array_column($data['kriteria'], 'id')) + 1 }}">Data <span>$$ S_{ij}'
+                                $$</span> tidak tersedia</td>
                     </tr>
                 @endif
             </tbody>
@@ -126,15 +126,14 @@
     </div>
 
     <div class="card rounded p-5">
-        <h4>Langkah 5: Menghitung Jumlah Perbedaan Absolut <span>$$ E_j $$</span></h4>
-        <p>Hitung jumlah perbedaan absolut antara kinerja keseluruhan awal dan kinerja setelah menghapus setiap
-            kriteria.</p>
-        <p class="formula">$$ E_j = \sum_{k=1}^{m} |S_k - S'_{k, j}| $$</p>
+        <h4>Langkah 5: Menghitung Efek Penghapusan Kriteria <span>$$ E_j $$</span></h4>
+        <p>Hitung total efek penghapusan setiap kriteria terhadap kinerja alternatif.</p>
+        <p class="formula">$$ E_j = \sum_{i=1}^{m} |S_i - S_{ij}'| $$</p>
         <table class="table border">
             <thead>
                 <tr>
                     <th>Kriteria</th>
-                    <th>$E_j$</th>
+                    <th>Efek Penghapusan <span>$$ E_j $$</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -147,7 +146,7 @@
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="2">Data $E_j$ tidak tersedia di JSON yang diberikan.</td>
+                        <td colspan="2">Data <span>$$ E_j $$</span> tidak tersedia</td>
                     </tr>
                 @endif
             </tbody>
@@ -155,14 +154,14 @@
     </div>
 
     <div class="card rounded p-5">
-        <h4>Langkah 6: Menghitung Bobot Akhir Kriteria <span>$$ w_j $$</span></h4>
-        <p>Tentukan bobot akhir kriteria berdasarkan dampaknya terhadap kinerja keseluruhan.</p>
-        <p class="formula">$$ w_j = E_j / \sum_{k=1}^{n} E_k $$</p>
+        <h4>Langkah 6: Menghitung Bobot Kriteria <span>$$ w_j $$</span></h4>
+        <p>Bobot kriteria dihitung berdasarkan efek penghapusan relatif terhadap total efek.</p>
+        <p class="formula">$$ w_j = \frac{E_j}{\sum_{k=1}^{n} E_k} $$</p>
         <table class="table border">
             <thead>
                 <tr>
                     <th>Kriteria</th>
-                    <th>Bobot<span>$$ w_j $$</span></th>
+                    <th>Bobot <span>$$ w_j $$</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -207,13 +206,13 @@
                 @endforeach
 
                 <!-- @if (isset($data['matriksOptimal']))
-                    <tr>
-                        <td>Optimal</td>
-                        @foreach (array_column($data['kriteria'], 'id') as $criterion_id)
-                            <td>{{ $data['matriksOptimal'][$criterion_id] ?? 'N/A' }}</td>
-                        @endforeach
-                    </tr>
-                @endif -->
+    <tr>
+                            <td>Optimal</td>
+                            @foreach (array_column($data['kriteria'], 'id') as $criterion_id)
+    <td>{{ $data['matriksOptimal'][$criterion_id] ?? 'N/A' }}</td>
+    @endforeach
+                        </tr>
+    @endif -->
             </tbody>
         </table>
     </div>
@@ -225,7 +224,7 @@
         <p class="formula">Transformasi nilai cost menjadi benefit: <span>$$ x^*_{ij} = \frac{1}{x_{ij}} $$</span></p>
         <p class="formula">Normalisasi nilai: <span>$$ r_{ij} = \frac{x^*_{ij}}{\sum_{i=0}^{m} x^*_{ij}} $$</span></p>
         <p class="formula"></span> (dimana <span>$$ x_{0j} $$</span> adalah
-        nilai optimal)</p>
+            nilai optimal)</p>
         <table class="table border">
             <thead>
                 <tr>
@@ -305,30 +304,31 @@
                 @if (isset($data['optimality_function']))
                     @foreach ([0, 1] as $pass)
                         @foreach ($data['optimality_function'] as $alternative_id => $k_j_value)
-                        @if (($pass === 0 && $alternative_id == 0) || ($pass === 1 && $alternative_id != 0))
-                            <tr>
-                                <td>{{ $alternative_id }}</td>
-                                <td>{{ number_format($k_j_value, 4) }}</td>
-                            </tr>
+                            @if (($pass === 0 && $alternative_id == 0) || ($pass === 1 && $alternative_id != 0))
+                                <tr>
+                                    <td>{{ $alternative_id }}</td>
+                                    <td>{{ number_format($k_j_value, 4) }}</td>
+                                </tr>
                             @endif
                         @endforeach
                     @endforeach
 
                     <!-- @foreach ([0, 1] as $pass)
-                        @foreach ($data['weighted_normalized_matrix'] as $alternative_id => $values)
-                            @if (($pass === 0 && $alternative_id == 0) || ($pass === 1 && $alternative_id != 0))
-                                <tr>
-                                    <td>{{ $alternative_id }}</td>
-                                    @foreach (array_column($data['kriteria'], 'id') as $criterion_id)
-                                        <td>{{ $values[$criterion_id] ?? 'N/A' }}</td>
-                                    @endforeach
-                                </tr>
-                            @endif
-                        @endforeach
-                    @endforeach -->
+    @foreach ($data['weighted_normalized_matrix'] as $alternative_id => $values)
+    @if (($pass === 0 && $alternative_id == 0) || ($pass === 1 && $alternative_id != 0))
+    <tr>
+                                        <td>{{ $alternative_id }}</td>
+                                        @foreach (array_column($data['kriteria'], 'id') as $criterion_id)
+    <td>{{ $values[$criterion_id] ?? 'N/A' }}</td>
+    @endforeach
+                                    </tr>
+    @endif
+    @endforeach
+    @endforeach -->
                 @else
                     <tr>
-                        <td colspan="2">Data Fungsi Optimalitas <span>$$ K_j $$</span> tidak tersedia di JSON yang diberikan.</td>
+                        <td colspan="2">Data Fungsi Optimalitas <span>$$ K_j $$</span> tidak tersedia di JSON yang
+                            diberikan.</td>
                     </tr>
                 @endif
             </tbody>
@@ -357,7 +357,8 @@
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="2">Data Derajat Utilitas <span>$$ P_j $$</span> tidak tersedia di JSON yang diberikan.</td>
+                        <td colspan="2">Data Derajat Utilitas <span>$$ P_j $$</span> tidak tersedia di JSON yang
+                            diberikan.</td>
                     </tr>
                 @endif
             </tbody>
@@ -397,12 +398,10 @@
         </table>
     </div>
 
-  @endsection
+@endsection
 
 @push('scripts')
     <script src="{{ asset('template/assets/static/js/components/dark.js') }}"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-  </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 @endpush

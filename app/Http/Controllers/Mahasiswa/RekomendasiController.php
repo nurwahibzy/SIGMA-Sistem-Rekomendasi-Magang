@@ -45,11 +45,11 @@ class RekomendasiController extends Controller
             'jenis_perusahaan',
             'lowongan_magang.periode_magang.magang.penilaian'
         ])
-        ->whereHas('jenis_perusahaan', function ($query) use ($idJenisArray) {
-            $query->whereIn('id_jenis', $idJenisArray);
-        })
-        ->get();
-        
+            ->whereHas('jenis_perusahaan', function ($query) use ($idJenisArray) {
+                $query->whereIn('id_jenis', $idJenisArray);
+            })
+            ->get();
+
 
         // Ambil preferensi keahlian mahasiswa berdasarkan prioritas
         $preferensiKeahlianMahasiswa = KeahlianMahasiswaModel::with(['bidang'])
@@ -248,22 +248,29 @@ class RekomendasiController extends Controller
     private function normalisasiMerec($matriks, $kriteria)
     {
         $hasil = [];
+        $minMax = [];
+
+        // Hitung min/max tiap kriteria terlebih dahulu
         foreach ($kriteria as $krit) {
             $kolomNilai = array_column($matriks, $krit->id);
-            $min = min($kolomNilai);
-            // dd($min);
-            $max = max($kolomNilai);
+            $minMax[$krit->id] = [
+                'min' => min($kolomNilai),
+                'max' => max($kolomNilai),
+                'type' => $krit->type
+            ];
+        }
 
-            foreach ($matriks as $idAlt => $nilai) {
+        foreach ($matriks as $idAlt => $nilai) {
+            foreach ($kriteria as $krit) {
                 $v = $nilai[$krit->id];
-                if ($max == $min) {
-                    $hasil[$idAlt][$krit->id] = 0;
+                $min = $minMax[$krit->id]['min'];
+                $max = $minMax[$krit->id]['max'];
+                $type = $minMax[$krit->id]['type'];
+
+                if ($type === 'benefit') {
+                    $hasil[$idAlt][$krit->id] = $max == 0 ? 0 : $v / $max;
                 } else {
-                    if ($krit->type === 'benefit') {
-                        $hasil[$idAlt][$krit->id] = $max == 0 ? 0 : $v / $max;
-                    } else {
-                        $hasil[$idAlt][$krit->id] = $v == 0 ? 0 : $min / $v;
-                    }
+                    $hasil[$idAlt][$krit->id] = $v == 0 ? 0 : $min / $v;
                 }
             }
         }
@@ -277,28 +284,38 @@ class RekomendasiController extends Controller
         $initial_s_j = [];
         $s_prime_j = [];
         $e_j = [];
+        $n = count($kriteria);
 
-        // Hitung initial_s_j: Total utilitas semua alternatif dengan semua kriteria
+        // 1. Hitung initial_s_j (Si) dengan formula logaritma
         foreach ($normal as $idAlt => $nilai) {
-            $initial_s_j[$idAlt] = array_sum($nilai);
+            $sumLn = 0;
+            foreach ($kriteria as $krit) {
+                $r_ij = max($nilai[$krit->id], 0.000001); // Hindari log(0)
+                $sumLn += abs(log($r_ij));
+            }
+            $initial_s_j[$idAlt] = log(1 + (1 / $n) * $sumLn);
         }
 
-        // Hitung s_prime_j: total utilitas setelah penghapusan masing-masing kriteria
+        // 2. Hitung s_prime_j (Sij') dengan menghilangkan tiap kriteria
         foreach ($kriteria as $krit) {
             foreach ($normal as $idAlt => $nilai) {
-                $temp = $nilai;
-                unset($temp[$krit->id]);
-                $s_prime_j[$idAlt][$krit->id] = array_sum($temp);
+                $sumLn = 0;
+                foreach ($kriteria as $k) {
+                    if ($k->id == $krit->id) continue;
+                    $r_ij = max($nilai[$k->id], 0.000001);
+                    $sumLn += abs(log($r_ij));
+                }
+                $s_prime_j[$idAlt][$krit->id] = log(1 + (1 / ($n - 1)) * $sumLn);
             }
         }
 
-        // Hitung e_j: pengaruh atau selisih mutlak tiap kriteria
+        // 3. Hitung e_j (efek penghapusan)
         foreach ($kriteria as $krit) {
-            $selisih = 0;
+            $sumEj = 0;
             foreach ($normal as $idAlt => $nilai) {
-                $selisih += abs($initial_s_j[$idAlt] - $s_prime_j[$idAlt][$krit->id]);
+                $sumEj += abs($s_prime_j[$idAlt][$krit->id] - $initial_s_j[$idAlt]);
             }
-            $e_j[$krit->id] = $selisih;
+            $e_j[$krit->id] = $sumEj;
         }
 
         $this->prosesPerhitungan["initial_s_j"] = $initial_s_j;
@@ -310,30 +327,16 @@ class RekomendasiController extends Controller
 
     private function hitungBobotMerec($normal, $kriteria)
     {
-        // Total utilitas dengan semua kriteria
-        $totalSemua = [];
-        foreach ($normal as $idAlt => $nilai) {
-            $totalSemua[$idAlt] = array_sum($nilai);
-        }
+        // Gunakan hasil dari hitungIntermediateMerec
+        list($initial_s_j, $s_prime_j, $e_j) = $this->hitungIntermediateMerec($normal, $kriteria);
 
-        // Hitung efek penghapusan tiap kriteria
-        $pengaruh = [];
-        foreach ($kriteria as $krit) {
-            $selisih = 0;
-            foreach ($normal as $idAlt => $nilai) {
-                $nilaiTanpa = $nilai;
-                unset($nilaiTanpa[$krit->id]);
-                $partial = array_sum($nilaiTanpa);
-                $selisih += abs($totalSemua[$idAlt] - $partial);
-            }
-            $pengaruh[$krit->id] = $selisih;
-        }
+        // Hitung total efek
+        $totalPengaruh = array_sum($e_j);
 
-        // Normalisasi efek menjadi bobot
-        $totalPengaruh = array_sum($pengaruh);
+        // Hitung bobot
         $bobot = [];
         foreach ($kriteria as $krit) {
-            $bobot[$krit->id] = $totalPengaruh == 0 ? 0 : $pengaruh[$krit->id] / $totalPengaruh;
+            $bobot[$krit->id] = $totalPengaruh == 0 ? 0 : $e_j[$krit->id] / $totalPengaruh;
         }
         $this->prosesPerhitungan["bobotMerec"] = $bobot;
         return $bobot;
