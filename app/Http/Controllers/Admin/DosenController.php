@@ -489,8 +489,8 @@ class DosenController extends Controller
                             'id_dosen' => null
                         ]);
 
-                        // AkunModel::where('id_akun', $id_akun)
-                        //     ->delete();
+                        AkunModel::where('id_akun', $id_akun)
+                            ->delete();
     
                         return ['success' => true];
                     }

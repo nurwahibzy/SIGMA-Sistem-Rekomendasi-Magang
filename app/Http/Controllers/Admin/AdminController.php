@@ -29,9 +29,9 @@ class AdminController extends Controller
     }
     public function getAdmin()
     {
-        $id_akun = $this->idAdmin();
+        $id_admin = $this->idAdmin();
         $admin = AdminModel::with('akun')
-            ->where('id_akun', '!=', $id_akun)
+            ->where('id_admin', '!=', $id_admin)
             ->get();
         $aktif = AdminModel::with('akun')
             ->whereHas('akun', function ($query) {
