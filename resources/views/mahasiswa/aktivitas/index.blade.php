@@ -24,7 +24,7 @@
                             <form id="form-left-panel" class="text-start mt-3">
                                 @csrf
                                 <div class="mb-2">
-                                    <label class="form-label">NIM</label>
+                                    <label class="form-label">NIP</label>
                                     <input type="text" class="form-control" id="nim"
                                         value="{{ $magang->dosen->akun->id_user ?? '-' }}" disabled>
                                 </div>

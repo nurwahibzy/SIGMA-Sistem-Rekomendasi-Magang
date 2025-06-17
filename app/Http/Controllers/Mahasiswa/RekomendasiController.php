@@ -83,18 +83,42 @@ class RekomendasiController extends Controller
 
         $data_array = [];
 
-        // Loop untuk setiap perusahaan dan lowongan
+        $global_total_fasilitas = 0;
+        $global_total_tugas = 0;
+        $global_total_pembinaan = 0;
+        $global_total_penilaian = 0;
+
+        // First pass: Calculate global averages
         foreach ($perusahaans as $perusahaan) {
-            // Hitung jarak
+            foreach ($perusahaan->lowongan_magang as $lowongan) {
+                foreach ($lowongan->periode_magang as $periode) {
+                    foreach ($periode->magang as $magang) {
+                        if ($magang->penilaian) {
+                            $global_total_fasilitas += (int) $magang->penilaian->fasilitas;
+                            $global_total_tugas += (int) $magang->penilaian->tugas;
+                            $global_total_pembinaan += (int) $magang->penilaian->pembinaan;
+                            $global_total_penilaian++;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Calculate global averages
+        $global_avg_fasilitas = $global_total_penilaian > 0 ? $global_total_fasilitas / $global_total_penilaian : 2.5;
+        $global_avg_tugas = $global_total_penilaian > 0 ? $global_total_tugas / $global_total_penilaian : 2.5;
+        $global_avg_pembinaan = $global_total_penilaian > 0 ? $global_total_pembinaan / $global_total_penilaian : 2.5;
+
+        // Second pass: Process data with imputation
+        foreach ($perusahaans as $perusahaan) {
             $jarak = JarakController::hitungJarak($perusahaan, $mahasiswa);
 
             foreach ($perusahaan->lowongan_magang as $lowongan) {
-
-                // Lewati jika semua periode sudah berjalan
+                // Skip if all periods have passed
                 $upcoming = $lowongan->periode_magang->filter(fn($periode) => $periode->tanggal_mulai >= $hariIni);
-                if ($upcoming->isEmpty())
+                if ($upcoming->isEmpty()) {
                     continue;
-
+                }
 
                 $total_fasilitas = 0;
                 $total_tugas = 0;
@@ -112,25 +136,22 @@ class RekomendasiController extends Controller
                     }
                 }
 
-                // Inisialisasi nilai rata-rata
-                $rata_fasilitas = 0;
-                $rata_tugas = 0;
-                $rata_pembinaan = 0;
+                // Use local average if available, otherwise use global average
+                $rata_fasilitas = $total_penilaian > 0
+                    ? $total_fasilitas / $total_penilaian
+                    : $global_avg_fasilitas;
 
-                if ($total_penilaian > 0) {
-                    $rata_fasilitas = $total_fasilitas / $total_penilaian;
-                    $rata_tugas = $total_tugas / $total_penilaian;
-                    $rata_pembinaan = $total_pembinaan / $total_penilaian;
-                }
+                $rata_tugas = $total_penilaian > 0
+                    ? $total_tugas / $total_penilaian
+                    : $global_avg_tugas;
 
-                $rata_fasilitas = $rata_fasilitas == 0 ? 2.5 : $rata_fasilitas;
-                $rata_tugas = $rata_tugas == 0 ? 2.5 : $rata_tugas;
-                $rata_pembinaan = $rata_pembinaan == 0 ? 2.5 : $rata_pembinaan;
+                $rata_pembinaan = $total_penilaian > 0
+                    ? $total_pembinaan / $total_penilaian
+                    : $global_avg_pembinaan;
 
                 $id_bidang = $lowongan->id_bidang;
                 $bobot_bidang = $bobot_prioritas[$id_bidang] ?? ($totalPrioritas + 1);
 
-                // Simpan data
                 $data_array[] = [
                     'id_perusahaan' => $perusahaan->id_perusahaan,
                     'nama_perusahaan' => $perusahaan->nama,
