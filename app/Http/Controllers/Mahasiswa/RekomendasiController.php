@@ -183,7 +183,8 @@ class RekomendasiController extends Controller
         $this->hitungIntermediateAras($normalisasiAras, $bobot, $data_array, $kriteria);
         $peringkat = $this->hitungAras($normalisasiAras, $bobot, $data_array, $kriteria);
 
-        return array_slice($peringkat, 0, 3);
+        // return array_slice($peringkat, 0, 10);
+        return $peringkat;
     }
 
     public function tampilkanHasilRekomendasi()
