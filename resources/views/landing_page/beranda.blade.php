@@ -8,9 +8,10 @@
         </div>
         <div class="col-md-8">
             <h1 class="fw-bold mb-3" style="color: white;">
-                Temukan Magang Impianmu dengan Mudah!
+                SISTEM REKOMENDASI MAGANG
             </h1>
             <h5 class="text-white">
+                Temukan Magang Impianmu dengan Mudah! <br>
                 Rekomendasi magang otomatis berdasarkan minat, jurusan, dan keahlianmu.
             </h5>
         </div>

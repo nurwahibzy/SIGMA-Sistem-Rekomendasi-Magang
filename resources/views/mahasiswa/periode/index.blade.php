@@ -55,7 +55,7 @@
     </div>
     @if(!empty($rekomendasi))
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4>Rekomendasi Magang</h4>
+            <h4>Rekomendasi Lowongan Magang</h4>
             <button id="btn-perhitungan" class="btn btn-warning">Detail Perhitungan</button>
         </div>
 
@@ -98,12 +98,11 @@
         <div
             class="alert alert-warning d-flex justify-content-between align-items-center flex-wrap gap-2 p-4 rounded shadow-sm">
             <div class="flex-grow-1">
-                <strong>Lengkapi Profil Anda:</strong>
-                Kemungkinan keahlian atau preferensi perusahaan Anda belum sesuai. Silakan lengkapi profil Anda terlebih dahulu.
+                Maaf, saat ini belum ada rekomendasi lowongan magang yang sesuai dengan preferensi Anda.
             </div>
             <div>
                 <button id="btn-profil" class="btn btn-primary">
-                    <i class="bi bi-person-fill"></i> Lengkapi Profil
+                    <i class="bi bi-person-fill"></i> Ubah Preferensi
                 </button>
             </div>
         </div>

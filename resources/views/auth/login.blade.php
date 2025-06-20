@@ -72,6 +72,7 @@
                 <a href="{{ url('/') }}">
                     <img src="{{ asset('template/assets/compiled/svg/logo.svg') }}" alt="Logo" style="width: 170px; height: auto;">
                 </a>
+                <p>Sistem Rekomendasi Magang</p>
             </div>
             <h5 class="auth-title text-right">Login</h5>
 
