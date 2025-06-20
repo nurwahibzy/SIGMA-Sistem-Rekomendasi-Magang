@@ -218,8 +218,9 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::prefix('periode')->group(function () {
-            Route::get('/', [PeriodeMagangControllerMahasiswa::class, 'getPeriode']);
-            Route::get('/rekomendasi', [RekomendasiController::class, 'tampilkanHasilRekomendasi']);
+            Route::get('/', [RekomendasiController::class, 'tampilkanHasilRekomendasi']);
+            Route::get('/data', [PeriodeMagangControllerMahasiswa::class, 'getPeriodeData']);
+            // Route::get('/rekomendasi', [RekomendasiController::class, 'tampilkanHasilRekomendasi']);
             Route::get('/rekomendasi/perhitungan', [RekomendasiController::class, 'prosesPerhitungan']);
             Route::get('/detail/{id_periode}', [PeriodeMagangControllerMahasiswa::class, 'getDetailPeriode']);
             Route::post('/{id_periode}', [MagangControllerMahasiswa::class, 'postMagang']);

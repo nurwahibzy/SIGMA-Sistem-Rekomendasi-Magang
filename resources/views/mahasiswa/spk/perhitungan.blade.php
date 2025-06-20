@@ -2,8 +2,8 @@
 
 @section('content')
     <h1>Langkah Perhitungan MEREC dan ARAS</h1>
-    <br>
-    <a href="{{ url('mahasiswa/periode/rekomendasi') }}" class="btn btn-primary">Kembali</a>
+    <!-- <br>
+    <a href="{{ url('mahasiswa/periode/rekomendasi') }}" class="btn btn-primary">Kembali</a> -->
 
     <br>
     <br>

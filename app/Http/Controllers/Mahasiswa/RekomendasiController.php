@@ -183,7 +183,7 @@ class RekomendasiController extends Controller
         $this->hitungIntermediateAras($normalisasiAras, $bobot, $data_array, $kriteria);
         $peringkat = $this->hitungAras($normalisasiAras, $bobot, $data_array, $kriteria);
 
-        return array_slice($peringkat, 0, 5);
+        return array_slice($peringkat, 0, 6);
     }
 
     public function tampilkanHasilRekomendasi()
@@ -193,8 +193,10 @@ class RekomendasiController extends Controller
         // return response()->json($peringkat);
 
         if ($peringkat == false) {
+            return view('mahasiswa.periode.index');
+
             // return response(url('/mahasiswa/periode'));
-            return redirect('/mahasiswa/profil')->with('error', 'Silakan lengkapi profil Anda terlebih dahulu. Kemungkinan Keahlian atau Preferensi Perusahaan Anda tidak ada yang sesuai');
+            // return redirect('/mahasiswa/profil')->with('error', 'Silakan lengkapi profil Anda terlebih dahulu. Kemungkinan Keahlian atau Preferensi Perusahaan Anda tidak ada yang sesuai');
         }
 
         $topLowonganIds = array_column($peringkat, 'id_lowongan');
@@ -202,52 +204,49 @@ class RekomendasiController extends Controller
         // Ambil detail periode untuk lowongan terbaik
         $periode = PeriodeMagangModel::with([
             'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
-            'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama,provinsi,daerah',
+            'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama,provinsi,daerah,foto_path',
             'lowongan_magang.bidang:id_bidang,nama',
             'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
         ])
             ->whereIn('id_lowongan', $topLowonganIds)
             ->where('tanggal_mulai', '>=', now())
             ->orderByRaw('FIELD(id_lowongan, ' . implode(',', $topLowonganIds) . ')')
-            ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
+            ->get();
 
         // Hitung data statistik
         // $perusahaans = PerusahaanModel::with('jenis_perusahaan')->get();
 
-        $idPerusahaan = collect();
-        $idJenisPerusahaan = collect();
-        $idBidang = collect();
+        // $idPerusahaan = collect();
+        // $idJenisPerusahaan = collect();
+        // $idBidang = collect();
 
-        foreach ($periode as $p) {
-            if ($p->lowongan_magang) {
-                $perusahaan = $p->lowongan_magang->perusahaan;
-                $bidang = $p->lowongan_magang->bidang;
+        // foreach ($periode as $p) {
+        //     if ($p->lowongan_magang) {
+        //         $perusahaan = $p->lowongan_magang->perusahaan;
+        //         $bidang = $p->lowongan_magang->bidang;
 
-                if ($perusahaan) {
-                    $idPerusahaan->push($perusahaan->id_perusahaan);
-                    if ($perusahaan->jenis_perusahaan) {
-                        $idJenisPerusahaan->push($perusahaan->jenis_perusahaan->id_jenis);
-                    }
-                }
+        //         if ($perusahaan) {
+        //             $idPerusahaan->push($perusahaan->id_perusahaan);
+        //             if ($perusahaan->jenis_perusahaan) {
+        //                 $idJenisPerusahaan->push($perusahaan->jenis_perusahaan->id_jenis);
+        //             }
+        //         }
 
-                if ($bidang) {
-                    $idBidang->push($bidang->id_bidang);
-                }
-            }
-        }
+        //         if ($bidang) {
+        //             $idBidang->push($bidang->id_bidang);
+        //         }
+        //     }
+        // }
 
-        $jumlahPerusahaan = $idPerusahaan->unique()->count();
-        $jumlahJenisPerusahaan = $idJenisPerusahaan->unique()->count();
-        $jumlahBidang = $idBidang->unique()->count();
+        // $jumlahPerusahaan = $idPerusahaan->unique()->count();
+        // $jumlahJenisPerusahaan = $idJenisPerusahaan->unique()->count();
+        // $jumlahBidang = $idBidang->unique()->count();
 
         return view('mahasiswa.periode.index', [
-            'periode' => $periode,
-            'activeMenu' => 'dashboard',
-            'jumlahPerusahaan' => $jumlahPerusahaan,
-            'jumlahJenisPerusahaan' => $jumlahJenisPerusahaan,
-            'jumlahBidang' => $jumlahBidang,
-            'perhitungan' => true
+            'rekomendasi' => $periode
         ]);
+
+        // return response()->json($periode);
     }
 
 

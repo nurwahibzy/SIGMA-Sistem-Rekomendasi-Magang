@@ -25,8 +25,97 @@ class PeriodeMagangController extends Controller
     {
         return redirect('/mahasiswa/periode');
     }
-    public function getPeriode(Request $request)
+    public function getPeriode()
     {
+        // $tanggal_mulai = $request->input('tanggal_mulai_filter');
+        // $tanggal_selesai = $request->input('tanggal_selesai_filter');
+
+        // if ($tanggal_mulai != null && $tanggal_selesai != null) {
+        //     $periode = PeriodeMagangModel::with([
+        //         'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
+        //         'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama,provinsi,daerah',
+        //         'lowongan_magang.bidang:id_bidang,nama',
+        //         'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
+        //     ])
+        //         ->where('tanggal_mulai', '>=', $tanggal_mulai)
+        //         ->where('tanggal_selesai', '<=', $tanggal_selesai)
+        //         ->orderBy('tanggal_mulai')
+        //         ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
+        // } else if ($tanggal_mulai != null) {
+        //     $periode = PeriodeMagangModel::with([
+        //         'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
+        //         'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama,provinsi,daerah',
+        //         'lowongan_magang.bidang:id_bidang,nama',
+        //         'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
+        //     ])
+        //         ->where('tanggal_mulai', '>=', $tanggal_mulai)
+        //         ->orderBy('tanggal_mulai')
+        //         ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
+        // } else if ($tanggal_selesai != null) {
+        //     $periode = PeriodeMagangModel::with([
+        //         'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
+        //         'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama,provinsi,daerah',
+        //         'lowongan_magang.bidang:id_bidang,nama',
+        //         'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
+        //     ])
+        //         ->where('tanggal_selesai', '<=', $tanggal_selesai)
+        //         ->orderBy('tanggal_mulai')
+        //         ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
+        // } else {
+        //     $periode = PeriodeMagangModel::with([
+        //         'lowongan_magang:id_lowongan,id_perusahaan,id_bidang,nama',
+        //         'lowongan_magang.perusahaan:id_perusahaan,id_jenis,nama,provinsi,daerah',
+        //         'lowongan_magang.bidang:id_bidang,nama',
+        //         'lowongan_magang.perusahaan.jenis_perusahaan:id_jenis,jenis'
+        //     ])
+        //         ->where('tanggal_mulai', '>=', now())
+        //         ->orderBy('tanggal_mulai')
+        //         ->get(['id_periode', 'id_lowongan', 'tanggal_mulai', 'tanggal_selesai']);
+        // }
+
+
+        // $idPerusahaan = collect();
+        // $idJenisPerusahaan = collect();
+        // $idBidang = collect();
+
+        // foreach ($periode as $p) {
+        //     if ($p->lowongan_magang) {
+        //         $perusahaan = $p->lowongan_magang->perusahaan;
+        //         $bidang = $p->lowongan_magang->bidang;
+
+        //         if ($perusahaan) {
+        //             $idPerusahaan->push($perusahaan->id_perusahaan);
+        //             if ($perusahaan->jenis_perusahaan) {
+        //                 $idJenisPerusahaan->push($perusahaan->jenis_perusahaan->id_jenis);
+        //             }
+        //         }
+
+        //         if ($bidang) {
+        //             $idBidang->push($bidang->id_bidang);
+        //         }
+        //     }
+        // }
+
+        // $jumlahPerusahaan = $idPerusahaan->unique()->count();
+        // $jumlahJenisPerusahaan = $idJenisPerusahaan->unique()->count();
+        // $jumlahBidang = $idBidang->unique()->count();
+
+        // return view('mahasiswa.periode.index', [
+        //     'periode' => $periode,
+        //     'activeMenu' => 'dashboard',
+        //     'jumlahPerusahaan' => $jumlahPerusahaan,
+        //     'jumlahJenisPerusahaan' => $jumlahJenisPerusahaan,
+        //     'jumlahBidang' => $jumlahBidang,
+        //     'tanggal_mulai' => $tanggal_mulai,
+        //     'tanggal_selesai' => $tanggal_selesai
+        // ]);
+
+        return view('mahasiswa.periode.index');
+    }
+
+    public function getPeriodeData(Request $request)
+    {
+
         $tanggal_mulai = $request->input('tanggal_mulai_filter');
         $tanggal_selesai = $request->input('tanggal_selesai_filter');
 
@@ -100,9 +189,8 @@ class PeriodeMagangController extends Controller
         $jumlahJenisPerusahaan = $idJenisPerusahaan->unique()->count();
         $jumlahBidang = $idBidang->unique()->count();
 
-        return view('mahasiswa.periode.index', [
-            'periode' => $periode,
-            'activeMenu' => 'dashboard',
+        return response()->json([
+            'data' => $periode,
             'jumlahPerusahaan' => $jumlahPerusahaan,
             'jumlahJenisPerusahaan' => $jumlahJenisPerusahaan,
             'jumlahBidang' => $jumlahBidang,
@@ -110,6 +198,10 @@ class PeriodeMagangController extends Controller
             'tanggal_selesai' => $tanggal_selesai
         ]);
     }
+
+
+
+
 
     public function getDetailPeriode($id_periode)
     {
