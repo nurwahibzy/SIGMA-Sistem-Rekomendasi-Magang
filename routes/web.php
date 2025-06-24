@@ -53,6 +53,8 @@ Route::get('/login', [LoginController::class, 'getLogin'])->name('login');
 Route::post('/login', [LoginController::class, 'postLogin']);
 Route::get('/logout', [LogoutController::class, 'getLogout'])->middleware('auth');
 
+Route::get('/register', [LoginController::class, 'getRegister']);
+Route::post('/register', [LoginController::class, 'postRegister'])->name('register');
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [LoginController::class, 'getDashoboard']);
     Route::middleware(['authorize:ADM'])->prefix('admin')->group(function () {

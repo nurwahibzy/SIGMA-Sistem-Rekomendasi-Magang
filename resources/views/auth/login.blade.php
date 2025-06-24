@@ -92,7 +92,13 @@
                 </div>
                 <button class="btn btn-primary btn-block btn-lg shadow-lg mt-4 w-100">Log in</button>
             </form>
-        </div>
+            <div class="mt-3">
+                <p>
+                Belum punya akun? <a href="{{ url('register') }}">Daftar</a>
+            </p>
+            
+            </div>
+            </div>
     </div>
 
 
